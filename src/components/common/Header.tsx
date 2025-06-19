@@ -46,16 +46,25 @@ export default function Header() {
   
   const handleScrollTo = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
-    const targetElement = document.querySelector(href);
-    if (targetElement) {
-        const headerOffset = 80; 
-        const elementPosition = targetElement.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-      
-        window.scrollTo({
-            top: offsetPosition,
-            behavior: "smooth"
-        });
+    if (href.startsWith('#')) {
+      const targetId = href.substring(1); // Remove #
+      const targetElement = document.getElementById(targetId);
+      if (targetElement) {
+          const headerOffset = 80; // Adjust as needed for your sticky header
+          const elementPosition = targetElement.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+        
+          window.scrollTo({
+              top: offsetPosition,
+              behavior: "smooth"
+          });
+      }
+    } else {
+      // Fallback for non-hash links, though not expected for header nav
+      // If you had external links or full page navigations, handle them here.
+      // For this portfolio, we assume all header links are for internal page sections.
+      console.warn(`handleScrollTo called with non-hash href: ${href}`);
+      // window.location.href = href; // Example for actual navigation
     }
   };
 
