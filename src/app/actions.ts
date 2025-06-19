@@ -1,6 +1,7 @@
 'use server';
 
 import { z } from 'zod';
+import { MongoClient, ServerApiVersion } from 'mongodb';
 
 const ContactFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters long." }),
@@ -18,6 +19,41 @@ export type ContactFormState = {
   success: boolean;
 };
 
+const MONGODB_URI = process.env.MONGODB_URI;
+const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME;
+const MONGODB_CONTACT_COLLECTION = process.env.MONGODB_CONTACT_COLLECTION;
+
+let client: MongoClient | null = null;
+// @ts-ignore
+let clientPromise: Promise<MongoClient> | null = global._mongoClientPromise || null;
+
+async function getMongoClient(): Promise<MongoClient> {
+  if (!MONGODB_URI) {
+    throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
+  }
+  if (!MONGODB_DB_NAME) {
+    throw new Error('Please define the MONGODB_DB_NAME environment variable inside .env.local');
+  }
+
+  if (!clientPromise) {
+    client = new MongoClient(MONGODB_URI, {
+      serverApi: {
+        version: ServerApiVersion.v1,
+        strict: true,
+        deprecationErrors: true,
+      }
+    });
+    clientPromise = client.connect();
+    if (process.env.NODE_ENV === 'development') {
+      // In development mode, use a global variable so that the MongoClient instance
+      // is preserved across module reloads caused by HMR (Hot Module Replacement).
+      // @ts-ignore
+      global._mongoClientPromise = clientPromise;
+    }
+  }
+  return clientPromise;
+}
+
 export async function submitContactForm(
   prevState: ContactFormState,
   data: FormData
@@ -34,25 +70,48 @@ export async function submitContactForm(
     };
   }
 
-  // Simulate database submission
-  console.log('Form data submitted:');
-  console.log('Name:', parsed.data.name);
-  console.log('Email:', parsed.data.email);
-  console.log('Phone Number:', parsed.data.phoneNumber);
-  console.log('Message:', parsed.data.message);
+  if (!MONGODB_URI || !MONGODB_DB_NAME || !MONGODB_CONTACT_COLLECTION) {
+    console.error("MongoDB environment variables are not set. Please create a .env.local file with MONGODB_URI, MONGODB_DB_NAME, and MONGODB_CONTACT_COLLECTION.");
+    return {
+      message: "Server configuration error. Please contact support.",
+      success: false,
+    };
+  }
 
-  // Simulate a delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  try {
+    const mongoClient = await getMongoClient();
+    const db = mongoClient.db(MONGODB_DB_NAME);
+    const collection = db.collection(MONGODB_CONTACT_COLLECTION);
 
-  // Simulate success
-  return {
-    message: 'Thank you! Your message has been sent successfully.',
-    success: true,
-  };
+    const submissionData = {
+      ...parsed.data,
+      submittedAt: new Date(),
+    };
 
-  // Example of simulated error:
-  // return {
-  //   message: "An error occurred while sending your message. Please try again later.",
-  //   success: false,
-  // };
+    await collection.insertOne(submissionData);
+
+    return {
+      message: 'Thank you! Your message has been sent successfully and stored.',
+      success: true,
+    };
+  } catch (error) {
+    console.error('Failed to submit contact form to MongoDB:', error);
+    let errorMessage = "An error occurred while sending your message. Please try again later.";
+    if (error instanceof Error) {
+        if (error.message.toLowerCase().includes('authentication failed')) {
+            errorMessage = "Database authentication failed. Please check server logs and contact support.";
+        } else if (error.message.includes('ENOTFOUND') || error.message.includes('ECONNREFUSED') || error.message.includes('connection refused')) {
+            errorMessage = "Could not connect to the database. Please check connection string and network access.";
+        } else if (error.message.includes('topology was destroyed')) {
+            errorMessage = "Database connection was lost. Please try again.";
+             // @ts-ignore
+            if (process.env.NODE_ENV === 'development') global._mongoClientPromise = null;
+            clientPromise = null;
+        }
+    }
+    return {
+      message: errorMessage,
+      success: false,
+    };
+  }
 }
