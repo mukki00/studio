@@ -78,8 +78,10 @@ export default function AboutSection() {
                   <Linkedin className="h-5 w-5 text-accent" />
                 </Link>
               </Button>
-              <Button variant="outline" size="icon" aria-label="GitHub Profile">
-                <Github className="h-5 w-5 text-accent" />
+              <Button asChild variant="outline" size="icon" aria-label="GitHub Profile">
+                <Link href="https://github.com/mukki00" target="_blank" rel="noopener noreferrer">
+                  <Github className="h-5 w-5 text-accent" />
+                </Link>
               </Button>
             </div>
           </div>
