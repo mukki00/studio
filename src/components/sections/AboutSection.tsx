@@ -14,7 +14,7 @@ export default function AboutSection() {
     <Section
       id="about"
       title="About Me"
-      subtitle="A Glimpse into My World and Professional Journey"
+      subtitle="Innovating at the Intersection of Code and Cloud"
     >
       <div className="grid md:grid-cols-5 gap-12 items-start">
         <div className="md:col-span-2 relative aspect-square max-w-md mx-auto md:order-last group overflow-hidden rounded-lg shadow-xl transform transition-all duration-500 hover:scale-105">
