@@ -9,33 +9,33 @@ body {
 
 @layer base {
   :root {
-    --background: 210 17% 98%; /* New: Very light cool gray (near white #F8F9FA) */
-    --foreground: 210 10% 23%; /* New: Dark gray for text (#343A40) */
+    --background: 210 17% 98%; /* Very light cool gray (near white #F8F9FA) */
+    --foreground: 210 10% 23%; /* Dark gray for text (#343A40) */
     
-    --card: 0 0% 100%; /* New: White */
+    --card: 0 0% 100%; /* White */
     --card-foreground: 210 10% 23%; /* Match foreground */
     
-    --popover: 0 0% 100%; /* New: White */
+    --popover: 0 0% 100%; /* White */
     --popover-foreground: 210 10% 23%; /* Match foreground */
     
-    --primary: 217 98% 52%; /* New: Vibrant Blue (#0D6EFD) */
-    --primary-foreground: 0 0% 100%; /* New: White */
+    --primary: 217 98% 52%; /* Vibrant Blue (#0D6EFD) */
+    --primary-foreground: 0 0% 100%; /* White */
     
-    --secondary: 217 95% 75%; /* New: Lighter Blue */
-    --secondary-foreground: 210 10% 23%; /* New: Dark text on lighter blue */
+    --secondary: 217 95% 75%; /* Lighter Blue */
+    --secondary-foreground: 210 10% 23%; /* Dark text on lighter blue */
     
-    --muted: 210 15% 90%; /* New: Light Gray */
-    --muted-foreground: 210 10% 45%; /* New: Medium Gray for muted text */
+    --muted: 210 15% 90%; /* Light Gray */
+    --muted-foreground: 210 10% 45%; /* Medium Gray for muted text */
     
-    --accent: 261 52% 51%; /* New: Muted Purple (#6F42C1) */
-    --accent-foreground: 0 0% 100%; /* New: White */
+    --accent: 261 52% 51%; /* Muted Purple (#6F42C1) */
+    --accent-foreground: 0 0% 100%; /* White */
     
-    --destructive: 0 84% 60%; /* New: Modern vibrant red (#FF3B30) */
+    --destructive: 0 84% 60%; /* Modern vibrant red (#FF3B30) */
     --destructive-foreground: 0 0% 100%; /* White */
     
-    --border: 210 15% 88%; /* New: Light Gray Border */
-    --input: 210 16% 94%; /* New: Very Light Gray Input Background */
-    --ring: 217 98% 52%; /* New: Primary blue for focus rings */
+    --border: 210 15% 88%; /* Light Gray Border */
+    --input: 210 16% 94%; /* Very Light Gray Input Background */
+    --ring: 217 98% 52%; /* Primary blue for focus rings */
     
     --chart-1: 217 98% 52%; /* Primary Blue */
     --chart-2: 261 52% 51%; /* Accent Purple */
@@ -54,36 +54,40 @@ body {
     --sidebar-accent-foreground: 0 0% 100%;
     --sidebar-border: 210 15% 85%;
     --sidebar-ring: 217 98% 52%;
+
+    /* Gradient colors for light theme */
+    --gradient-start: 210 17% 98%; /* Corresponds to original --background */
+    --gradient-end: 205 30% 90%;   /* A soft, slightly bluer light gray */
   }
 
   .dark {
-    --background: 220 15% 10%; /* New: Very Dark Blue/Gray (#161B22) */
-    --foreground: 210 17% 90%; /* New: Light Grayish Text (#DDE1E6) */
+    --background: 220 15% 10%; /* Very Dark Blue/Gray (#161B22) */
+    --foreground: 210 17% 90%; /* Light Grayish Text (#DDE1E6) */
     
-    --card: 220 15% 15%; /* New: Darker Card Background (#1F242C) */
+    --card: 220 15% 15%; /* Darker Card Background (#1F242C) */
     --card-foreground: 210 17% 90%;
     
     --popover: 220 15% 15%;
     --popover-foreground: 210 17% 90%;
     
-    --primary: 217 98% 56%; /* New: Primary Blue, slightly lightened for dark BG (#257AFD) */
+    --primary: 217 98% 56%; /* Primary Blue, slightly lightened for dark BG (#257AFD) */
     --primary-foreground: 0 0% 100%; 
     
-    --secondary: 217 80% 40%; /* New: Darker, less saturated blue for secondary */
+    --secondary: 217 80% 40%; /* Darker, less saturated blue for secondary */
     --secondary-foreground: 210 17% 85%; /* Lighter text for dark secondary */
     
-    --muted: 220 10% 30%; /* New: Medium Dark Gray (#424953) */
-    --muted-foreground: 210 15% 70%; /* New: Medium Light Gray Text */
+    --muted: 220 10% 30%; /* Medium Dark Gray (#424953) */
+    --muted-foreground: 210 15% 70%; /* Medium Light Gray Text */
     
-    --accent: 261 52% 58%; /* New: Accent Purple, slightly lightened for dark BG (#835FD3) */
+    --accent: 261 52% 58%; /* Accent Purple, slightly lightened for dark BG (#835FD3) */
     --accent-foreground: 0 0% 100%;
     
-    --destructive: 0 70% 50%; /* New: Red for dark mode, slightly less intense (#D93030) */
+    --destructive: 0 70% 50%; /* Red for dark mode, slightly less intense (#D93030) */
     --destructive-foreground: 0 0% 98%;
     
-    --border: 220 10% 25%; /* New: Darker Border (#343A40) */
-    --input: 220 10% 20%; /* New: Darker Input Background (#2B3037) */
-    --ring: 217 98% 56%; /* New: Dark mode primary for focus rings */
+    --border: 220 10% 25%; /* Darker Border (#343A40) */
+    --input: 220 10% 20%; /* Darker Input Background (#2B3037) */
+    --ring: 217 98% 56%; /* Dark mode primary for focus rings */
     
     --chart-1: 217 98% 60%;
     --chart-2: 261 52% 60%;
@@ -100,6 +104,10 @@ body {
     --sidebar-accent-foreground: 0 0% 100%;
     --sidebar-border: 220 10% 20%;
     --sidebar-ring: 217 98% 56%;
+
+    /* Gradient colors for dark theme */
+    --gradient-start: 220 15% 10%; /* Corresponds to original dark --background */
+    --gradient-end: 225 20% 18%;   /* A slightly lighter, bluer dark shade */
   }
 }
 
@@ -108,8 +116,13 @@ body {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    /* @apply bg-background text-foreground; Removed solid background */
+    background-image: linear-gradient(135deg, hsl(var(--gradient-start)) 0%, hsl(var(--gradient-end)) 100%);
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* Makes the gradient fixed during scroll */
+    color: hsl(var(--foreground)); /* Uses theme-aware foreground color */
     font-family: var(--font-body);
+    min-height: 100vh; /* Ensures gradient covers full viewport height */
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-headline);
