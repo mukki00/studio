@@ -1,8 +1,8 @@
 
 'use client';
 
-import { useEffect, useActionState } from 'react';
-import { useFormStatus } from 'react-dom';
+import { useEffect, useActionState, useTransition } from 'react';
+// import { useFormStatus } from 'react-dom'; // No longer needed directly in SubmitButton if pending is passed
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -32,8 +32,7 @@ const initialState: ContactFormState = {
   success: false,
 };
 
-function SubmitButton() {
-  const { pending } = useFormStatus();
+function SubmitButton({ pending }: { pending: boolean }) {
   return (
     <Button type="submit" disabled={pending} size="lg" className="w-full bg-accent hover:bg-accent/90 text-accent-foreground">
       {pending ? (
@@ -50,6 +49,7 @@ function SubmitButton() {
 }
 
 export default function ContactSection() {
+  const [isPending, startTransition] = useTransition();
   const [state, formAction] = useActionState(submitContactForm, initialState);
   const { toast } = useToast();
 
@@ -88,26 +88,23 @@ export default function ContactSection() {
         }
       });
     }
-    if (state.fields) {
-       // This part is for repopulating fields on server-side validation error,
-       // which react-hook-form usually handles, but good for full state sync.
+    if (state.fields && !state.success) { // only repopulate if not successful
        Object.entries(state.fields).forEach(([key, value]) => {
          form.setValue(key as keyof ContactFormData, value);
        });
     }
-  }, [state.issues, state.fields, form]);
+  }, [state.issues, state.fields, state.success, form]);
 
   const handleValidSubmit = (validatedData: ContactFormData) => {
     const formData = new FormData();
     Object.entries(validatedData).forEach(([key, value]) => {
-      // Ensure value is not null/undefined before appending.
-      // FormData expects string values, or File/Blob.
-      // Optional fields might be undefined.
       if (value !== undefined && value !== null) {
         formData.append(key, String(value));
       }
     });
-    formAction(formData);
+    startTransition(() => {
+      formAction(formData);
+    });
   };
 
   return (
@@ -126,7 +123,6 @@ export default function ContactSection() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {/* The `action` prop is removed from the form. `onSubmit` now handles calling `formAction`. */}
             <form onSubmit={form.handleSubmit(handleValidSubmit)} className="space-y-6">
               <div>
                 <Label htmlFor="name" className="block text-sm font-medium text-foreground/90">Full Name</Label>
@@ -184,7 +180,7 @@ export default function ContactSection() {
                 )}
               </div>
               
-              <SubmitButton />
+              <SubmitButton pending={isPending} />
             </form>
           </CardContent>
         </Card>
