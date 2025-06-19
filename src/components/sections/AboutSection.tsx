@@ -1,6 +1,7 @@
 
 import Link from 'next/link';
-import Image from 'next/image';
+// Import HTML Img instead of next/image for diagnostics
+// import Image from 'next/image';
 import Section from '@/components/common/Section';
 import { Button } from '@/components/ui/button';
 import { Download, Linkedin, Github, Briefcase, Cloud, Target } from 'lucide-react';
@@ -17,15 +18,24 @@ export default function AboutSection() {
       subtitle="Innovating at the Intersection of Code and Cloud"
     >
       <div className="grid md:grid-cols-5 gap-12 items-start">
-        <div className="md:col-span-2 relative aspect-square max-w-md mx-auto md:order-last">
+        <div className="md:col-span-2 relative aspect-square max-w-md mx-auto md:order-last border-2 border-red-500">
+          {/* Using standard img tag for diagnostics */}
+          <img
+            src="/profile-photo.png" 
+            alt="Mohammedh Muksith - Professional Portrait"
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            className="rounded-lg"
+          />
+          {/* 
           <Image
-            src="/public/profile_photo.png"
+            src="/profile-photo.png" // Assumes profile-photo.png is in the public folder
             alt="Mohammedh Muksith - Professional Portrait"
             layout="fill"
             objectFit="cover"
             className="rounded-lg"
-            priority={true}
+            priority={true} // Good for LCP images
           />
+          */}
         </div>
         <div className="md:col-span-3 space-y-6 text-left">
           <p className="text-lg text-foreground/90 leading-relaxed">
