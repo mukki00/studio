@@ -1,4 +1,5 @@
-import { Heart } from 'lucide-react';
+
+import { Hand } from 'lucide-react';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -10,7 +11,7 @@ export default function Footer() {
           &copy; {currentYear} Mohammedh Muksith. All rights reserved.
         </p>
         <p className="text-xs text-foreground/60 mt-2 flex items-center justify-center gap-1">
-          Made with <Heart className="w-4 h-4 text-red-500" /> using Next.js & Tailwind CSS.
+          Free Palestine <Hand className="w-4 h-4 text-green-500" />
         </p>
       </div>
     </footer>
