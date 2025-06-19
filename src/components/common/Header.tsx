@@ -7,6 +7,7 @@ import { Menu, X, User, Briefcase, FileText, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from '@/components/common/ThemeToggle';
 
 interface NavItem {
   href: string;
@@ -47,7 +48,6 @@ export default function Header() {
     e.preventDefault();
     const targetElement = document.querySelector(href);
     if (targetElement) {
-        // Adjust for header height if sticky, h-20 is 5rem or 80px
         const headerOffset = 80; 
         const elementPosition = targetElement.getBoundingClientRect().top;
         const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
@@ -72,15 +72,15 @@ export default function Header() {
           className={cn(
             "flex items-center gap-2 font-medium transition-colors",
             mobile
-              ? "w-full text-base px-3 py-3 rounded-md" // Mobile base
-              : "px-4 py-2 text-sm rounded-md", // Desktop base
+              ? "w-full text-base px-3 py-3 rounded-md"
+              : "px-4 py-2 text-sm rounded-md",
             activeSection === item.href.substring(1)
               ? mobile
-                ? "bg-accent text-accent-foreground font-semibold" // Active Mobile
-                : "bg-accent/10 text-accent font-semibold" // Active Desktop
+                ? "bg-accent text-accent-foreground font-semibold"
+                : "bg-accent/10 text-accent font-semibold"
               : mobile
-                ? "text-foreground hover:bg-accent/10 hover:text-accent" // Default Mobile
-                : "text-foreground hover:bg-accent/5 hover:text-accent" // Default Desktop
+                ? "text-foreground hover:bg-accent/10 hover:text-accent"
+                : "text-foreground hover:bg-accent/5 hover:text-accent"
           )}
           aria-current={activeSection === item.href.substring(1) ? 'page' : undefined}
         >
@@ -98,30 +98,36 @@ export default function Header() {
           <Link href="/" onClick={(e) => handleScrollTo(e, '#about')} className="text-2xl font-bold text-accent font-headline hover:opacity-80 transition-opacity">
             Mohammedh Muksith
           </Link>
-          <nav className="hidden md:flex space-x-1">
-            <NavLinks />
-          </nav>
-          <div className="md:hidden">
-            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-              <SheetTrigger asChild>
-                <Button variant="outline" size="icon" className="border-accent/50 text-accent hover:bg-accent/10">
-                  <Menu className="h-6 w-6" />
-                  <span className="sr-only">Open menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[280px] bg-card p-0">
-                <div className="flex justify-between items-center p-6 border-b border-border">
-                   <h2 className="text-xl font-bold text-accent font-headline">Menu</h2>
-                   <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(false)} className="text-accent hover:bg-accent/10">
-                     <X className="h-6 w-6" />
-                     <span className="sr-only">Close menu</span>
-                   </Button>
-                </div>
-                <nav className="flex flex-col space-y-1 p-4">
-                  <NavLinks mobile />
-                </nav>
-              </SheetContent>
-            </Sheet>
+          <div className="flex items-center gap-2">
+            <nav className="hidden md:flex space-x-1">
+              <NavLinks />
+            </nav>
+            <ThemeToggle className="hidden md:flex" />
+            <div className="md:hidden">
+              <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="icon" className="border-accent/50 text-accent hover:bg-accent/10">
+                    <Menu className="h-6 w-6" />
+                    <span className="sr-only">Open menu</span>
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-[280px] bg-card p-0">
+                  <div className="flex justify-between items-center p-6 border-b border-border">
+                     <h2 className="text-xl font-bold text-accent font-headline">Menu</h2>
+                     <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(false)} className="text-accent hover:bg-accent/10">
+                       <X className="h-6 w-6" />
+                       <span className="sr-only">Close menu</span>
+                     </Button>
+                  </div>
+                  <nav className="flex flex-col space-y-1 p-4">
+                    <NavLinks mobile />
+                    <div className="pt-4 border-t border-border mt-4">
+                       <ThemeToggle className="w-full flex justify-start"/>
+                    </div>
+                  </nav>
+                </SheetContent>
+              </Sheet>
+            </div>
           </div>
         </div>
       </div>
