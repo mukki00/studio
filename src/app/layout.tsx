@@ -8,7 +8,12 @@ export const metadata: Metadata = {
   title: 'Mohammedh Muksith | Personal Portfolio',
   description: 'A personal portfolio website showcasing projects, blog posts, and skills.',
   keywords: ['portfolio', 'personal website', 'developer', 'projects', 'blog'],
-  icons: null, // Explicitly disable favicon generation
+  icons: {
+    icon: '/favicon.png', // Path to your icon in the public folder
+    // You can also add other icon types:
+    // apple: '/apple-touch-icon.png',
+    // shortcut: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({
