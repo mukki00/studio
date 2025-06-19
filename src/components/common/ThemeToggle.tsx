@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -14,13 +15,20 @@ import {
 
 export function ThemeToggle({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { setTheme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <div className={className} {...props}>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="icon" className="border-accent/50 text-accent hover:bg-accent/10">
-            {resolvedTheme === "dark" ? (
+            {!mounted ? (
+              <Laptop className="h-[1.2rem] w-[1.2rem]" />
+            ) : resolvedTheme === "dark" ? (
               <Moon className="h-[1.2rem] w-[1.2rem]" />
             ) : (
               <Sun className="h-[1.2rem] w-[1.2rem]" />
