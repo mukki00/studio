@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: 'A personal portfolio website showcasing projects, blog posts, and skills.',
   keywords: ['portfolio', 'personal website', 'developer', 'projects', 'blog'],
   icons: {
-    icon: '/favicon.png', // Path to your icon in the public folder
+    icon: '/profile-photo.png', // Path to your icon in the public folder
     // You can also add other icon types:
     // apple: '/apple-touch-icon.png',
     // shortcut: '/favicon.ico',
