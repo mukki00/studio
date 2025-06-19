@@ -68,9 +68,11 @@ export default function AboutSection() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-start pt-4">
-            <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground">
-              <Download className="mr-2 h-5 w-5" />
-              Download CV
+            <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground">
+              <Link href="https://1drv.ms/b/c/7506968fd9c5a3a8/EaOGQTb_Np9FtH_eWtJggs8B1EZmwiMgBMHA_jTjBI4nYQ?e=0GJgCy" target="_blank" rel="noopener noreferrer">
+                <Download className="mr-2 h-5 w-5" />
+                Download CV
+              </Link>
             </Button>
             <div className="flex gap-4 justify-start">
               <Button asChild variant="outline" size="icon" aria-label="LinkedIn Profile">
