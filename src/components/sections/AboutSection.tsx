@@ -21,9 +21,10 @@ export default function AboutSection() {
           <Image
             src="/profile-photo.png"
             alt="Mohammedh Muksith - Professional Portrait"
-            width={600}
-            height={600}
-            className="rounded-lg object-cover"
+            width={448}
+            height={448}
+            className="rounded-lg object-cover w-full h-full"
+            priority
           />
            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         </div>
