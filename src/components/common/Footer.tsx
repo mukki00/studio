@@ -8,12 +8,12 @@ export default function Footer() {
         <p className="text-sm text-foreground/80 flex items-center justify-center">
           &copy; {currentYear} Mohammedh Muksith. All rights reserved.
         </p>
-        <p className="text-xs text-foreground/60 mt-2 flex items-center justify-center gap-1.5">
+        <p className="text-sm text-foreground/70 mt-3 flex items-center justify-center gap-2">
           Free Palestine
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 200 100"
-            className="w-6 h-6 rounded-sm"
+            className="w-7 h-7 rounded-sm"
             aria-hidden="true"
             focusable="false"
           >
