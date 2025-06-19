@@ -19,12 +19,11 @@ export default function AboutSection() {
       <div className="grid md:grid-cols-5 gap-12 items-start">
         <div className="md:col-span-2 relative aspect-square max-w-md mx-auto md:order-last group overflow-hidden rounded-lg shadow-xl transform transition-all duration-500 hover:scale-105">
           <Image
-            src="https://placehold.co/600x600.png"
+            src="/profile-photo.png"
             alt="Mohammedh Muksith - Professional Portrait"
             width={600}
             height={600}
             className="rounded-lg object-cover"
-            data-ai-hint="professional portrait"
           />
            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         </div>
