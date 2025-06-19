@@ -3,7 +3,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'Personal Portfolio+ | Your Name',
+  title: 'Personal Portfolio+ | Mohammedh Muksith',
   description: 'A personal portfolio website showcasing projects, blog posts, and skills.',
   keywords: ['portfolio', 'personal website', 'developer', 'projects', 'blog'],
 };

@@ -5,8 +5,8 @@ import { Download, Linkedin, Github } from 'lucide-react';
 
 export default function AboutSection() {
   return (
-    <Section 
-      id="about" 
+    <Section
+      id="about"
       title="About Me"
       subtitle="A Glimpse into My World and Professional Journey"
     >
@@ -14,7 +14,7 @@ export default function AboutSection() {
         <div className="relative aspect-square max-w-md mx-auto md:order-last group overflow-hidden rounded-lg shadow-xl transform transition-all duration-500 hover:scale-105">
           <Image
             src="https://placehold.co/600x600.png"
-            alt="Your Name - Professional Portrait"
+            alt="Mohammedh Muksith - Professional Portrait"
             width={600}
             height={600}
             className="rounded-lg object-cover"
@@ -24,7 +24,7 @@ export default function AboutSection() {
         </div>
         <div className="space-y-6 text-center md:text-left">
           <p className="text-lg text-foreground/90 leading-relaxed">
-            Hello! I&apos;m [Your Name], a passionate and results-driven [Your Profession/Title] with a knack for creating elegant and efficient solutions. My journey in tech has been fueled by a relentless curiosity and a desire to build things that make a difference.
+            Hello! I&apos;m Muksith, a passionate and results-driven [Your Profession/Title] with a knack for creating elegant and efficient solutions. My journey in tech has been fueled by a relentless curiosity and a desire to build things that make a difference.
           </p>
           <p className="text-lg text-foreground/90 leading-relaxed">
             With experience in [mention key skills/technologies like React, Next.js, Node.js, etc.], I thrive in collaborative environments and enjoy tackling complex challenges. When I&apos;m not coding, you can find me [mention a hobby or interest].
