@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -5,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { Menu, X, User, Briefcase, FileText, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { cn } from "@/lib/utils";
 
 interface NavItem {
   href: string;
@@ -32,7 +34,7 @@ export default function Header() {
           }
         });
       },
-      { threshold: 0.3 } // Adjust threshold as needed
+      { threshold: 0.3 } 
     );
 
     const sections = document.querySelectorAll('section[id]');
@@ -43,8 +45,18 @@ export default function Header() {
   
   const handleScrollTo = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
-    document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
-    setIsMobileMenuOpen(false); // Close mobile menu on navigation
+    const targetElement = document.querySelector(href);
+    if (targetElement) {
+        // Adjust for header height if sticky, h-20 is 5rem or 80px
+        const headerOffset = 80; 
+        const elementPosition = targetElement.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+      
+        window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth"
+        });
+    }
   };
 
   const NavLinks = ({ mobile = false }: { mobile?: boolean }) => (
@@ -53,12 +65,23 @@ export default function Header() {
         <Link
           key={item.label}
           href={item.href}
-          onClick={(e) => handleScrollTo(e, item.href)}
-          className={`
-            flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors
-            ${activeSection === item.href.substring(1) ? 'bg-primary/20 text-accent' : 'text-foreground hover:text-accent hover:bg-primary/10'}
-            ${mobile ? 'w-full text-base' : ''}
-          `}
+          onClick={(e) => { 
+            handleScrollTo(e, item.href);
+            if (mobile) setIsMobileMenuOpen(false);
+          }}
+          className={cn(
+            "flex items-center gap-2 font-medium transition-colors",
+            mobile
+              ? "w-full text-base px-3 py-3 rounded-md" // Mobile base
+              : "px-4 py-2 text-sm rounded-md", // Desktop base
+            activeSection === item.href.substring(1)
+              ? mobile
+                ? "bg-accent text-accent-foreground font-semibold" // Active Mobile
+                : "bg-accent/10 text-accent font-semibold" // Active Desktop
+              : mobile
+                ? "text-foreground hover:bg-accent/10 hover:text-accent" // Default Mobile
+                : "text-foreground hover:bg-accent/5 hover:text-accent" // Default Desktop
+          )}
           aria-current={activeSection === item.href.substring(1) ? 'page' : undefined}
         >
           <item.icon className="h-5 w-5" />
@@ -69,32 +92,32 @@ export default function Header() {
   );
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-md shadow-sm">
+    <header className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-md shadow-md border-b border-border/50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          <Link href="/" onClick={(e) => handleScrollTo(e, '#about')} className="text-2xl font-bold text-accent font-headline">
+          <Link href="/" onClick={(e) => handleScrollTo(e, '#about')} className="text-2xl font-bold text-accent font-headline hover:opacity-80 transition-opacity">
             Mohammedh Muksith
           </Link>
-          <nav className="hidden md:flex space-x-2">
+          <nav className="hidden md:flex space-x-1">
             <NavLinks />
           </nav>
           <div className="md:hidden">
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <Menu className="h-6 w-6 text-accent" />
+                <Button variant="outline" size="icon" className="border-accent/50 text-accent hover:bg-accent/10">
+                  <Menu className="h-6 w-6" />
                   <span className="sr-only">Open menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[280px] bg-background p-6">
-                <div className="flex justify-between items-center mb-6">
+              <SheetContent side="right" className="w-[280px] bg-card p-0">
+                <div className="flex justify-between items-center p-6 border-b border-border">
                    <h2 className="text-xl font-bold text-accent font-headline">Menu</h2>
-                   <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(false)}>
-                     <X className="h-6 w-6 text-accent" />
+                   <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(false)} className="text-accent hover:bg-accent/10">
+                     <X className="h-6 w-6" />
                      <span className="sr-only">Close menu</span>
                    </Button>
                 </div>
-                <nav className="flex flex-col space-y-3">
+                <nav className="flex flex-col space-y-1 p-4">
                   <NavLinks mobile />
                 </nav>
               </SheetContent>
