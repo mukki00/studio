@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useActionState } from 'react';
@@ -75,11 +76,9 @@ export default function ContactSection() {
     }
   }, [state, toast, form]);
   
-  // Set form errors from server action
   useEffect(() => {
     if (state.issues) {
       state.issues.forEach(issue => {
-        // This mapping is simplistic. A more robust solution might involve parsing issue.path
         const fieldName = issue.toLowerCase().includes("name") ? "name" :
                           issue.toLowerCase().includes("email") ? "email" :
                           issue.toLowerCase().includes("phone") ? "phoneNumber" :
@@ -89,8 +88,27 @@ export default function ContactSection() {
         }
       });
     }
-  }, [state.issues, form]);
+    if (state.fields) {
+       // This part is for repopulating fields on server-side validation error,
+       // which react-hook-form usually handles, but good for full state sync.
+       Object.entries(state.fields).forEach(([key, value]) => {
+         form.setValue(key as keyof ContactFormData, value);
+       });
+    }
+  }, [state.issues, state.fields, form]);
 
+  const handleValidSubmit = (validatedData: ContactFormData) => {
+    const formData = new FormData();
+    Object.entries(validatedData).forEach(([key, value]) => {
+      // Ensure value is not null/undefined before appending.
+      // FormData expects string values, or File/Blob.
+      // Optional fields might be undefined.
+      if (value !== undefined && value !== null) {
+        formData.append(key, String(value));
+      }
+    });
+    formAction(formData);
+  };
 
   return (
     <Section 
@@ -108,7 +126,8 @@ export default function ContactSection() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form action={formAction} onSubmit={form.handleSubmit(() => formAction(new FormData(form.control._formRef.current!)))} className="space-y-6">
+            {/* The `action` prop is removed from the form. `onSubmit` now handles calling `formAction`. */}
+            <form onSubmit={form.handleSubmit(handleValidSubmit)} className="space-y-6">
               <div>
                 <Label htmlFor="name" className="block text-sm font-medium text-foreground/90">Full Name</Label>
                 <Input
