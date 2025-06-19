@@ -1,8 +1,9 @@
 
 import Image from 'next/image';
+import Link from 'next/link';
 import Section from '@/components/common/Section';
 import { Button } from '@/components/ui/button';
-import { Download, Linkedin, Github, Briefcase, Cloud, Target, Brain } from 'lucide-react';
+import { Download, Linkedin, Github, Briefcase, Cloud, Target } from 'lucide-react';
 
 export default function AboutSection() {
   const coreTechnologies = ["Angular", "React", "Vue", "Node.js", "Spring Boot", "PHP (Laravel)", "GraphQL", "Docker", "AWS", "Azure", "SQL", "WebLogic"];
@@ -29,7 +30,7 @@ export default function AboutSection() {
         </div>
         <div className="md:col-span-3 space-y-6 text-left">
           <p className="text-lg text-foreground/90 leading-relaxed">
-            Hello! I&apos;m Muksith. As a Tech Lead with over 6 years of hands-on experience, I specialize in building scalable, enterprise-grade software across cloud-native and hybrid environments. My expertise spans modern front-end frameworks like Angular, React, and Vue, as well as robust back-end systems using Node.js, Spring Boot, and Laravel.
+            As a Tech Lead with over 6 years of hands-on experience, I specialize in building scalable, enterprise-grade software across cloud-native and hybrid environments. My expertise spans modern front-end frameworks like Angular, React, and Vue, as well as robust back-end systems using Node.js, Spring Boot, and Laravel.
           </p>
           <p className="text-lg text-foreground/90 leading-relaxed">
             I’ve led high-performing teams, driven Agile delivery, and translated complex business requirements into modern architecture solutions that balance performance, security, and maintainability.
@@ -72,8 +73,10 @@ export default function AboutSection() {
               Download CV
             </Button>
             <div className="flex gap-4 justify-start">
-              <Button variant="outline" size="icon" aria-label="LinkedIn Profile">
-                <Linkedin className="h-5 w-5 text-accent" />
+              <Button asChild variant="outline" size="icon" aria-label="LinkedIn Profile">
+                <Link href="https://www.linkedin.com/in/mukki00" target="_blank" rel="noopener noreferrer">
+                  <Linkedin className="h-5 w-5 text-accent" />
+                </Link>
               </Button>
               <Button variant="outline" size="icon" aria-label="GitHub Profile">
                 <Github className="h-5 w-5 text-accent" />
