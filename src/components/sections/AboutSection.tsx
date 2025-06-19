@@ -19,7 +19,7 @@ export default function AboutSection() {
       <div className="grid md:grid-cols-5 gap-12 items-start">
         <div className="md:col-span-2 relative aspect-square max-w-md mx-auto md:order-last">
           <Image
-            src="/profile-photo.png"
+            src="/public/profile_photo.png"
             alt="Mohammedh Muksith - Professional Portrait"
             layout="fill"
             objectFit="cover"
