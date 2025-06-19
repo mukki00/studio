@@ -7,7 +7,7 @@ import BlogSection from '@/components/sections/BlogSection';
 import ContactSection from '@/components/sections/ContactSection';
 
 export const metadata: Metadata = {
-  title: 'Personal Portfolio+ | Home',
+  title: 'Mohammedh Muksith | Home',
   description: 'Welcome to my personal portfolio. Discover my projects, read my blog, and get in touch.',
 };
 
