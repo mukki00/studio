@@ -9,78 +9,97 @@ body {
 
 @layer base {
   :root {
-    --background: 210 33% 96%; /* Very light grayish-blue (#F0F4F8) */
-    --foreground: 210 20% 25%; /* Dark blue-gray for text */
-    --card: 210 33% 98%; /* Slightly lighter than background, almost white with a hint of blue */
-    --card-foreground: 210 20% 25%;
-    --popover: 210 33% 98%;
-    --popover-foreground: 210 20% 25%;
-    --primary: 205 27% 67%; /* Light grayish-blue (#90AFC5) */
-    --primary-foreground: 210 33% 98%; /* Very light text on primary */
-    --secondary: 205 25% 75%; /* A lighter shade of primary */
-    --secondary-foreground: 205 20% 30%; /* Darker text for secondary elements */
-    --muted: 210 25% 88%; /* Light grayish-blue for muted elements */
-    --muted-foreground: 210 20% 50%; /* Medium grayish-blue for muted text */
-    --accent: 207 23% 46%; /* Slightly darker desaturated blue (#5A778D) */
-    --accent-foreground: 210 33% 98%; /* Very light text on accent */
-    --destructive: 0 70% 55%; /* Standard red for destructive actions */
-    --destructive-foreground: 0 0% 98%;
-    --border: 205 25% 80%; /* Light grayish-blue border */
-    --input: 205 25% 92%; /* Very light grayish-blue input background */
-    --ring: 207 23% 46%; /* Accent color for focus rings */
-    --chart-1: 205 27% 67%; /* Chart color 1 (Primary) */
-    --chart-2: 207 23% 46%; /* Chart color 2 (Accent) */
-    --chart-3: 205 25% 55%; /* Chart color 3 (Darker primary/related blue) */
-    --chart-4: 210 30% 60%; /* Chart color 4 (A slightly different blue tone) */
-    --chart-5: 195 30% 70%; /* Chart color 5 (A lighter, slightly cyan-tinted blue) */
+    --background: 210 17% 98%; /* New: Very light cool gray (near white #F8F9FA) */
+    --foreground: 210 10% 23%; /* New: Dark gray for text (#343A40) */
+    
+    --card: 0 0% 100%; /* New: White */
+    --card-foreground: 210 10% 23%; /* Match foreground */
+    
+    --popover: 0 0% 100%; /* New: White */
+    --popover-foreground: 210 10% 23%; /* Match foreground */
+    
+    --primary: 217 98% 52%; /* New: Vibrant Blue (#0D6EFD) */
+    --primary-foreground: 0 0% 100%; /* New: White */
+    
+    --secondary: 217 95% 75%; /* New: Lighter Blue */
+    --secondary-foreground: 210 10% 23%; /* New: Dark text on lighter blue */
+    
+    --muted: 210 15% 90%; /* New: Light Gray */
+    --muted-foreground: 210 10% 45%; /* New: Medium Gray for muted text */
+    
+    --accent: 261 52% 51%; /* New: Muted Purple (#6F42C1) */
+    --accent-foreground: 0 0% 100%; /* New: White */
+    
+    --destructive: 0 84% 60%; /* New: Modern vibrant red (#FF3B30) */
+    --destructive-foreground: 0 0% 100%; /* White */
+    
+    --border: 210 15% 88%; /* New: Light Gray Border */
+    --input: 210 16% 94%; /* New: Very Light Gray Input Background */
+    --ring: 217 98% 52%; /* New: Primary blue for focus rings */
+    
+    --chart-1: 217 98% 52%; /* Primary Blue */
+    --chart-2: 261 52% 51%; /* Accent Purple */
+    --chart-3: 35 90% 60%;  /* Orange */
+    --chart-4: 150 60% 50%; /* Green/Teal */
+    --chart-5: 200 80% 65%; /* Light Blue/Cyan */
+    
     --radius: 0.5rem;
 
-    /* Sidebar specific variables */
-    --sidebar-background: 210 33% 94%; /* Slightly darker than main background */
-    --sidebar-foreground: 210 20% 25%; /* Same as main foreground */
-    --sidebar-primary: 205 27% 67%; /* Same as main primary */
-    --sidebar-primary-foreground: 210 33% 98%; /* Same as main primary-foreground */
-    --sidebar-accent: 207 23% 46%; /* Same as main accent */
-    --sidebar-accent-foreground: 210 33% 98%; /* Same as main accent-foreground */
-    --sidebar-border: 205 25% 75%; /* Slightly darker border for sidebar */
-    --sidebar-ring: 207 23% 46%; /* Same as main ring */
+    /* Sidebar specific variables - Light Theme */
+    --sidebar-background: 210 20% 95%; /* Slightly different from main BG */
+    --sidebar-foreground: 210 10% 23%;
+    --sidebar-primary: 217 98% 52%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 261 52% 51%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 210 15% 85%;
+    --sidebar-ring: 217 98% 52%;
   }
 
   .dark {
-    --background: 210 20% 15%; /* Dark blue-gray */
-    --foreground: 210 30% 90%; /* Light blue-gray text */
-    --card: 210 20% 20%; /* Slightly lighter than dark background */
-    --card-foreground: 210 30% 90%;
-    --popover: 210 20% 20%;
-    --popover-foreground: 210 30% 90%;
-    --primary: 205 27% 67%; /* Light grayish-blue (#90AFC5) - consistent with light */
-    --primary-foreground: 210 20% 10%; /* Darker text for primary in dark mode */
-    --secondary: 205 20% 30%; /* Darker shade of primary for dark mode */
-    --secondary-foreground: 205 25% 80%; /* Lighter text for dark secondary */
-    --muted: 210 20% 25%; /* Dark, desaturated blue-gray */
-    --muted-foreground: 210 25% 70%; /* Medium-light blue-gray text */
-    --accent: 207 23% 55%; /* Slightly brighter accent for dark mode */
-    --accent-foreground: 210 20% 10%; /* Darker text for accent in dark mode */
-    --destructive: 0 60% 50%; /* Standard red, slightly desaturated */
+    --background: 220 15% 10%; /* New: Very Dark Blue/Gray (#161B22) */
+    --foreground: 210 17% 90%; /* New: Light Grayish Text (#DDE1E6) */
+    
+    --card: 220 15% 15%; /* New: Darker Card Background (#1F242C) */
+    --card-foreground: 210 17% 90%;
+    
+    --popover: 220 15% 15%;
+    --popover-foreground: 210 17% 90%;
+    
+    --primary: 217 98% 56%; /* New: Primary Blue, slightly lightened for dark BG (#257AFD) */
+    --primary-foreground: 0 0% 100%; 
+    
+    --secondary: 217 80% 40%; /* New: Darker, less saturated blue for secondary */
+    --secondary-foreground: 210 17% 85%; /* Lighter text for dark secondary */
+    
+    --muted: 220 10% 30%; /* New: Medium Dark Gray (#424953) */
+    --muted-foreground: 210 15% 70%; /* New: Medium Light Gray Text */
+    
+    --accent: 261 52% 58%; /* New: Accent Purple, slightly lightened for dark BG (#835FD3) */
+    --accent-foreground: 0 0% 100%;
+    
+    --destructive: 0 70% 50%; /* New: Red for dark mode, slightly less intense (#D93030) */
     --destructive-foreground: 0 0% 98%;
-    --border: 205 20% 35%; /* Dark blue-gray border */
-    --input: 210 20% 22%; /* Dark blue-gray input background */
-    --ring: 207 23% 55%; /* Accent color for focus rings in dark mode */
-    --chart-1: 205 27% 67%;
-    --chart-2: 207 23% 55%;
-    --chart-3: 205 25% 45%;
-    --chart-4: 210 30% 50%;
-    --chart-5: 195 30% 60%;
+    
+    --border: 220 10% 25%; /* New: Darker Border (#343A40) */
+    --input: 220 10% 20%; /* New: Darker Input Background (#2B3037) */
+    --ring: 217 98% 56%; /* New: Dark mode primary for focus rings */
+    
+    --chart-1: 217 98% 60%;
+    --chart-2: 261 52% 60%;
+    --chart-3: 35 90% 65%;
+    --chart-4: 150 60% 55%;
+    --chart-5: 200 80% 70%;
 
     /* Dark Theme Sidebar specific variables */
-    --sidebar-background: 210 20% 12%; /* Even darker than main dark background */
-    --sidebar-foreground: 210 30% 90%; /* Same as main dark foreground */
-    --sidebar-primary: 205 27% 67%; /* Same as main primary */
-    --sidebar-primary-foreground: 210 20% 10%; /* Same as main primary-foreground for dark */
-    --sidebar-accent: 207 23% 55%; /* Same as main accent for dark */
-    --sidebar-accent-foreground: 210 20% 10%; /* Same as main accent-foreground for dark */
-    --sidebar-border: 205 20% 28%; /* Darker border for sidebar */
-    --sidebar-ring: 207 23% 55%; /* Same as main ring for dark */
+    --sidebar-background: 220 15% 8%; /* Even darker than main dark BG */
+    --sidebar-foreground: 210 17% 90%;
+    --sidebar-primary: 217 98% 56%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 261 52% 58%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 220 10% 20%;
+    --sidebar-ring: 217 98% 56%;
   }
 }
 
@@ -112,5 +131,3 @@ body {
   font-family: serif;
   margin: 0 0.1em;
 }
-
-
