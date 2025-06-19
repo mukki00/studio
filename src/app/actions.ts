@@ -1,3 +1,4 @@
+
 'use server';
 
 import { z } from 'zod';
@@ -23,16 +24,21 @@ const MONGODB_URI = process.env.MONGODB_URI;
 const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME;
 const MONGODB_CONTACT_COLLECTION = process.env.MONGODB_CONTACT_COLLECTION;
 
+if (!MONGODB_URI || !MONGODB_DB_NAME || !MONGODB_CONTACT_COLLECTION) {
+  console.error("FATAL ERROR: MongoDB environment variables (MONGODB_URI, MONGODB_DB_NAME, MONGODB_CONTACT_COLLECTION) are not set.");
+  console.error("Please create a .env.local file in the project root and add these variables with your MongoDB connection details.");
+}
+
 let client: MongoClient | null = null;
 // @ts-ignore
 let clientPromise: Promise<MongoClient> | null = global._mongoClientPromise || null;
 
 async function getMongoClient(): Promise<MongoClient> {
   if (!MONGODB_URI) {
-    throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
+    throw new Error('Critical: MONGODB_URI environment variable is not defined. Check your .env.local file.');
   }
   if (!MONGODB_DB_NAME) {
-    throw new Error('Please define the MONGODB_DB_NAME environment variable inside .env.local');
+    throw new Error('Critical: MONGODB_DB_NAME environment variable is not defined. Check your .env.local file.');
   }
 
   if (!clientPromise) {
@@ -45,8 +51,6 @@ async function getMongoClient(): Promise<MongoClient> {
     });
     clientPromise = client.connect();
     if (process.env.NODE_ENV === 'development') {
-      // In development mode, use a global variable so that the MongoClient instance
-      // is preserved across module reloads caused by HMR (Hot Module Replacement).
       // @ts-ignore
       global._mongoClientPromise = clientPromise;
     }
@@ -71,9 +75,10 @@ export async function submitContactForm(
   }
 
   if (!MONGODB_URI || !MONGODB_DB_NAME || !MONGODB_CONTACT_COLLECTION) {
-    console.error("MongoDB environment variables are not set. Please create a .env.local file with MONGODB_URI, MONGODB_DB_NAME, and MONGODB_CONTACT_COLLECTION.");
+    // This server-side log is for developers. The user gets a generic error.
+    console.error("MongoDB environment variables are not properly set. Cannot submit form to database.");
     return {
-      message: "Server configuration error. Please contact support.",
+      message: "Server configuration error. Please contact support if this issue persists.",
       success: false,
     };
   }
@@ -106,7 +111,7 @@ export async function submitContactForm(
             errorMessage = "Database connection was lost. Please try again.";
              // @ts-ignore
             if (process.env.NODE_ENV === 'development') global._mongoClientPromise = null;
-            clientPromise = null;
+            clientPromise = null; // Reset promise to allow re-connection attempt
         }
     }
     return {
