@@ -15,27 +15,22 @@ export default function AboutSection() {
     <Section
       id="about"
       title="About Me"
-      subtitle="Innovating at the Intersection of Code and Cloud"
+      // subtitle="“Building Tomorrow’s Software, Today”"
     >
+      <blockquote className="highlight-quote">
+        <span className="quote-mark">“</span>
+        Building Tomorrow’s Software, Today
+        <span className="quote-mark">”</span>
+      </blockquote>
       <div className="grid md:grid-cols-5 gap-12 items-start">
-        <div className="md:col-span-2 relative aspect-square max-w-md mx-auto md:order-last border-2 border-red-500">
+        <div className="md:col-span-2 relative aspect-square max-w-md mx-auto md:order-last">
           {/* Using standard img tag for diagnostics */}
           <img
-            src="/profile-photo.png" 
+            src="../../profile_photo.png" // Adjust path as necessary
             alt="Mohammedh Muksith - Professional Portrait"
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             className="rounded-lg"
           />
-          {/* 
-          <Image
-            src="/profile-photo.png" // Assumes profile-photo.png is in the public folder
-            alt="Mohammedh Muksith - Professional Portrait"
-            layout="fill"
-            objectFit="cover"
-            className="rounded-lg"
-            priority={true} // Good for LCP images
-          />
-          */}
         </div>
         <div className="md:col-span-3 space-y-6 text-left">
           <p className="text-lg text-foreground/90 leading-relaxed">
