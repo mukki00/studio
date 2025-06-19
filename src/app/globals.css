@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8,76 +9,78 @@ body {
 
 @layer base {
   :root {
-    --background: 120 30% 95%; /* Very light green */
-    --foreground: 120 25% 25%; /* Dark green-gray for text */
-    --card: 120 30% 98%; /* Even lighter green, almost off-white */
-    --card-foreground: 120 25% 25%;
-    --popover: 120 30% 98%;
-    --popover-foreground: 120 25% 25%;
-    --primary: 130 45% 55%; /* Medium natural green */
-    --primary-foreground: 120 50% 98%; /* Very light text on primary */
-    --secondary: 130 40% 75%; /* Lighter shade of primary green */
-    --secondary-foreground: 130 30% 25%; /* Dark text for secondary elements */
-    --muted: 120 25% 85%; /* Light gray-green for muted elements */
-    --muted-foreground: 120 20% 50%; /* Medium gray-green for muted text */
-    --accent: 140 50% 45%; /* Vibrant green for accents */
-    --accent-foreground: 120 50% 98%; /* Very light text on accent */
-    --destructive: 0 84.2% 60.2%; /* Standard red for destructive actions */
+    --background: 210 33% 96%; /* Very light grayish-blue (#F0F4F8) */
+    --foreground: 210 20% 25%; /* Dark blue-gray for text */
+    --card: 210 33% 98%; /* Slightly lighter than background, almost white with a hint of blue */
+    --card-foreground: 210 20% 25%;
+    --popover: 210 33% 98%;
+    --popover-foreground: 210 20% 25%;
+    --primary: 205 27% 67%; /* Light grayish-blue (#90AFC5) */
+    --primary-foreground: 210 33% 98%; /* Very light text on primary */
+    --secondary: 205 25% 75%; /* A lighter shade of primary */
+    --secondary-foreground: 205 20% 30%; /* Darker text for secondary elements */
+    --muted: 210 25% 88%; /* Light grayish-blue for muted elements */
+    --muted-foreground: 210 20% 50%; /* Medium grayish-blue for muted text */
+    --accent: 207 23% 46%; /* Slightly darker desaturated blue (#5A778D) */
+    --accent-foreground: 210 33% 98%; /* Very light text on accent */
+    --destructive: 0 70% 55%; /* Standard red for destructive actions */
     --destructive-foreground: 0 0% 98%;
-    --border: 130 40% 80%; /* Light green border */
-    --input: 130 40% 90%; /* Very light green input background */
-    --ring: 130 45% 55%; /* Primary green for focus rings */
-    --chart-1: 130 45% 55%; /* Chart color 1 (primary green) */
-    --chart-2: 140 50% 45%; /* Chart color 2 (accent green) */
-    --chart-3: 130 40% 35%; /* Chart color 3 (darker green) */
-    --chart-4: 150 45% 50%; /* Chart color 4 (teal-ish green) */
-    --chart-5: 100 45% 60%; /* Chart color 5 (lime green) */
+    --border: 205 25% 80%; /* Light grayish-blue border */
+    --input: 205 25% 92%; /* Very light grayish-blue input background */
+    --ring: 207 23% 46%; /* Accent color for focus rings */
+    --chart-1: 205 27% 67%; /* Chart color 1 (Primary) */
+    --chart-2: 207 23% 46%; /* Chart color 2 (Accent) */
+    --chart-3: 205 25% 55%; /* Chart color 3 (Darker primary/related blue) */
+    --chart-4: 210 30% 60%; /* Chart color 4 (A slightly different blue tone) */
+    --chart-5: 195 30% 70%; /* Chart color 5 (A lighter, slightly cyan-tinted blue) */
     --radius: 0.5rem;
 
     /* Sidebar specific variables */
-    --sidebar-background: 120 30% 92%; /* Slightly darker green than main background */
-    --sidebar-foreground: 120 25% 25%; /* Same as main foreground */
-    --sidebar-primary: 130 45% 55%; /* Same as main primary */
-    --sidebar-primary-foreground: 120 50% 98%; /* Same as main primary-foreground */
-    --sidebar-accent: 140 50% 45%; /* Same as main accent */
-    --sidebar-accent-foreground: 120 50% 98%; /* Same as main accent-foreground */
-    --sidebar-border: 130 40% 75%; /* Slightly darker green border for sidebar */
-    --sidebar-ring: 130 45% 55%; /* Same as main ring */
+    --sidebar-background: 210 33% 94%; /* Slightly darker than main background */
+    --sidebar-foreground: 210 20% 25%; /* Same as main foreground */
+    --sidebar-primary: 205 27% 67%; /* Same as main primary */
+    --sidebar-primary-foreground: 210 33% 98%; /* Same as main primary-foreground */
+    --sidebar-accent: 207 23% 46%; /* Same as main accent */
+    --sidebar-accent-foreground: 210 33% 98%; /* Same as main accent-foreground */
+    --sidebar-border: 205 25% 75%; /* Slightly darker border for sidebar */
+    --sidebar-ring: 207 23% 46%; /* Same as main ring */
   }
 
   .dark {
-    --background: 120 25% 15%; /* Dark slate green */
-    --foreground: 120 30% 90%; /* Light green-tinted white for text */
-    --card: 120 25% 20%; /* Slightly lighter than dark background */
-    --card-foreground: 120 30% 90%;
-    --popover: 120 25% 20%;
-    --popover-foreground: 120 30% 90%;
-    --primary: 130 45% 55%; /* Medium natural green (same as light) */
-    --primary-foreground: 120 50% 98%; /* Very light text on primary */
-    --secondary: 130 30% 30%; /* Darker green for secondary elements */
-    --secondary-foreground: 120 30% 85%; /* Lighter text for dark secondary */
-    --muted: 120 20% 25%; /* Dark, desaturated green for muted elements */
-    --muted-foreground: 120 25% 70%; /* Medium-light green-tinted gray for muted text */
-    --accent: 140 50% 45%; /* Vibrant green for accents (same as light) */
-    --accent-foreground: 120 50% 98%; /* Very light text on accent */
-    --destructive: 0 72.2% 50.6%; /* Standard red for destructive actions */
+    --background: 210 20% 15%; /* Dark blue-gray */
+    --foreground: 210 30% 90%; /* Light blue-gray text */
+    --card: 210 20% 20%; /* Slightly lighter than dark background */
+    --card-foreground: 210 30% 90%;
+    --popover: 210 20% 20%;
+    --popover-foreground: 210 30% 90%;
+    --primary: 205 27% 67%; /* Light grayish-blue (#90AFC5) - consistent with light */
+    --primary-foreground: 210 20% 10%; /* Darker text for primary in dark mode */
+    --secondary: 205 20% 30%; /* Darker shade of primary for dark mode */
+    --secondary-foreground: 205 25% 80%; /* Lighter text for dark secondary */
+    --muted: 210 20% 25%; /* Dark, desaturated blue-gray */
+    --muted-foreground: 210 25% 70%; /* Medium-light blue-gray text */
+    --accent: 207 23% 55%; /* Slightly brighter accent for dark mode */
+    --accent-foreground: 210 20% 10%; /* Darker text for accent in dark mode */
+    --destructive: 0 60% 50%; /* Standard red, slightly desaturated */
     --destructive-foreground: 0 0% 98%;
-    --border: 130 30% 35%; /* Dark green border */
-    --input: 130 30% 25%; /* Dark green input background */
-    --ring: 130 45% 55%; /* Primary green for focus rings */
-    --chart-1: 130 45% 55%;
-    --chart-2: 140 50% 45%;
-    /* Chart colors can be adjusted for dark theme if needed */
+    --border: 205 20% 35%; /* Dark blue-gray border */
+    --input: 210 20% 22%; /* Dark blue-gray input background */
+    --ring: 207 23% 55%; /* Accent color for focus rings in dark mode */
+    --chart-1: 205 27% 67%;
+    --chart-2: 207 23% 55%;
+    --chart-3: 205 25% 45%;
+    --chart-4: 210 30% 50%;
+    --chart-5: 195 30% 60%;
 
     /* Dark Theme Sidebar specific variables */
-    --sidebar-background: 120 25% 10%; /* Even darker green than main dark background */
-    --sidebar-foreground: 120 30% 90%; /* Same as main dark foreground */
-    --sidebar-primary: 130 45% 55%; /* Same as main primary */
-    --sidebar-primary-foreground: 120 50% 98%; /* Same as main primary-foreground */
-    --sidebar-accent: 140 50% 45%; /* Same as main accent */
-    --sidebar-accent-foreground: 120 50% 98%; /* Same as main accent-foreground */
-    --sidebar-border: 130 30% 25%; /* Darker green border for sidebar */
-    --sidebar-ring: 130 45% 55%; /* Same as main ring */
+    --sidebar-background: 210 20% 12%; /* Even darker than main dark background */
+    --sidebar-foreground: 210 30% 90%; /* Same as main dark foreground */
+    --sidebar-primary: 205 27% 67%; /* Same as main primary */
+    --sidebar-primary-foreground: 210 20% 10%; /* Same as main primary-foreground for dark */
+    --sidebar-accent: 207 23% 55%; /* Same as main accent for dark */
+    --sidebar-accent-foreground: 210 20% 10%; /* Same as main accent-foreground for dark */
+    --sidebar-border: 205 20% 28%; /* Darker border for sidebar */
+    --sidebar-ring: 207 23% 55%; /* Same as main ring for dark */
   }
 }
 
