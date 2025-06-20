@@ -9,105 +9,101 @@ body {
 
 @layer base {
   :root {
-    --background: 210 17% 98%; /* Very light cool gray (near white #F8F9FA) */
-    --foreground: 210 10% 23%; /* Dark gray for text (#343A40) */
+    --background: 207 26% 95%; /* HSL for #F0F4F8 */
+    --foreground: 0 0% 20%; /* HSL for #333333 */
     
-    --card: 0 0% 100%; /* White */
-    --card-foreground: 210 10% 23%; /* Match foreground */
+    --card: 0 0% 100%; 
+    --card-foreground: 0 0% 20%;
     
-    --popover: 0 0% 100%; /* White */
-    --popover-foreground: 210 10% 23%; /* Match foreground */
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 20%;
     
-    --primary: 217 98% 52%; /* Vibrant Blue (#0D6EFD) */
-    --primary-foreground: 0 0% 100%; /* White */
+    --primary: 211 100% 40%; /* HSL for #0052CC */
+    --primary-foreground: 0 0% 100%;
     
-    --secondary: 217 95% 75%; /* Lighter Blue */
-    --secondary-foreground: 210 10% 23%; /* Dark text on lighter blue */
+    --secondary: 217 95% 75%; 
+    --secondary-foreground: 0 0% 20%;
     
-    --muted: 210 15% 90%; /* Light Gray */
-    --muted-foreground: 210 10% 45%; /* Medium Gray for muted text */
+    --muted: 210 15% 90%; 
+    --muted-foreground: 210 10% 45%; 
     
-    --accent: 261 52% 51%; /* Muted Purple (#6F42C1) */
-    --accent-foreground: 0 0% 100%; /* White */
+    --accent: 206 100% 50%; /* HSL for #008CFF */
+    --accent-foreground: 0 0% 100%;
     
-    --destructive: 0 84% 60%; /* Modern vibrant red (#FF3B30) */
-    --destructive-foreground: 0 0% 100%; /* White */
+    --destructive: 0 84% 60%; 
+    --destructive-foreground: 0 0% 100%;
     
-    --border: 210 15% 88%; /* Light Gray Border */
-    --input: 210 16% 94%; /* Very Light Gray Input Background */
-    --ring: 217 98% 52%; /* Primary blue for focus rings */
+    --border: 210 15% 88%; 
+    --input: 210 16% 94%; 
+    --ring: 211 100% 40%; /* Primary for focus rings */
     
-    --chart-1: 217 98% 52%; /* Primary Blue */
-    --chart-2: 261 52% 51%; /* Accent Purple */
-    --chart-3: 35 90% 60%;  /* Orange */
-    --chart-4: 150 60% 50%; /* Green/Teal */
-    --chart-5: 200 80% 65%; /* Light Blue/Cyan */
+    --chart-1: 211 100% 40%;
+    --chart-2: 206 100% 50%;
+    --chart-3: 35 90% 60%; 
+    --chart-4: 150 60% 50%; 
+    --chart-5: 200 80% 65%; 
     
     --radius: 0.5rem;
 
-    /* Sidebar specific variables - Light Theme */
-    --sidebar-background: 210 20% 95%; /* Slightly different from main BG */
-    --sidebar-foreground: 210 10% 23%;
-    --sidebar-primary: 217 98% 52%;
+    --sidebar-background: 210 20% 95%;
+    --sidebar-foreground: 0 0% 20%;
+    --sidebar-primary: 211 100% 40%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 261 52% 51%;
+    --sidebar-accent: 206 100% 50%;
     --sidebar-accent-foreground: 0 0% 100%;
     --sidebar-border: 210 15% 85%;
-    --sidebar-ring: 217 98% 52%;
+    --sidebar-ring: 211 100% 40%;
 
-    /* Gradient colors for light theme */
-    --gradient-start: 210 17% 98%; /* Corresponds to original --background */
-    --gradient-end: 205 30% 90%;   /* A soft, slightly bluer light gray */
+    --gradient-start: 207 26% 95%; /* #F0F4F8 */
+    --gradient-end: 200 60% 85%;   /* A lighter, sky-like blue */
   }
 
   .dark {
-    --background: 220 15% 10%; /* Very Dark Blue/Gray (#161B22) */
-    --foreground: 210 17% 90%; /* Light Grayish Text (#DDE1E6) */
+    --background: 220 15% 10%; 
+    --foreground: 210 17% 90%; 
     
-    --card: 220 15% 15%; /* Darker Card Background (#1F242C) */
+    --card: 220 15% 15%; 
     --card-foreground: 210 17% 90%;
     
     --popover: 220 15% 15%;
     --popover-foreground: 210 17% 90%;
     
-    --primary: 217 98% 56%; /* Primary Blue, slightly lightened for dark BG (#257AFD) */
+    --primary: 211 100% 50%; /* Slightly lighter for dark BG */
     --primary-foreground: 0 0% 100%; 
     
-    --secondary: 217 80% 40%; /* Darker, less saturated blue for secondary */
-    --secondary-foreground: 210 17% 85%; /* Lighter text for dark secondary */
+    --secondary: 217 80% 40%; 
+    --secondary-foreground: 210 17% 85%;
     
-    --muted: 220 10% 30%; /* Medium Dark Gray (#424953) */
-    --muted-foreground: 210 15% 70%; /* Medium Light Gray Text */
+    --muted: 220 10% 30%; 
+    --muted-foreground: 210 15% 70%; 
     
-    --accent: 261 52% 58%; /* Accent Purple, slightly lightened for dark BG (#835FD3) */
+    --accent: 206 100% 60%; /* Slightly lighter for dark BG */
     --accent-foreground: 0 0% 100%;
     
-    --destructive: 0 70% 50%; /* Red for dark mode, slightly less intense (#D93030) */
+    --destructive: 0 70% 50%; 
     --destructive-foreground: 0 0% 98%;
     
-    --border: 220 10% 25%; /* Darker Border (#343A40) */
-    --input: 220 10% 20%; /* Darker Input Background (#2B3037) */
-    --ring: 217 98% 56%; /* Dark mode primary for focus rings */
+    --border: 220 10% 25%; 
+    --input: 220 10% 20%; 
+    --ring: 211 100% 50%; 
     
-    --chart-1: 217 98% 60%;
-    --chart-2: 261 52% 60%;
+    --chart-1: 211 100% 55%;
+    --chart-2: 206 100% 65%;
     --chart-3: 35 90% 65%;
     --chart-4: 150 60% 55%;
     --chart-5: 200 80% 70%;
 
-    /* Dark Theme Sidebar specific variables */
-    --sidebar-background: 220 15% 8%; /* Even darker than main dark BG */
+    --sidebar-background: 220 15% 8%;
     --sidebar-foreground: 210 17% 90%;
-    --sidebar-primary: 217 98% 56%;
+    --sidebar-primary: 211 100% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 261 52% 58%;
+    --sidebar-accent: 206 100% 60%;
     --sidebar-accent-foreground: 0 0% 100%;
     --sidebar-border: 220 10% 20%;
-    --sidebar-ring: 217 98% 56%;
+    --sidebar-ring: 211 100% 50%;
 
-    /* Gradient colors for dark theme */
-    --gradient-start: 220 15% 10%; /* Corresponds to original dark --background */
-    --gradient-end: 225 20% 18%;   /* A slightly lighter, bluer dark shade */
+    --gradient-start: 220 15% 10%; 
+    --gradient-end: 225 30% 20%;   /* A deeper, slightly bluer dark shade */
   }
 }
 
@@ -116,18 +112,90 @@ body {
     @apply border-border;
   }
   body {
-    /* @apply bg-background text-foreground; Removed solid background */
     background-image: linear-gradient(135deg, hsl(var(--gradient-start)) 0%, hsl(var(--gradient-end)) 100%);
     background-repeat: no-repeat;
-    background-attachment: fixed; /* Makes the gradient fixed during scroll */
-    color: hsl(var(--foreground)); /* Uses theme-aware foreground color */
+    background-attachment: fixed; 
+    color: hsl(var(--foreground)); 
     font-family: var(--font-body);
-    min-height: 100vh; /* Ensures gradient covers full viewport height */
+    min-height: 100vh;
+    position: relative; /* For z-indexing context of clouds-background */
+    overflow-x: hidden; /* Prevent horizontal scroll from clouds before they animate off */
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-headline);
   }
+
+  .clouds-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; 
+    overflow: hidden;
+    pointer-events: none; 
+  }
+
+  .cloud-base {
+    @apply absolute bg-white/60 rounded-full shadow-lg filter blur-[1px];
+    /* Dark mode clouds could be slightly darker, e.g. bg-slate-200/50, but white/60 is often fine */
+  }
+
+  .dark .cloud-base {
+     @apply bg-slate-400/30; /* Subtler clouds for dark mode */
+  }
+
+  .cloud-base::before,
+  .cloud-base::after {
+    content: '';
+    @apply absolute bg-inherit rounded-full shadow-md filter blur-[1px];
+  }
+
+  .cloud1 {
+    width: 180px; height: 55px;
+    top: 15%; left: -250px; 
+    animation: moveClouds 65s linear infinite 0s;
+  }
+  .cloud1::before { width: 90px; height: 90px; top: -45px; left: 45px; }
+  .cloud1::after { width: 130px; height: 70px; top: -25px; right: 25px; }
+
+  .cloud2 {
+    width: 280px; height: 80px;
+    top: 25%; left: -350px;
+    animation: moveClouds 70s linear infinite 8s;
+    transform: scale(0.75);
+  }
+  .cloud2::before { width: 110px; height: 110px; top: -55px; left: 55px; }
+  .cloud2::after { width: 160px; height: 90px; top: -35px; right: 35px; }
+
+  .cloud3 {
+    width: 130px; height: 45px;
+    top: 45%; left: -200px;
+    animation: moveClouds 55s linear infinite 4s;
+    transform: scale(0.65);
+  }
+  .cloud3::before { width: 70px; height: 70px; top: -35px; left: 35px; }
+  .cloud3::after { width: 90px; height: 50px; top: -20px; right: 20px; }
+
+  .cloud4 {
+    width: 220px; height: 70px;
+    top: 65%; left: -300px;
+    animation: moveClouds 80s linear infinite 15s;
+    transform: scale(0.85);
+  }
+  .cloud4::before { width: 100px; height: 100px; top: -50px; left: 50px; }
+  .cloud4::after { width: 140px; height: 80px; top: -30px; right: 30px; }
+  
+  .cloud5 {
+    width: 160px; height: 50px;
+    top: 80%; left: -230px;
+    animation: moveClouds 60s linear infinite 20s;
+    transform: scale(0.7);
+  }
+  .cloud5::before { width: 80px; height: 80px; top: -40px; left: 40px; }
+  .cloud5::after { width: 110px; height: 60px; top: -25px; right: 25px; }
 }
+
 .highlight-quote {
   position: relative;
   border-radius: 1.5em;

@@ -9,10 +9,7 @@ export const metadata: Metadata = {
   description: 'A personal portfolio website showcasing projects, blog posts, and skills.',
   keywords: ['portfolio', 'personal website', 'developer', 'projects', 'blog'],
   icons: {
-    icon: '/profile.ico', // Path to your icon in the public folder
-    // You can also add other icon types:
-    // apple: '/apple-touch-icon.png',
-    // shortcut: '/favicon.ico',
+    icon: '/profile-photo.png',
   },
 };
 
@@ -29,6 +26,13 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased" suppressHydrationWarning={true}>
+        <div className="clouds-background" aria-hidden="true">
+          <div className="cloud-base cloud1"></div>
+          <div className="cloud-base cloud2"></div>
+          <div className="cloud-base cloud3"></div>
+          <div className="cloud-base cloud4"></div>
+          <div className="cloud-base cloud5"></div>
+        </div>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
