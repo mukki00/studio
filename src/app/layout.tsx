@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/common/ThemeProvider";
+import WhatsAppButton from '@/components/common/WhatsAppButton';
 
 export const metadata: Metadata = {
   title: 'Mohammedh Muksith | Personal Portfolio',
@@ -41,6 +42,7 @@ export default function RootLayout({
         >
           {children}
           <Toaster />
+          <WhatsAppButton />
         </ThemeProvider>
       </body>
     </html>
