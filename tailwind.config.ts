@@ -27,8 +27,8 @@ export default {
           foreground: 'hsl(var(--popover-foreground))',
         },
         primary: {
-          DEFAULT: 'hsl(var(--primary))', /* #0052CC */
-          foreground: 'hsl(var(--primary-foreground))', /* #FFFFFF */
+          DEFAULT: 'hsl(var(--primary))', 
+          foreground: 'hsl(var(--primary-foreground))',
         },
         secondary: {
           DEFAULT: 'hsl(var(--secondary))',
@@ -39,8 +39,8 @@ export default {
           foreground: 'hsl(var(--muted-foreground))',
         },
         accent: {
-          DEFAULT: 'hsl(var(--accent))', /* #008CFF */
-          foreground: 'hsl(var(--accent-foreground))', /* #FFFFFF */
+          DEFAULT: 'hsl(var(--accent))', 
+          foreground: 'hsl(var(--accent-foreground))',
         },
         destructive: {
           DEFAULT: 'hsl(var(--destructive))',
@@ -102,6 +102,7 @@ export default {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'fade-in': 'fadeIn 0.5s ease-out forwards',
+        'move-clouds': 'moveClouds 60s linear infinite', // Added this line
       },
     },
   },
