@@ -109,7 +109,7 @@ export default function Header() {
           >
             {/* Corner Ribbon */}
             <div
-              className="absolute top-0 left-0 origin-top-left z-10 flex items-center justify-center gap-1 transform -rotate-45 translate-x-[-8px] translate-y-[8px] bg-primary text-primary-foreground px-2 py-0.5 text-[9px] font-semibold shadow-md whitespace-nowrap"
+              className="absolute top-2.5 left-0 origin-top-left z-10 flex items-center justify-center gap-6 transform -rotate-45 translate-x-[-8px] translate-y-[8px] bg-primary text-primary-foreground px-2 py-0.5 text-[9px] font-semibold shadow-md whitespace-nowrap"
             >
               <span>Free Palestine</span>
               <svg
