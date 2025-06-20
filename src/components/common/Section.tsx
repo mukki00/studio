@@ -11,13 +11,22 @@ interface SectionProps {
 }
 
 export default function Section({ id, title, subtitle, children, className = '', titleClassName = '', subtitleClassName = '' }: SectionProps) {
+  const titleId = title ? `${id}-title` : undefined;
+
   return (
-    <section id={id} className={`py-16 md:py-24 animate-fade-in ${className}`}>
+    <section 
+      id={id} 
+      className={`py-16 md:py-24 animate-fade-in ${className}`}
+      aria-labelledby={titleId}
+    >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {(title || subtitle) && (
           <div className="text-center mb-12 md:mb-4">
             {title && (
-              <h2 className={`font-headline text-3xl sm:text-4xl font-bold text-accent mb-3 ${titleClassName}`}>
+              <h2 
+                id={titleId}
+                className={`font-headline text-3xl sm:text-4xl font-bold text-accent mb-3 ${titleClassName}`}
+              >
                 {title}
               </h2>
             )}

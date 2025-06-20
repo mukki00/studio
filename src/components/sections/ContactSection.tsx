@@ -2,7 +2,6 @@
 'use client';
 
 import { useEffect, useActionState, useTransition } from 'react';
-// import { useFormStatus } from 'react-dom'; // No longer needed directly in SubmitButton if pending is passed
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -11,10 +10,17 @@ import Section from '@/components/common/Section';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
 import { useToast } from "@/hooks/use-toast";
 import { Send, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
 const ContactFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters long." }),
@@ -88,7 +94,7 @@ export default function ContactSection() {
         }
       });
     }
-    if (state.fields && !state.success) { // only repopulate if not successful
+    if (state.fields && !state.success) { 
        Object.entries(state.fields).forEach(([key, value]) => {
          form.setValue(key as keyof ContactFormData, value);
        });
@@ -123,65 +129,86 @@ export default function ContactSection() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={form.handleSubmit(handleValidSubmit)} className="space-y-6">
-              <div>
-                <Label htmlFor="name" className="block text-sm font-medium text-foreground/90">Full Name</Label>
-                <Input
-                  id="name"
-                  type="text"
-                  {...form.register('name')}
-                  className={`mt-1 block w-full rounded-md shadow-sm focus:ring-accent focus:border-accent sm:text-sm ${form.formState.errors.name ? 'border-destructive' : 'border-input'}`}
-                  aria-invalid={form.formState.errors.name ? "true" : "false"}
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(handleValidSubmit)} className="space-y-6">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="block text-sm font-medium text-foreground/90">Full Name</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Your Name" 
+                          {...field} 
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:ring-accent focus:border-accent sm:text-sm ${form.formState.errors.name ? 'border-destructive' : 'border-input'}`}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-                {form.formState.errors.name && (
-                  <p className="mt-1 text-sm text-destructive">{form.formState.errors.name.message}</p>
-                )}
-              </div>
 
-              <div>
-                <Label htmlFor="email" className="block text-sm font-medium text-foreground/90">Email Address</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  {...form.register('email')}
-                  className={`mt-1 block w-full rounded-md shadow-sm focus:ring-accent focus:border-accent sm:text-sm ${form.formState.errors.email ? 'border-destructive' : 'border-input'}`}
-                  aria-invalid={form.formState.errors.email ? "true" : "false"}
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="block text-sm font-medium text-foreground/90">Email Address</FormLabel>
+                      <FormControl>
+                        <Input 
+                          type="email" 
+                          placeholder="your.email@example.com" 
+                          {...field} 
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:ring-accent focus:border-accent sm:text-sm ${form.formState.errors.email ? 'border-destructive' : 'border-input'}`}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-                {form.formState.errors.email && (
-                  <p className="mt-1 text-sm text-destructive">{form.formState.errors.email.message}</p>
-                )}
-              </div>
 
-              <div>
-                <Label htmlFor="phoneNumber" className="block text-sm font-medium text-foreground/90">Phone Number (Optional)</Label>
-                <Input
-                  id="phoneNumber"
-                  type="tel"
-                  {...form.register('phoneNumber')}
-                  className={`mt-1 block w-full rounded-md shadow-sm focus:ring-accent focus:border-accent sm:text-sm ${form.formState.errors.phoneNumber ? 'border-destructive' : 'border-input'}`}
-                  aria-invalid={form.formState.errors.phoneNumber ? "true" : "false"}
+                <FormField
+                  control={form.control}
+                  name="phoneNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="block text-sm font-medium text-foreground/90">Phone Number (Optional)</FormLabel>
+                      <FormControl>
+                        <Input 
+                          type="tel" 
+                          placeholder="+1234567890" 
+                          {...field} 
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:ring-accent focus:border-accent sm:text-sm ${form.formState.errors.phoneNumber ? 'border-destructive' : 'border-input'}`}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-                {form.formState.errors.phoneNumber && (
-                  <p className="mt-1 text-sm text-destructive">{form.formState.errors.phoneNumber.message}</p>
-                )}
-              </div>
 
-              <div>
-                <Label htmlFor="message" className="block text-sm font-medium text-foreground/90">Message</Label>
-                <Textarea
-                  id="message"
-                  rows={5}
-                  {...form.register('message')}
-                  className={`mt-1 block w-full rounded-md shadow-sm focus:ring-accent focus:border-accent sm:text-sm ${form.formState.errors.message ? 'border-destructive' : 'border-input'}`}
-                  aria-invalid={form.formState.errors.message ? "true" : "false"}
+                <FormField
+                  control={form.control}
+                  name="message"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="block text-sm font-medium text-foreground/90">Message</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          rows={5} 
+                          placeholder="Your message..." 
+                          {...field} 
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:ring-accent focus:border-accent sm:text-sm ${form.formState.errors.message ? 'border-destructive' : 'border-input'}`}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-                {form.formState.errors.message && (
-                  <p className="mt-1 text-sm text-destructive">{form.formState.errors.message.message}</p>
-                )}
-              </div>
-              
-              <SubmitButton pending={isPending} />
-            </form>
+                
+                <SubmitButton pending={isPending} />
+              </form>
+            </Form>
           </CardContent>
         </Card>
       </div>
