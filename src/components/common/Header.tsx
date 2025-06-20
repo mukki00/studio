@@ -60,11 +60,7 @@ export default function Header() {
           });
       }
     } else {
-      // Fallback for non-hash links, though not expected for header nav
-      // If you had external links or full page navigations, handle them here.
-      // For this portfolio, we assume all header links are for internal page sections.
       console.warn(`handleScrollTo called with non-hash href: ${href}`);
-      // window.location.href = href; // Example for actual navigation
     }
   };
 
@@ -104,13 +100,20 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-md shadow-md border-b border-border/50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          <Link href="/" onClick={(e) => handleScrollTo(e, '#about')} className="hover:opacity-80 transition-opacity flex items-center gap-2 group">
-            <div className="flex flex-col items-center">
-              <span className="text-xs text-accent group-hover:text-accent/90">Free Palestine</span>
+          <Link
+            href="/"
+            onClick={(e) => handleScrollTo(e, '#about')}
+            className="relative inline-block hover:opacity-80 transition-opacity group"
+          >
+            {/* Corner Ribbon */}
+            <div
+              className="absolute top-0 left-0 origin-top-left z-10 flex items-center justify-center gap-1 transform -rotate-45 translate-x-[-25px] translate-y-[10px] bg-primary text-primary-foreground px-4 py-0.5 text-[10px] font-semibold shadow-md whitespace-nowrap"
+            >
+              <span>Free Palestine</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 200 100"
-                className="w-5 h-auto rounded-sm" 
+                className="w-3 h-auto"
                 aria-hidden="true"
                 focusable="false"
               >
@@ -120,7 +123,9 @@ export default function Header() {
                 <polygon points="0,0 100,50 0,100" fill="#CE1126" />
               </svg>
             </div>
-            <span className="text-2xl font-bold text-accent font-headline group-hover:text-accent/90">
+            
+            {/* Name */}
+            <span className="block pl-3 pt-3 text-2xl font-bold text-accent font-headline group-hover:text-accent/90">
               Mohammedh Muksith
             </span>
           </Link>
