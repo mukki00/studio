@@ -109,13 +109,13 @@ export default function Header() {
           >
             {/* Corner Ribbon */}
             <div
-              className="absolute top-0 left-0 origin-top-left z-10 flex items-center justify-center gap-1 transform -rotate-45 translate-x-[-15px] translate-y-[10px] bg-primary text-primary-foreground px-3 py-0.5 text-[10px] font-semibold shadow-md whitespace-nowrap"
+              className="absolute top-0 left-0 origin-top-left z-10 flex items-center justify-center gap-1 transform -rotate-45 translate-x-[-8px] translate-y-[8px] bg-primary text-primary-foreground px-2 py-0.5 text-[9px] font-semibold shadow-md whitespace-nowrap"
             >
               <span>Free Palestine</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 200 100"
-                className="w-3 h-auto"
+                className="w-2.5 h-auto"
                 aria-hidden="true"
                 focusable="false"
               >
@@ -127,7 +127,7 @@ export default function Header() {
             </div>
             
             {/* Name */}
-            <span className="block pl-5 pt-3 text-2xl font-bold text-accent font-headline group-hover:text-accent/90">
+            <span className="block pl-4 pt-2 text-2xl font-bold text-accent font-headline group-hover:text-accent/90">
               Mohammedh Muksith
             </span>
           </Link>
