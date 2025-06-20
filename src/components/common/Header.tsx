@@ -104,8 +104,25 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-md shadow-md border-b border-border/50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          <Link href="/" onClick={(e) => handleScrollTo(e, '#about')} className="text-2xl font-bold text-accent font-headline hover:opacity-80 transition-opacity">
-            Mohammedh Muksith
+          <Link href="/" onClick={(e) => handleScrollTo(e, '#about')} className="hover:opacity-80 transition-opacity flex items-center gap-2 group">
+            <div className="flex flex-col items-center">
+              <span className="text-xs text-accent group-hover:text-accent/90">Free Palestine</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 200 100"
+                className="w-5 h-auto rounded-sm" 
+                aria-hidden="true"
+                focusable="false"
+              >
+                <rect width="200" height="33.33" fill="#000000" />
+                <rect y="33.33" width="200" height="33.34" fill="#FFFFFF" />
+                <rect y="66.67" width="200" height="33.33" fill="#009639" />
+                <polygon points="0,0 100,50 0,100" fill="#CE1126" />
+              </svg>
+            </div>
+            <span className="text-2xl font-bold text-accent font-headline group-hover:text-accent/90">
+              Mohammedh Muksith
+            </span>
           </Link>
           <div className="flex items-center gap-2">
             <nav className="hidden md:flex space-x-1">
