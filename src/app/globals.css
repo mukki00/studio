@@ -9,101 +9,101 @@ body {
 
 @layer base {
   :root {
-    --background: 207 26% 95%; /* HSL for #F0F4F8 */
-    --foreground: 0 0% 20%; /* HSL for #333333 */
+    --background: 210 60% 98%; /* Very light, cool off-white */
+    --foreground: 215 25% 25%; /* Dark, desaturated cool gray/blue for text */
     
     --card: 0 0% 100%; 
-    --card-foreground: 0 0% 20%;
+    --card-foreground: 215 25% 25%;
     
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 20%;
+    --popover-foreground: 215 25% 25%;
     
-    --primary: 211 100% 40%; /* HSL for #0052CC */
-    --primary-foreground: 0 0% 100%;
+    --primary: 220 75% 55%; /* Vibrant, modern blue */
+    --primary-foreground: 0 0% 100%; /* White */
     
-    --secondary: 217 95% 75%; 
-    --secondary-foreground: 0 0% 20%;
+    --secondary: 210 30% 90%; /* Light cool gray */
+    --secondary-foreground: 215 25% 35%; /* Slightly darker text for secondary elements */
     
-    --muted: 210 15% 90%; 
-    --muted-foreground: 210 10% 45%; 
+    --muted: 210 30% 94%; 
+    --muted-foreground: 215 15% 55%; 
     
-    --accent: 206 100% 50%; /* HSL for #008CFF */
-    --accent-foreground: 0 0% 100%;
+    --accent: 195 85% 45%; /* Bright, energetic cyan/teal */
+    --accent-foreground: 0 0% 100%; /* White for text on accent */
     
-    --destructive: 0 84% 60%; 
+    --destructive: 0 70% 50%; 
     --destructive-foreground: 0 0% 100%;
     
-    --border: 210 15% 88%; 
-    --input: 210 16% 94%; 
-    --ring: 211 100% 40%; /* Primary for focus rings */
+    --border: 210 20% 88%; 
+    --input: 210 30% 96%; 
+    --ring: 220 75% 55%; /* Primary color for focus rings */
     
-    --chart-1: 211 100% 40%;
-    --chart-2: 206 100% 50%;
-    --chart-3: 35 90% 60%; 
-    --chart-4: 150 60% 50%; 
-    --chart-5: 200 80% 65%; 
+    --chart-1: 220 75% 55%; /* Primary */
+    --chart-2: 195 85% 45%; /* Accent */
+    --chart-3: 210 60% 65%; /* Lighter blue */
+    --chart-4: 30 90% 60%;  /* Soft orange */
+    --chart-5: 270 60% 70%; /* Soft purple */
     
     --radius: 0.5rem;
 
-    --sidebar-background: 210 20% 95%;
-    --sidebar-foreground: 0 0% 20%;
-    --sidebar-primary: 211 100% 40%;
+    --sidebar-background: 210 50% 96%; /* Slightly off-white for sidebar */
+    --sidebar-foreground: 215 25% 25%;
+    --sidebar-primary: 220 75% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 206 100% 50%;
+    --sidebar-accent: 195 85% 45%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 210 15% 85%;
-    --sidebar-ring: 211 100% 40%;
+    --sidebar-border: 210 20% 85%;
+    --sidebar-ring: 220 75% 55%;
 
-    --gradient-start: 207 26% 95%; /* #F0F4F8 */
-    --gradient-end: 200 60% 85%;   /* A lighter, sky-like blue */
+    --gradient-start: 210 60% 98%;   /* Matches background */
+    --gradient-end: 200 70% 92%;     /* Lighter, softer sky blue */
   }
 
   .dark {
-    --background: 220 15% 10%; 
-    --foreground: 210 17% 90%; 
+    --background: 220 25% 12%;  /* Deep, dark blue-gray */
+    --foreground: 210 30% 88%;  /* Light cool gray for text */
     
-    --card: 220 15% 15%; 
-    --card-foreground: 210 17% 90%;
+    --card: 220 20% 18%; 
+    --card-foreground: 210 30% 88%;
     
-    --popover: 220 15% 15%;
-    --popover-foreground: 210 17% 90%;
+    --popover: 220 20% 18%;
+    --popover-foreground: 210 30% 88%;
     
-    --primary: 211 100% 50%; /* Slightly lighter for dark BG */
-    --primary-foreground: 0 0% 100%; 
+    --primary: 220 80% 65%; /* Brighter blue for dark mode */
+    --primary-foreground: 220 25% 15%; /* Dark for text on primary */
     
-    --secondary: 217 80% 40%; 
-    --secondary-foreground: 210 17% 85%;
+    --secondary: 220 15% 25%; 
+    --secondary-foreground: 210 30% 80%;
     
-    --muted: 220 10% 30%; 
-    --muted-foreground: 210 15% 70%; 
+    --muted: 220 15% 22%; 
+    --muted-foreground: 210 20% 65%; 
     
-    --accent: 206 100% 60%; /* Slightly lighter for dark BG */
-    --accent-foreground: 0 0% 100%;
+    --accent: 195 90% 55%; /* Brighter cyan/teal for dark mode */
+    --accent-foreground: 220 25% 10%; /* Very dark for text on accent */
     
-    --destructive: 0 70% 50%; 
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 65% 55%; 
+    --destructive-foreground: 0 0% 100%;
     
-    --border: 220 10% 25%; 
-    --input: 220 10% 20%; 
-    --ring: 211 100% 50%; 
+    --border: 220 15% 28%; 
+    --input: 220 15% 20%; 
+    --ring: 220 80% 65%; 
     
-    --chart-1: 211 100% 55%;
-    --chart-2: 206 100% 65%;
-    --chart-3: 35 90% 65%;
-    --chart-4: 150 60% 55%;
-    --chart-5: 200 80% 70%;
+    --chart-1: 220 80% 65%;
+    --chart-2: 195 90% 55%;
+    --chart-3: 210 60% 70%;
+    --chart-4: 30 80% 65%;
+    --chart-5: 270 70% 75%;
 
-    --sidebar-background: 220 15% 8%;
-    --sidebar-foreground: 210 17% 90%;
-    --sidebar-primary: 211 100% 50%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 206 100% 60%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 220 10% 20%;
-    --sidebar-ring: 211 100% 50%;
+    --sidebar-background: 220 25% 10%; /* Even darker for sidebar in dark mode */
+    --sidebar-foreground: 210 30% 88%;
+    --sidebar-primary: 220 80% 65%;
+    --sidebar-primary-foreground: 220 25% 15%;
+    --sidebar-accent: 195 90% 55%;
+    --sidebar-accent-foreground: 220 25% 10%;
+    --sidebar-border: 220 15% 25%;
+    --sidebar-ring: 220 80% 65%;
 
-    --gradient-start: 220 15% 10%; 
-    --gradient-end: 225 30% 20%;   /* A deeper, slightly bluer dark shade */
+    --gradient-start: 220 25% 12%; 
+    --gradient-end: 225 30% 16%;   /* Deeper, slightly varied dark blue */
   }
 }
 
@@ -138,7 +138,6 @@ body {
 
   .cloud-base {
     @apply absolute bg-white/60 rounded-full shadow-lg filter blur-[1px];
-    /* Dark mode clouds could be slightly darker, e.g. bg-slate-200/50, but white/60 is often fine */
   }
 
   .dark .cloud-base {
@@ -212,3 +211,4 @@ body {
   font-family: serif;
   margin: 0 0.1em;
 }
+
