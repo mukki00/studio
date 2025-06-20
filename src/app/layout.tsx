@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description: 'A personal portfolio website showcasing projects, blog posts, and skills.',
   keywords: ['portfolio', 'personal website', 'developer', 'projects', 'blog'],
   icons: {
-    icon: '/profile-photo.png',
+    icon: '/profile.ico',
   },
 };
 
