@@ -60,6 +60,8 @@ export default function Header() {
           });
       }
     } else {
+      // For Next.js router links or external links, let default behavior happen or use router.push
+      // This example focuses on hash links.
       console.warn(`handleScrollTo called with non-hash href: ${href}`);
     }
   };
@@ -107,7 +109,7 @@ export default function Header() {
           >
             {/* Corner Ribbon */}
             <div
-              className="absolute top-0 left-0 origin-top-left z-10 flex items-center justify-center gap-1 transform -rotate-45 translate-x-[-25px] translate-y-[10px] bg-primary text-primary-foreground px-4 py-0.5 text-[10px] font-semibold shadow-md whitespace-nowrap"
+              className="absolute top-0 left-0 origin-top-left z-10 flex items-center justify-center gap-1 transform -rotate-45 translate-x-[-15px] translate-y-[10px] bg-primary text-primary-foreground px-3 py-0.5 text-[10px] font-semibold shadow-md whitespace-nowrap"
             >
               <span>Free Palestine</span>
               <svg
@@ -125,7 +127,7 @@ export default function Header() {
             </div>
             
             {/* Name */}
-            <span className="block pl-3 pt-3 text-2xl font-bold text-accent font-headline group-hover:text-accent/90">
+            <span className="block pl-5 pt-3 text-2xl font-bold text-accent font-headline group-hover:text-accent/90">
               Mohammedh Muksith
             </span>
           </Link>
