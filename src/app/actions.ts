@@ -62,13 +62,6 @@ export async function submitContactForm(
   prevState: ContactFormState,
   data: FormData
 ): Promise<ContactFormState> {
-  // --- DIAGNOSTIC LOGGING ---
-  console.log('--- Contact Form Submission Attempt ---');
-  console.log(`MONGODB_URI is set: ${!!MONGODB_URI}`);
-  console.log(`MONGODB_DB_NAME is set: ${!!MONGODB_DB_NAME}, Value: ${MONGODB_DB_NAME}`);
-  console.log(`MONGODB_CONTACT_COLLECTION is set: ${!!MONGODB_CONTACT_COLLECTION}, Value: ${MONGODB_CONTACT_COLLECTION}`);
-  // --- END DIAGNOSTIC LOGGING ---
-  
   const formData = Object.fromEntries(data);
   const parsed = ContactFormSchema.safeParse(formData);
 
