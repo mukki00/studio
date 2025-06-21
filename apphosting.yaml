@@ -11,10 +11,10 @@ runConfig:
 # The 'secret' value must match the name of the secret you created
 # in Google Cloud Secret Manager.
 #
-# env:
-#   - variable: MONGODB_URI
-#     secret: MONGODB_URI
-#   - variable: MONGODB_DB_NAME
-#     secret: MONGODB_DB_NAME
-#   - variable: MONGODB_CONTACT_COLLECTION
-#     secret: MONGODB_CONTACT_COLLECTION
+env:
+  - variable: MONGODB_URI
+    secret: MONGODB_URI
+  - variable: MONGODB_DB_NAME
+    secret: MONGODB_DB_NAME
+  - variable: MONGODB_CONTACT_COLLECTION
+    secret: MONGODB_CONTACT_COLLECTION
