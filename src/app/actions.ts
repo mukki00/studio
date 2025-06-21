@@ -20,9 +20,9 @@ export type ContactFormState = {
   success: boolean;
 };
 
-const MONGODB_URI = "mongodb+srv://Muksith:Test123@portfolio.73lrawf.mongodb.net/";
-const MONGODB_DB_NAME = "portfolioDB";
-const MONGODB_CONTACT_COLLECTION = "contactInformation";
+const MONGODB_URI = process.env.MONGODB_URI;
+const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME;
+const MONGODB_CONTACT_COLLECTION = process.env.MONGODB_CONTACT_COLLECTION;
 
 if (!MONGODB_URI || !MONGODB_DB_NAME || !MONGODB_CONTACT_COLLECTION) {
   console.error("FATAL ERROR: MongoDB environment variables (MONGODB_URI, MONGODB_DB_NAME, MONGODB_CONTACT_COLLECTION) are not set.");
