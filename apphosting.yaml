@@ -5,3 +5,15 @@ runConfig:
   # Increase this value if you'd like to automatically spin up
   # more instances in response to increased traffic.
   maxInstances: 1
+
+# The 'env' section tells App Hosting to securely inject secrets
+# as environment variables into your application.
+# The 'secret' value must match the name of the secret you created
+# in Google Cloud Secret Manager.
+env:
+  - variable: MONGODB_URI
+    secret: MONGODB_URI
+  - variable: MONGODB_DB_NAME
+    secret: MONGODB_DB_NAME
+  - variable: MONGODB_CONTACT_COLLECTION
+    secret: MONGODB_CONTACT_COLLECTION
