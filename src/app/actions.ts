@@ -1,3 +1,4 @@
+
 'use server';
 
 import { z } from 'zod';
@@ -25,7 +26,7 @@ const MONGODB_CONTACT_COLLECTION = process.env.MONGODB_CONTACT_COLLECTION;
 
 if (!MONGODB_URI || !MONGODB_DB_NAME || !MONGODB_CONTACT_COLLECTION) {
   console.error("FATAL ERROR: MongoDB environment variables (MONGODB_URI, MONGODB_DB_NAME, MONGODB_CONTACT_COLLECTION) are not set.");
-  console.error("Please create a .env.local file in the project root and add these variables with your MongoDB connection details.");
+  console.error("Please create a .env.local file in the project root and add these variables with your MongoDB connection details, or configure them as secrets in your hosting environment.");
 }
 
 let client: MongoClient | null = null;
@@ -34,10 +35,10 @@ let clientPromise: Promise<MongoClient> | null = global._mongoClientPromise || n
 
 async function getMongoClient(): Promise<MongoClient> {
   if (!MONGODB_URI) {
-    throw new Error('Critical: MONGODB_URI environment variable is not defined. Check your .env.local file.');
+    throw new Error('Critical: MONGODB_URI environment variable is not defined. Check your .env.local file or hosting secrets.');
   }
   if (!MONGODB_DB_NAME) {
-    throw new Error('Critical: MONGODB_DB_NAME environment variable is not defined. Check your .env.local file.');
+    throw new Error('Critical: MONGODB_DB_NAME environment variable is not defined. Check your .env.local file or hosting secrets.');
   }
 
   if (!clientPromise) {
@@ -61,6 +62,13 @@ export async function submitContactForm(
   prevState: ContactFormState,
   data: FormData
 ): Promise<ContactFormState> {
+  // --- DIAGNOSTIC LOGGING ---
+  console.log('--- Contact Form Submission Attempt ---');
+  console.log(`MONGODB_URI is set: ${!!MONGODB_URI}`);
+  console.log(`MONGODB_DB_NAME is set: ${!!MONGODB_DB_NAME}, Value: ${MONGODB_DB_NAME}`);
+  console.log(`MONGODB_CONTACT_COLLECTION is set: ${!!MONGODB_CONTACT_COLLECTION}, Value: ${MONGODB_CONTACT_COLLECTION}`);
+  // --- END DIAGNOSTIC LOGGING ---
+  
   const formData = Object.fromEntries(data);
   const parsed = ContactFormSchema.safeParse(formData);
 
