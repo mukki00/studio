@@ -100,7 +100,7 @@ export async function submitContactForm(
     await collection.insertOne({ ...parsed.data, submittedAt: new Date() });
 
     return {
-      message: 'Thank you! Your message has been sent successfully.',
+      message: 'Your message is in my inbox — thanks for contacting me! Expect a reply soon.',
       success: true,
     };
   } catch (error) {
