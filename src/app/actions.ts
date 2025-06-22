@@ -20,28 +20,16 @@ export type ContactFormState = {
   success: boolean;
 };
 
-const MONGODB_URI = process.env.MONGODB_URI;
-const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME;
-const MONGODB_CONTACT_COLLECTION = process.env.MONGODB_CONTACT_COLLECTION;
-const MONGODB_COUNTERS_COLLECTION = process.env.MONGODB_COUNTERS_COLLECTION;
-
-if (!MONGODB_URI || !MONGODB_DB_NAME || !MONGODB_CONTACT_COLLECTION || !MONGODB_COUNTERS_COLLECTION) {
-  console.error("FATAL ERROR: MongoDB environment variables (MONGODB_URI, MONGODB_DB_NAME, MONGODB_CONTACT_COLLECTION, MONGODB_COUNTERS_COLLECTION) are not set.");
-  console.error("Please create a .env.local file in the project root and add these variables with your MongoDB connection details, or configure them as secrets in your hosting environment.");
-}
-
 let client: MongoClient | null = null;
 // @ts-ignore
 let clientPromise: Promise<MongoClient> | null = global._mongoClientPromise || null;
 
 async function getMongoClient(): Promise<MongoClient> {
+  const MONGODB_URI = process.env.MONGODB_URI;
   if (!MONGODB_URI) {
     throw new Error('Critical: MONGODB_URI environment variable is not defined. Check your .env.local file or hosting secrets.');
   }
-  if (!MONGODB_DB_NAME) {
-    throw new Error('Critical: MONGODB_DB_NAME environment variable is not defined. Check your .env.local file or hosting secrets.');
-  }
-
+  
   if (!clientPromise) {
     client = new MongoClient(MONGODB_URI, {
       serverApi: {
@@ -74,10 +62,13 @@ export async function submitContactForm(
       success: false,
     };
   }
+  
+  const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME;
+  const MONGODB_CONTACT_COLLECTION = process.env.MONGODB_CONTACT_COLLECTION;
 
-  if (!MONGODB_URI || !MONGODB_DB_NAME || !MONGODB_CONTACT_COLLECTION) {
+  if (!MONGODB_DB_NAME || !MONGODB_CONTACT_COLLECTION) {
     // This server-side log is for developers. The user gets a generic error.
-    console.error("MongoDB environment variables are not properly set. Cannot submit form to database.");
+    console.error("MongoDB environment variables for db name or contact collection are not properly set.");
     return {
       message: "Server configuration error. Please contact support if this issue persists.",
       success: false,
@@ -123,8 +114,11 @@ export async function submitContactForm(
 }
 
 export async function getCvDownloads(): Promise<number> {
-  if (!MONGODB_COUNTERS_COLLECTION) {
-    console.error('MongoDB counters collection environment variable is not set.');
+  const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME;
+  const MONGODB_COUNTERS_COLLECTION = process.env.MONGODB_COUNTERS_COLLECTION;
+
+  if (!MONGODB_DB_NAME || !MONGODB_COUNTERS_COLLECTION) {
+    console.error('MongoDB environment variables for db name or counters collection are not set.');
     return 0;
   }
   try {
@@ -140,8 +134,11 @@ export async function getCvDownloads(): Promise<number> {
 }
 
 export async function incrementCvDownloads(): Promise<{ success: boolean }> {
-   if (!MONGODB_COUNTERS_COLLECTION) {
-    console.error('MongoDB counters collection environment variable is not set.');
+  const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME;
+  const MONGODB_COUNTERS_COLLECTION = process.env.MONGODB_COUNTERS_COLLECTION;
+
+  if (!MONGODB_DB_NAME || !MONGODB_COUNTERS_COLLECTION) {
+    console.error('MongoDB environment variables for db name or counters collection are not set.');
     return { success: false };
   }
   try {
