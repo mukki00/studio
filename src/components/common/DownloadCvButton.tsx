@@ -29,7 +29,7 @@ export default function DownloadCvButton({ initialCount }: DownloadCvButtonProps
         </Link>
       </Button>
       <p className="text-sm text-muted-foreground">
-        <span className="font-bold text-foreground">{count.toLocaleString()}</span> visitors have downloaded my CV—feel free to take a look.
+        <span className="font-bold text-accent">{count.toLocaleString()}</span> visitors have downloaded my CV—feel free to take a look.
       </p>
     </div>
   );
