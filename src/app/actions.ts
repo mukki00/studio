@@ -67,8 +67,11 @@ export async function submitContactForm(
   const MONGODB_CONTACT_COLLECTION = process.env.MONGODB_CONTACT_COLLECTION;
 
   if (!MONGODB_DB_NAME || !MONGODB_CONTACT_COLLECTION) {
-    // This server-side log is for developers. The user gets a generic error.
-    console.error("MongoDB environment variables for db name or contact collection are not properly set.");
+    const missingVars = [
+        !MONGODB_DB_NAME && 'MONGODB_DB_NAME',
+        !MONGODB_CONTACT_COLLECTION && 'MONGODB_CONTACT_COLLECTION'
+    ].filter(Boolean).join(', ');
+    console.error(`Server Configuration Error: The following environment variables are missing: ${missingVars}`);
     return {
       message: "Server configuration error. Please contact support if this issue persists.",
       success: false,
@@ -118,7 +121,11 @@ export async function getCvDownloads(): Promise<number> {
   const MONGODB_COUNTERS_COLLECTION = process.env.MONGODB_COUNTERS_COLLECTION;
 
   if (!MONGODB_DB_NAME || !MONGODB_COUNTERS_COLLECTION) {
-    console.error('MongoDB environment variables for db name or counters collection are not set.');
+    const missingVars = [
+        !MONGODB_DB_NAME && 'MONGODB_DB_NAME',
+        !MONGODB_COUNTERS_COLLECTION && 'MONGODB_COUNTERS_COLLECTION'
+    ].filter(Boolean).join(', ');
+    console.error(`Server Configuration Error: The following environment variables are missing: ${missingVars}`);
     return 0;
   }
   try {
@@ -138,7 +145,11 @@ export async function incrementCvDownloads(): Promise<{ success: boolean }> {
   const MONGODB_COUNTERS_COLLECTION = process.env.MONGODB_COUNTERS_COLLECTION;
 
   if (!MONGODB_DB_NAME || !MONGODB_COUNTERS_COLLECTION) {
-    console.error('MongoDB environment variables for db name or counters collection are not set.');
+    const missingVars = [
+        !MONGODB_DB_NAME && 'MONGODB_DB_NAME',
+        !MONGODB_COUNTERS_COLLECTION && 'MONGODB_COUNTERS_COLLECTION'
+    ].filter(Boolean).join(', ');
+    console.error(`Server Configuration Error: The following environment variables are missing: ${missingVars}`);
     return { success: false };
   }
   try {
