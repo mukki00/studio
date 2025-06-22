@@ -28,8 +28,8 @@ export default async function AboutSection() {
           <Image
             src="/profile_photo.png"
             alt="Mohammedh Muksith - Professional Portrait"
-            width={400}
-            height={400}
+            width={450}
+            height={450}
             className="rounded-lg object-cover shadow-lg"
             priority
             data-ai-hint="professional portrait"
