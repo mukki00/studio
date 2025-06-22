@@ -21,16 +21,15 @@ export default function DownloadCvButton({ initialCount }: DownloadCvButtonProps
   };
 
   return (
-    <div className="flex flex-col items-start gap-2">
-      <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground" onClick={handleClick}>
-        <Link href="/Mohammedh_Muksith_CV.pdf" download="Mohammedh_Muksith_CV.pdf">
-          <Download className="mr-2 h-5 w-5" />
-          Download CV
-        </Link>
-      </Button>
-      <p className="text-sm text-foreground/90 font-medium">
-        <span className="font-bold text-accent">{count.toLocaleString()}</span> visitors have downloaded my CV—feel free to take a look.
-      </p>
-    </div>
+    <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground relative" onClick={handleClick}>
+      <Link href="/Mohamed_Muksith_Tech_Lead_Resume.pdf" download="Mohamed_Muksith_Tech_Lead_Resume.pdf">
+        <Download className="mr-2 h-5 w-5" />
+        Download CV
+        <Badge variant="secondary" className="ml-3 bg-primary/20 text-primary flex items-center gap-1">
+          <Eye className="h-3 w-3" />
+          {count.toLocaleString()}
+        </Badge>
+      </Link>
+    </Button>
   );
 }
