@@ -74,9 +74,9 @@ export default async function AboutSection() {
             Passionate about continuous learning and innovation—currently exploring Generative AI, Kubernetes, and LLMs. Open to Technical Architect and Engineering Leadership roles where I can drive strategy, guide teams, and deliver impactful solutions.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-start pt-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 pt-4">
             <DownloadCvButton initialCount={initialCount} />
-            <div className="flex gap-4 justify-start">
+            <div className="flex gap-4">
               <Button asChild variant="outline" size="icon" aria-label="LinkedIn Profile">
                 <Link href="https://www.linkedin.com/in/mukki00" target="_blank" rel="noopener noreferrer">
                   <Linkedin className="h-5 w-5 text-accent" />
