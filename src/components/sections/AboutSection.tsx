@@ -73,7 +73,7 @@ export default function AboutSection() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-start pt-4">
             <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground">
-              <Link href="../../public/Mohamed_Muksith_Tech_Lead_Resume.pdf" download="Mohamed_Muksith_Tech_Lead_Resume">
+              <Link href="/Mohamed_Muksith_Tech_Lead_Resume.pdf" download="Mohamed_Muksith_Tech_Lead_Resume">
                 <Download className="mr-2 h-5 w-5" />
                 Download CV
               </Link>
