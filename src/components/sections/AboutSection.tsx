@@ -24,12 +24,13 @@ export default async function AboutSection() {
         <span className="quote-mark">”</span>
       </blockquote>
       <div className="grid md:grid-cols-5 gap-12 items-start">
-        <div className="md:col-span-2 relative aspect-square max-w-md mx-auto md:order-last">
+        <div className="md:col-span-2 flex justify-center items-center md:order-last">
           <Image
             src="/profile_photo.png"
             alt="Mohammedh Muksith - Professional Portrait"
-            fill
-            className="rounded-lg object-cover"
+            width={400}
+            height={400}
+            className="rounded-lg object-cover shadow-lg"
             priority
             data-ai-hint="professional portrait"
           />
