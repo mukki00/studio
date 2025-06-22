@@ -1,21 +1,22 @@
-
 import Link from 'next/link';
-// Import HTML Img instead of next/image for diagnostics
-// import Image from 'next/image';
+import Image from 'next/image';
 import Section from '@/components/common/Section';
 import { Button } from '@/components/ui/button';
-import { Download, Linkedin, Github, Briefcase, Cloud, Target } from 'lucide-react';
+import { Linkedin, Github, Briefcase, Cloud, Target } from 'lucide-react';
+import { getCvDownloads } from '@/app/actions';
+import DownloadCvButton from '@/components/common/DownloadCvButton';
 
-export default function AboutSection() {
+export default async function AboutSection() {
   const coreTechnologies = ["Angular", "React", "Vue", "Node.js", "Spring Boot", "PHP (Laravel)", "GraphQL", "Docker", "AWS", "Azure", "SQL", "WebLogic"];
   const devopsCloudSkills = ["CI/CD", "Monitoring", "Kubernetes", "AppDynamics", "Splunk"];
   const focusAreas = ["Technical Architecture", "Mentorship", "Agile PI Planning", "Team Scaling"];
+  
+  const initialCount = await getCvDownloads();
 
   return (
     <Section
       id="about"
       title="About Me"
-      // subtitle="“Building Tomorrow’s Software, Today”"
     >
       <blockquote className="highlight-quote">
         <span className="quote-mark">“</span>
@@ -24,12 +25,13 @@ export default function AboutSection() {
       </blockquote>
       <div className="grid md:grid-cols-5 gap-12 items-start">
         <div className="md:col-span-2 relative aspect-square max-w-md mx-auto md:order-last">
-          {/* Using standard img tag for diagnostics */}
-          <img
-            src="../../profile_photo.png" // Adjust path as necessary
+          <Image
+            src="/profile_photo.png"
             alt="Mohammedh Muksith - Professional Portrait"
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-            className="rounded-lg"
+            fill
+            className="rounded-lg object-cover"
+            priority
+            data-ai-hint="professional portrait"
           />
         </div>
         <div className="md:col-span-3 space-y-6 text-left">
@@ -72,12 +74,7 @@ export default function AboutSection() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-start pt-4">
-            <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground">
-              <Link href="/Mohamed_Muksith_Tech_Lead_Resume.pdf" download="Mohamed_Muksith_Tech_Lead_Resume">
-                <Download className="mr-2 h-5 w-5" />
-                Download CV
-              </Link>
-            </Button>
+            <DownloadCvButton initialCount={initialCount} />
             <div className="flex gap-4 justify-start">
               <Button asChild variant="outline" size="icon" aria-label="LinkedIn Profile">
                 <Link href="https://www.linkedin.com/in/mukki00" target="_blank" rel="noopener noreferrer">

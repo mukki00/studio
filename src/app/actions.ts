@@ -23,9 +23,10 @@ export type ContactFormState = {
 const MONGODB_URI = process.env.MONGODB_URI;
 const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME;
 const MONGODB_CONTACT_COLLECTION = process.env.MONGODB_CONTACT_COLLECTION;
+const MONGODB_COUNTERS_COLLECTION = process.env.MONGODB_COUNTERS_COLLECTION;
 
-if (!MONGODB_URI || !MONGODB_DB_NAME || !MONGODB_CONTACT_COLLECTION) {
-  console.error("FATAL ERROR: MongoDB environment variables (MONGODB_URI, MONGODB_DB_NAME, MONGODB_CONTACT_COLLECTION) are not set.");
+if (!MONGODB_URI || !MONGODB_DB_NAME || !MONGODB_CONTACT_COLLECTION || !MONGODB_COUNTERS_COLLECTION) {
+  console.error("FATAL ERROR: MongoDB environment variables (MONGODB_URI, MONGODB_DB_NAME, MONGODB_CONTACT_COLLECTION, MONGODB_COUNTERS_COLLECTION) are not set.");
   console.error("Please create a .env.local file in the project root and add these variables with your MongoDB connection details, or configure them as secrets in your hosting environment.");
 }
 
@@ -118,5 +119,45 @@ export async function submitContactForm(
       message: errorMessage,
       success: false,
     };
+  }
+}
+
+export async function getCvDownloads(): Promise<number> {
+  if (!MONGODB_COUNTERS_COLLECTION) {
+    console.error('MongoDB counters collection environment variable is not set.');
+    return 0;
+  }
+  try {
+    const mongoClient = await getMongoClient();
+    const db = mongoClient.db(MONGODB_DB_NAME);
+    const collection = db.collection(MONGODB_COUNTERS_COLLECTION);
+    const counter = await collection.findOne({ _id: 'cv' });
+    return counter ? counter.count : 0;
+  } catch (error) {
+    console.error('Failed to get CV download count:', error);
+    return 0; // Return 0 on error so the site doesn't break
+  }
+}
+
+export async function incrementCvDownloads(): Promise<{ success: boolean }> {
+   if (!MONGODB_COUNTERS_COLLECTION) {
+    console.error('MongoDB counters collection environment variable is not set.');
+    return { success: false };
+  }
+  try {
+    const mongoClient = await getMongoClient();
+    const db = mongoClient.db(MONGODB_DB_NAME);
+    const collection = db.collection(MONGODB_COUNTERS_COLLECTION);
+    
+    await collection.findOneAndUpdate(
+      { _id: 'cv' },
+      { $inc: { count: 1 } },
+      { upsert: true }
+    );
+    
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to increment CV download count:', error);
+    return { success: false };
   }
 }
