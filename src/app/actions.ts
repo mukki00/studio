@@ -20,32 +20,50 @@ export type ContactFormState = {
   success: boolean;
 };
 
+// --- MongoDB Client Singleton ---
 let client: MongoClient | null = null;
-// @ts-ignore
-let clientPromise: Promise<MongoClient> | null = global._mongoClientPromise || null;
+let clientPromise: Promise<MongoClient> | null = null;
 
-async function getMongoClient(): Promise<MongoClient> {
-  const MONGODB_URI = process.env.MONGODB_URI;
-  if (!MONGODB_URI) {
-    throw new Error('Critical: MONGODB_URI environment variable is not defined. Check your .env.local file or hosting secrets.');
+function getMongoClient(): Promise<MongoClient> {
+  if (clientPromise) {
+    return clientPromise;
   }
   
-  if (!clientPromise) {
-    client = new MongoClient(MONGODB_URI, {
-      serverApi: {
-        version: ServerApiVersion.v1,
-        strict: true,
-        deprecationErrors: true,
-      }
-    });
-    clientPromise = client.connect();
-    if (process.env.NODE_ENV === 'development') {
-      // @ts-ignore
-      global._mongoClientPromise = clientPromise;
-    }
+  const MONGODB_URI = process.env.MONGODB_URI;
+  if (!MONGODB_URI) {
+    // This is a critical server configuration error.
+    throw new Error('FATAL: MONGODB_URI environment variable is not defined. The application cannot connect to the database.');
   }
+
+  client = new MongoClient(MONGODB_URI, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    }
+  });
+
+  clientPromise = client.connect();
   return clientPromise;
 }
+
+// --- Helper function to check environment variables ---
+function checkEnvVars(requiredVars: string[]): { missing: string[], values: Record<string, string> } {
+  const values: Record<string, string> = {};
+  const missing: string[] = [];
+
+  for (const v of requiredVars) {
+    const value = process.env[v];
+    if (value) {
+      values[v] = value;
+    } else {
+      missing.push(v);
+    }
+  }
+  return { missing, values };
+}
+
+// --- Server Actions ---
 
 export async function submitContactForm(
   prevState: ContactFormState,
@@ -62,64 +80,46 @@ export async function submitContactForm(
       success: false,
     };
   }
-  
-  const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME;
-  const MONGODB_CONTACT_COLLECTION = process.env.MONGODB_CONTACT_COLLECTION;
 
-  if (!MONGODB_DB_NAME || !MONGODB_CONTACT_COLLECTION) {
-    console.error("Server Configuration Error: MONGODB_DB_NAME or MONGODB_CONTACT_COLLECTION is not set.");
+  const { missing, values } = checkEnvVars(['MONGODB_DB_NAME', 'MONGODB_CONTACT_COLLECTION']);
+  if (missing.length > 0) {
+    const errorMsg = `Server Configuration Error: The following environment variables are missing: ${missing.join(', ')}. Contact form cannot be submitted.`;
+    console.error(errorMsg);
     return {
-      message: "Server configuration error. Please contact support if this issue persists.",
+      message: "Server configuration error prevents saving your message. Please contact support.",
       success: false,
     };
   }
+  const { MONGODB_DB_NAME, MONGODB_CONTACT_COLLECTION } = values;
 
   try {
     const mongoClient = await getMongoClient();
     const db = mongoClient.db(MONGODB_DB_NAME);
     const collection = db.collection(MONGODB_CONTACT_COLLECTION);
 
-    const submissionData = {
-      ...parsed.data,
-      submittedAt: new Date(),
-    };
-
-    await collection.insertOne(submissionData);
+    await collection.insertOne({ ...parsed.data, submittedAt: new Date() });
 
     return {
-      message: 'Thank you! Your message has been sent successfully and stored.',
+      message: 'Thank you! Your message has been sent successfully.',
       success: true,
     };
   } catch (error) {
     console.error('Failed to submit contact form to MongoDB:', error);
-    let errorMessage = "An error occurred while sending your message. Please try again later.";
-    if (error instanceof Error) {
-        if (error.message.toLowerCase().includes('authentication failed')) {
-            errorMessage = "Database authentication failed. Please check server logs and contact support.";
-        } else if (error.message.includes('ENOTFOUND') || error.message.includes('ECONNREFUSED') || error.message.includes('connection refused')) {
-            errorMessage = "Could not connect to the database. Please check connection string and network access.";
-        } else if (error.message.includes('topology was destroyed')) {
-            errorMessage = "Database connection was lost. Please try again.";
-             // @ts-ignore
-            if (process.env.NODE_ENV === 'development') global._mongoClientPromise = null;
-            clientPromise = null; // Reset promise to allow re-connection attempt
-        }
-    }
     return {
-      message: errorMessage,
+      message: "An unexpected error occurred while sending your message. Please try again later.",
       success: false,
     };
   }
 }
 
 export async function getCvDownloads(): Promise<number> {
-  const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME;
-  const MONGODB_COUNTERS_COLLECTION = process.env.MONGODB_COUNTERS_COLLECTION;
-
-  if (!MONGODB_DB_NAME || !MONGODB_COUNTERS_COLLECTION) {
-    console.error("Server Configuration Error: MONGODB_DB_NAME or MONGODB_COUNTERS_COLLECTION is not set.");
+  const { missing, values } = checkEnvVars(['MONGODB_DB_NAME', 'MONGODB_COUNTERS_COLLECTION']);
+  if (missing.length > 0) {
+    console.error(`Server Configuration Error for getCvDownloads: Missing environment variables: ${missing.join(', ')}. Returning 0.`);
     return 0;
   }
+  const { MONGODB_DB_NAME, MONGODB_COUNTERS_COLLECTION } = values;
+
   try {
     const mongoClient = await getMongoClient();
     const db = mongoClient.db(MONGODB_DB_NAME);
@@ -128,18 +128,18 @@ export async function getCvDownloads(): Promise<number> {
     return counter ? counter.count : 0;
   } catch (error) {
     console.error('Failed to get CV download count:', error);
-    return 0; // Return 0 on error so the site doesn't break
+    return 0; // Return 0 on error to avoid breaking the page
   }
 }
 
 export async function incrementCvDownloads(): Promise<{ success: boolean }> {
-  const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME;
-  const MONGODB_COUNTERS_COLLECTION = process.env.MONGODB_COUNTERS_COLLECTION;
-
-  if (!MONGODB_DB_NAME || !MONGODB_COUNTERS_COLLECTION) {
-    console.error("Server Configuration Error: MONGODB_DB_NAME or MONGODB_COUNTERS_COLLECTION is not set.");
+  const { missing, values } = checkEnvVars(['MONGODB_DB_NAME', 'MONGODB_COUNTERS_COLLECTION']);
+  if (missing.length > 0) {
+    console.error(`Server Configuration Error for incrementCvDownloads: Missing environment variables: ${missing.join(', ')}. Cannot increment count.`);
     return { success: false };
   }
+  const { MONGODB_DB_NAME, MONGODB_COUNTERS_COLLECTION } = values;
+
   try {
     const mongoClient = await getMongoClient();
     const db = mongoClient.db(MONGODB_DB_NAME);
