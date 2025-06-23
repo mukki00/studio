@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   icons: {
     icon: '/profile.ico',
     shortcut: '/profile.ico',
-    apple: '/profile.ico',
+    apple: '/profile.ico'
   },
 };
 
