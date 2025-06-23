@@ -11,6 +11,8 @@ export const metadata: Metadata = {
   keywords: ['portfolio', 'personal website', 'developer', 'projects', 'blog'],
   icons: {
     icon: '/profile.ico',
+    shortcut: '/profile.ico',
+    apple: '/profile.ico'
   },
 };
 
