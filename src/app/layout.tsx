@@ -1,4 +1,3 @@
-
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
@@ -38,7 +37,26 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${ptSans.variable} scroll-smooth`} suppressHydrationWarning>
-      <head />
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: `
+            {
+              "@context": "https://schema.org",
+              "@type": "Person",
+              "name": "Muksith",
+              "url": "https://muksith.dev",
+              "jobTitle": "Tech Lead | Full Stack Engineer",
+              "sameAs": [
+                "https://www.linkedin.com/in/your-profile",
+                "https://github.com/mukki00"
+              ]
+            }
+            `
+          }}
+        />
+      </head>
       <body className="font-body antialiased" suppressHydrationWarning={true}>
         <ThemeProvider
           attribute="class"
