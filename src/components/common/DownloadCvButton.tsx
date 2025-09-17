@@ -5,20 +5,24 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { getDownloadCount, incrementDownloadCount } from '@/app/actions';
 
 export default function DownloadCvButton() {
-  const [downloadCount, setDownloadCount] = useState(0);
+  const [downloadCount, setDownloadCount] = useState<number | null>(null);
 
   useEffect(() => {
-    // For a static site, we can't fetch a real count.
-    // We can simulate a starting number or just start from 0.
-    // Let's start with a random-ish number to make it look established.
-    const initialCount = Math.floor(Math.random() * (250 - 50 + 1)) + 50;
-    setDownloadCount(initialCount);
+    async function fetchCount() {
+      const count = await getDownloadCount();
+      setDownloadCount(count);
+    }
+    fetchCount();
   }, []);
 
-  const handleDownload = () => {
-    setDownloadCount(prevCount => prevCount + 1);
+  const handleDownload = async () => {
+    // Optimistically update the UI
+    setDownloadCount(prevCount => (prevCount !== null ? prevCount + 1 : 1));
+    // Then call the server to increment the count
+    await incrementDownloadCount();
   };
 
   return (
@@ -30,7 +34,10 @@ export default function DownloadCvButton() {
         </Link>
       </Button>
       <p className="text-sm h-5 text-foreground/80">
-        {downloadCount > 0 ? `${downloadCount} downloads` : 'Download my CV to learn more about my experience.'}
+        {downloadCount !== null ? 
+            `${downloadCount} visitors have downloaded my CV—feel free to take a look.` 
+            : 'Loading download count...'
+        }
       </p>
     </div>
   );
