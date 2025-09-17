@@ -113,32 +113,25 @@ export async function submitContactForm(
   }
 }
 
-export const getCvDownloads = unstable_cache(
-  async (): Promise<number> => {
-    const { missing, values } = checkEnvVars(['MONGODB_DB_NAME', 'MONGODB_COUNTERS_COLLECTION']);
-    if (missing.length > 0) {
-      console.error(`Server Configuration Error for getCvDownloads: Missing environment variables: ${missing.join(', ')}. Returning 0.`);
-      return 0;
-    }
-    const { MONGODB_DB_NAME, MONGODB_COUNTERS_COLLECTION } = values;
-
-    try {
-      const mongoClient = await getMongoClient();
-      const db = mongoClient.db(MONGODB_DB_NAME);
-      const collection = db.collection(MONGODB_COUNTERS_COLLECTION);
-      const counter = await collection.findOne({ _id: 'cv' });
-      return counter ? counter.count : 0;
-    } catch (error) {
-      console.error('Failed to get CV download count:', error);
-      return 0; // Return 0 on error to avoid breaking the page
-    }
-  },
-  ['cv-downloads-count'],
-  {
-    tags: ['cv-downloads'],
-    revalidate: 3600, // Revalidate every hour
+export async function getCvDownloads(): Promise<number> {
+  const { missing, values } = checkEnvVars(['MONGODB_DB_NAME', 'MONGODB_COUNTERS_COLLECTION']);
+  if (missing.length > 0) {
+    console.error(`Server Configuration Error for getCvDownloads: Missing environment variables: ${missing.join(', ')}. Returning 0.`);
+    return 0;
   }
-);
+  const { MONGODB_DB_NAME, MONGODB_COUNTERS_COLLECTION } = values;
+
+  try {
+    const mongoClient = await getMongoClient();
+    const db = mongoClient.db(MONGODB_DB_NAME);
+    const collection = db.collection(MONGODB_COUNTERS_COLLECTION);
+    const counter = await collection.findOne({ _id: 'cv' });
+    return counter ? counter.count : 0;
+  } catch (error) {
+    console.error('Failed to get CV download count:', error);
+    return 0; // Return 0 on error to avoid breaking the page
+  }
+}
 
 
 export async function incrementCvDownloads(): Promise<{ success: boolean }> {
