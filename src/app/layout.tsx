@@ -15,9 +15,15 @@ const ptSans = PT_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'Mohammedh Muksith | Personal Portfolio',
-  description: 'A personal portfolio website showcasing projects, blog posts, and skills.',
-  keywords: ['portfolio', 'personal website', 'developer', 'projects', 'blog'],
+  metadataBase: new URL('https://muksith.com'), // Replace with your actual domain
+  title: {
+    default: 'Mohammedh Muksith | Personal Portfolio',
+    template: '%s | Mohammedh Muksith',
+  },
+  description: 'A personal portfolio website showcasing projects, blog posts, and skills of Mohammedh Muksith, a Tech Lead.',
+  keywords: ['portfolio', 'personal website', 'developer', 'Tech Lead', 'Mohammedh Muksith', 'projects', 'blog', 'Angular', 'React', 'Node.js'],
+  creator: 'Mohammedh Muksith',
+  authors: [{ name: 'Mohammedh Muksith', url: 'https://muksith.com' }], // Replace with your actual domain
   icons: {
     icon: '/profile.ico',
     shortcut: '/profile.ico',
@@ -34,13 +40,6 @@ export default function RootLayout({
     <html lang="en" className={`${ptSans.variable} scroll-smooth`} suppressHydrationWarning>
       <head />
       <body className="font-body antialiased" suppressHydrationWarning={true}>
-        <div className="clouds-background" aria-hidden="true">
-          <div className="cloud-base cloud1"></div>
-          <div className="cloud-base cloud2"></div>
-          <div className="cloud-base cloud3"></div>
-          <div className="cloud-base cloud4"></div>
-          <div className="cloud-base cloud5"></div>
-        </div>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
