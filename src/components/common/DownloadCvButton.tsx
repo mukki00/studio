@@ -33,7 +33,7 @@ export default function DownloadCvButton() {
           Download CV
         </Link>
       </Button>
-      <p className="text-sm h-5 text-foreground/80">
+      <p className="text-sm h-5 font-bold text-accent">
         {downloadCount !== null ? 
             `${downloadCount} visitors have downloaded my CV—feel free to take a look.` 
             : 'Loading download count...'
