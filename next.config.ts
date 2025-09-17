@@ -2,7 +2,6 @@
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
-  output: 'export',
   /* config options here */
   typescript: {
     ignoreBuildErrors: true,
@@ -20,19 +19,6 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
-  },
-  async headers() {
-    return [
-      {
-        source: '/:all*(svg|jpg|jpeg|png|gif|ico|webp)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
-    ]
   },
 };
 
