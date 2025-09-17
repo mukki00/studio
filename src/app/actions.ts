@@ -124,7 +124,7 @@ export async function getCvDownloads(): Promise<number> {
   try {
     const mongoClient = await getMongoClient();
     const db = mongoClient.db(MONGODB_DB_NAME);
-    const collection = db.collection(MONGODB_COUNTERS_COLLECTION);
+    const collection = db.collection<{ _id: string; count: number }>(MONGODB_COUNTERS_COLLECTION);
     const counter = await collection.findOne({ _id: 'cv' });
     return counter ? counter.count : 0;
   } catch (error) {
@@ -145,8 +145,8 @@ export async function incrementCvDownloads(): Promise<{ success: boolean }> {
   try {
     const mongoClient = await getMongoClient();
     const db = mongoClient.db(MONGODB_DB_NAME);
-    const collection = db.collection(MONGODB_COUNTERS_COLLECTION);
-    
+    const collection = db.collection<{ _id: string; count: number }>(MONGODB_COUNTERS_COLLECTION);
+
     await collection.findOneAndUpdate(
       { _id: 'cv' },
       { $inc: { count: 1 } },
