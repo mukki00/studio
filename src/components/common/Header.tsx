@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { Menu, X, User, Briefcase, FileText, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from '@/components/common/ThemeToggle';
 
@@ -145,13 +145,9 @@ export default function Header() {
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="right" className="w-[280px] bg-card p-0">
-                  <div className="flex justify-between items-center p-6 border-b border-border">
-                     <h2 className="text-xl font-bold text-accent font-headline">Menu</h2>
-                     <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(false)} className="text-accent hover:bg-accent/10">
-                       <X className="h-6 w-6" />
-                       <span className="sr-only">Close menu</span>
-                     </Button>
-                  </div>
+                  <SheetHeader className="p-6 border-b border-border text-left">
+                     <SheetTitle className="text-xl font-bold text-accent font-headline">Menu</SheetTitle>
+                  </SheetHeader>
                   <nav className="flex flex-col space-y-1 p-4">
                     <NavLinks mobile />
                     <div className="pt-4 border-t border-border mt-4">
