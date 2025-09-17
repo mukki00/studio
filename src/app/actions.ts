@@ -25,7 +25,7 @@ async function getDb() {
     return cachedClient.db(MONGODB_DB_NAME);
   }
   
-  const client = new MongoClient(MONGODB_URI);
+  const client = new MongoClient(MONGODB_URI!);
   await client.connect();
   cachedClient = client;
   return client.db(MONGODB_DB_NAME);
@@ -36,7 +36,7 @@ const COUNTER_ID = 'cv';
 export async function getDownloadCount(): Promise<number> {
   try {
     const db = await getDb();
-    const counters = db.collection(MONGODB_COUNTERS_COLLECTION);
+    const counters = db.collection<{ _id: string; count: number }>(MONGODB_COUNTERS_COLLECTION);
 
     const counter = await counters.findOne({ _id: COUNTER_ID });
     
@@ -50,7 +50,7 @@ export async function getDownloadCount(): Promise<number> {
 export async function incrementDownloadCount(): Promise<void> {
    try {
     const db = await getDb();
-    const counters = db.collection(MONGODB_COUNTERS_COLLECTION);
+    const counters = db.collection<{ _id: string; count: number }>(MONGODB_COUNTERS_COLLECTION);
     
     await counters.updateOne(
         { _id: COUNTER_ID },
