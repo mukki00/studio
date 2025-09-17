@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://muksith.com/about</loc>
-    <lastmod>2024-08-05</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <loc>https://muksith.com/</loc>
+    <lastmod>2024-07-27</lastmod>
+    <priority>1.00</priority>
   </url>
   <url>
-    <loc>https://muksith.com/projects</loc>
-    <lastmod>2024-08-05</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1</priority>
+    <loc>https://muksith.com/#about</loc>
+    <lastmod>2024-07-27</lastmod>
+    <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://muksith.com/blog</loc>
-    <lastmod>2024-08-05</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1</priority>
+    <loc>https://muksith.com/#projects</loc>
+    <lastmod>2024-07-27</lastmod>
+    <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://muksith.com/contact</loc>
-    <lastmod>2024-08-05</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.7</priority>
+    <loc>https://muksith.com/#blog</loc>
+    <lastmod>2024-07-27</lastmod>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://muksith.com/#contact</loc>
+    <lastmod>2024-07-27</lastmod>
+    <priority>0.80</priority>
   </url>
 </urlset>
