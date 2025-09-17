@@ -27,7 +27,7 @@ async function getDb() {
   return client.db(MONGODB_DB_NAME);
 }
 
-const COUNTER_ID = 'cvDownloads';
+const COUNTER_ID = 'cv';
 
 export async function getDownloadCount(): Promise<number> {
   try {
