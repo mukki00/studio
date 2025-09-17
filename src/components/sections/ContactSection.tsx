@@ -2,10 +2,11 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import type { z } from 'zod';
 import { contactFormSchema } from '@/lib/schemas';
 import { submitContactForm } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
@@ -30,7 +31,7 @@ function SubmitButton() {
 
 export default function ContactSection() {
   const { toast } = useToast();
-  const [state, formAction] = useFormState(submitContactForm, {
+  const [state, formAction] = useActionState(submitContactForm, {
     success: false,
     message: '',
   });
