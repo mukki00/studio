@@ -1,21 +1,33 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Download } from 'lucide-react';
-import { incrementCvDownloads } from '@/app/actions';
+import { Download, Loader2 } from 'lucide-react';
+import { incrementCvDownloads, getCvDownloads } from '@/app/actions';
 
-interface DownloadCvButtonProps {
-  initialCount: number;
-}
+export default function DownloadCvButton() {
+  const [count, setCount] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-export default function DownloadCvButton({ initialCount }: DownloadCvButtonProps) {
-  const [count, setCount] = useState(initialCount);
+  useEffect(() => {
+    async function fetchCount() {
+      try {
+        const initialCount = await getCvDownloads();
+        setCount(initialCount);
+      } catch (error) {
+        console.error("Failed to fetch CV download count:", error);
+        setCount(0); // Default to 0 on error
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchCount();
+  }, []);
 
   const handleClick = () => {
     // Optimistically update the UI
-    setCount(prevCount => prevCount + 1);
+    setCount(prevCount => (prevCount !== null ? prevCount + 1 : 1));
     // Call the server action to update the database in the background
     incrementCvDownloads();
   };
@@ -28,12 +40,23 @@ export default function DownloadCvButton({ initialCount }: DownloadCvButtonProps
           Download CV
         </Link>
       </Button>
-      <p className="text-sm">
-        <span className="font-bold text-accent">{count.toLocaleString()}</span>
-        <span className="font-semibold text-foreground/90">
-          {' '}
-          visitors have downloaded my CV—feel free to take a look.
-        </span>
+      <p className="text-sm h-5"> {/* Set a fixed height to prevent layout shift */}
+        {isLoading ? (
+          <span className="flex items-center text-foreground/70">
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Loading downloads...
+          </span>
+        ) : (
+          <>
+            <span className="font-bold text-accent">
+              {(count ?? 0).toLocaleString()}
+            </span>
+            <span className="font-semibold text-foreground/90">
+              {' '}
+              visitors have downloaded my CV—feel free to take a look.
+            </span>
+          </>
+        )}
       </p>
     </div>
   );

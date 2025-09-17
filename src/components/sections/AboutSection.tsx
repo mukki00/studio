@@ -3,16 +3,13 @@ import Image from 'next/image';
 import Section from '@/components/common/Section';
 import { Button } from '@/components/ui/button';
 import { Linkedin, Github, Briefcase, Cloud, Target } from 'lucide-react';
-import { getCvDownloads } from '@/app/actions';
 import DownloadCvButton from '@/components/common/DownloadCvButton';
 
-export default async function AboutSection() {
+export default function AboutSection() {
   const coreTechnologies = ["Angular", "React", "Vue", "Node.js", "Spring Boot", "PHP (Laravel)", "GraphQL", "Docker", "AWS", "Azure", "SQL", "WebLogic"];
   const devopsCloudSkills = ["CI/CD", "Monitoring", "Kubernetes", "AppDynamics", "Splunk"];
   const focusAreas = ["Technical Architecture", "Mentorship", "Agile PI Planning", "Team Scaling"];
   
-  const initialCount = await getCvDownloads();
-
   return (
     <Section
       id="about"
@@ -23,8 +20,8 @@ export default async function AboutSection() {
         Building Tomorrow’s Software, Today
         <span className="quote-mark">”</span>
       </blockquote>
-      <div className="grid md:grid-cols-5 gap-12 items-start">
-        <div className="md:col-span-2 flex justify-center items-center md:order-last">
+      <div className="grid lg:grid-cols-5 gap-12 items-start">
+        <div className="lg:col-span-2 flex justify-center items-center lg:order-last">
           <Image
             src="/profile_photo.png"
             alt="Mohammedh Muksith - Professional Portrait"
@@ -35,7 +32,7 @@ export default async function AboutSection() {
             data-ai-hint="professional portrait"
           />
         </div>
-        <div className="md:col-span-3 space-y-6 text-left">
+        <div className="lg:col-span-3 space-y-6 text-left">
           <p className="text-lg text-foreground/90 leading-relaxed">
             As a Tech Lead with over 6 years of hands-on experience, I specialize in building scalable, enterprise-grade software across cloud-native and hybrid environments. My expertise spans modern front-end frameworks like Angular, React, and Vue, as well as robust back-end systems using Node.js, Spring Boot, and Laravel.
           </p>
@@ -75,7 +72,7 @@ export default async function AboutSection() {
           </p>
 
           <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4 pt-4">
-            <DownloadCvButton initialCount={initialCount} />
+            <DownloadCvButton />
             <div className="flex gap-4">
               <Button asChild variant="outline" size="icon" aria-label="LinkedIn Profile">
                 <Link href="https://www.linkedin.com/in/mukki00" target="_blank" rel="noopener noreferrer">
