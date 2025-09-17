@@ -19,7 +19,7 @@ export default function BlogPostCard({ title, excerpt, date, slug, imageUrl, ima
   return (
     <Card className="flex flex-col h-full overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1">
       <CardHeader className="p-0">
-        <Link href={`/blog/${slug}`} className="block aspect-video relative overflow-hidden group">
+        <Link href={`/blog/${slug}`} className="block aspect-video relative overflow-hidden group" aria-label={`Read more about ${title}`}>
           <Image
             src={imageUrl}
             alt={title}
@@ -47,7 +47,7 @@ export default function BlogPostCard({ title, excerpt, date, slug, imageUrl, ima
       </CardContent>
       <CardFooter className="p-6 pt-0">
         <Button asChild variant="link" className="text-accent hover:text-accent/90 p-0">
-          <Link href={`/blog/${slug}`}>
+          <Link href={`/blog/${slug}`} aria-label={`Read more about ${title}`}>
             Read More <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
         </Button>

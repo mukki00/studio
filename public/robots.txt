@@ -1,0 +1,9 @@
+# Allow all user agents to crawl the site
+User-agent: *
+Allow: /
+
+# Disallow crawling of specific private directories if any
+# Disallow: /private/
+
+# Location of sitemap
+Sitemap: https://muksith.com/sitemap.xml
