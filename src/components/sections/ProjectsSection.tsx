@@ -29,12 +29,19 @@ const projects: Array<{
     repoLink: 'https://github.com/mukki00/studio.git',
   },
   {
-    title: 'Job Tracker',
-    description: 'A tool that extracts jobs from multiple portals and applies automatically to save time and boost efficiency',
+    title: 'Job Tracker Tool',
+    description: 'A tool that extracts jobs from multiple portals to save time and boost efficiency',
     imageUrl: '/images/JobTracker/JobTracker.png',
     imageHint: 'Python, Oracle, GitHub Actions',
     tags: ['Python', 'Oracle', 'GitHub Actions'],
     repoLink: 'https://github.com/mukki00/JobTracker.git',
+  },
+  {
+    title: 'Stock Market Analysis Tool',
+    description: 'A web application that provides real-time stock market data, analysis, and visualization tools for investors and traders.',
+    imageUrl: '/images/stock_market_analysis/stock_market_analysis.png',
+    imageHint: 'React, Node.js, Express, MongoDB, Chart.js',
+    tags: ['React', 'Node.js', 'Express', 'MongoDB', 'Chart.js', 'Tailwind CSS'],
   }
 ];
 
@@ -47,7 +54,7 @@ export default function ProjectsSection() {
       className="bg-primary/5"
     >
       {projects.length > 0 ? (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
           {projects.map((project) => (
             <ProjectCard key={project.title} {...project} />
           ))}
