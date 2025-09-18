@@ -39,7 +39,7 @@ const projects: Array<{
   {
     title: 'Stock Market Analysis Tool',
     description: 'A web application that provides real-time stock market data, analysis, and visualization tools for investors and traders.',
-    imageUrl: '/images/StockMarketAnalysisTool/StockMarketAnalysisTool.png',
+    imageUrl: '/images/stock_market_analysis/stock_market_analysis.png',
     imageHint: 'React, Node.js, Express, MongoDB, Chart.js',
     tags: ['React', 'Node.js', 'Express', 'MongoDB', 'Chart.js', 'Tailwind CSS'],
   }
