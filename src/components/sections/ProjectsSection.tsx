@@ -10,7 +10,32 @@ const projects: Array<{
   liveLink?: string;
   repoLink?: string;
 }> = [
-  // Projects will be added here in the future
+  {
+    title: 'Balangoda Grand Mosque Website',
+    description: 'Balangoda Grand Mosque - Sheltering communities with compassion and unity. Find prayer times, notices, community updates, and sanda collection services on our website.',
+    imageUrl: '/images/balangoda_grand_mosque/Jummah_Masjidh.png',
+    imageHint: 'Next.js, Express, Oracle, Tailwind CSS, GitHub Actions',
+    tags: ['Next.js', 'Express', 'Oracle', 'Tailwind CSS', 'GitHub Actions'],
+    liveLink: 'https://balangodajummahmasjidh.org.lk/',
+    repoLink: 'https://github.com/mukki00/studio.git',
+  },
+  {
+    title: 'Portfolio Website',
+    description: 'A personal portfolio website to showcase my projects, skills, and experience as a Full Stack Developer and Software Architect.',
+    imageUrl: '/profile_photo.png',
+    imageHint: 'Next.js, Firebase, Cloud Firestore, MongoDB',
+    tags: ['Next.js', 'Firebase', 'Cloud Firestore', 'MongoDB','tailwindcss', 'GitHub Actions'],
+    liveLink: 'https://muksith.dev/',
+    repoLink: 'https://github.com/mukki00/studio.git',
+  },
+  {
+    title: 'Job Tracker',
+    description: 'A tool that extracts jobs from multiple portals and applies automatically to save time and boost efficiency',
+    imageUrl: '/images/JobTracker/JobTracker.png',
+    imageHint: 'Python, Oracle, GitHub Actions',
+    tags: ['Python', 'Oracle', 'GitHub Actions'],
+    repoLink: 'https://github.com/mukki00/JobTracker.git',
+  }
 ];
 
 export default function ProjectsSection() {
@@ -22,7 +47,7 @@ export default function ProjectsSection() {
       className="bg-primary/5"
     >
       {projects.length > 0 ? (
-        <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {projects.map((project) => (
             <ProjectCard key={project.title} {...project} />
           ))}

@@ -45,7 +45,7 @@ export default function ProjectCard({ title, description, imageUrl, imageHint, t
         {liveLink && (
           <Button asChild variant="default" className="flex-1 bg-accent hover:bg-accent/90 text-accent-foreground">
             <Link href={liveLink} target="_blank" rel="noopener noreferrer">
-              <ExternalLink className="mr-2 h-4 w-4" /> Live Demo
+              <ExternalLink className="mr-2 h-4 w-4" /> Live Link
             </Link>
           </Button>
         )}
