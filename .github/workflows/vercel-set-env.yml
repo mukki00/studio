@@ -1,0 +1,35 @@
+name: Vercel - Set Environment Variables
+
+on:
+  workflow_dispatch:
+
+jobs:
+  set-env:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set Vercel Environment Variables
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          MONGODB_DB_NAME: ${{ secrets.MONGODB_DB_NAME }}
+          MONGODB_CONTACT_COLLECTION: ${{ secrets.MONGODB_CONTACT_COLLECTION }}
+          MONGODB_COUNTERS_COLLECTION: ${{ secrets.MONGODB_COUNTERS_COLLECTION }}
+        run: |
+          set -eux
+          API="https://api.vercel.com/v9/projects/${VERCEL_PROJECT_ID}/env"
+
+          add_env() {
+            NAME="$1"; VALUE="$2"; SCOPE="production"
+            echo "Setting $NAME"
+            curl -sS -X POST "$API" \
+              -H "Authorization: Bearer ${VERCEL_TOKEN}" \
+              -H "Content-Type: application/json" \
+              -d "{\"key\": \"$NAME\", \"value\": \"$VALUE\", \"target\": [\"production\"] }"
+          }
+
+          add_env "MONGODB_URI" "${MONGODB_URI}"
+          add_env "MONGODB_DB_NAME" "${MONGODB_DB_NAME}"
+          add_env "MONGODB_CONTACT_COLLECTION" "${MONGODB_CONTACT_COLLECTION}"
+          add_env "MONGODB_COUNTERS_COLLECTION" "${MONGODB_COUNTERS_COLLECTION}"
