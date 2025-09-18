@@ -65,6 +65,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
+          <Analytics />
           <Toaster />
           <WhatsAppButton />
         </ThemeProvider>
