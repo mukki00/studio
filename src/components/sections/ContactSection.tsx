@@ -2,13 +2,11 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { z } from 'zod';
 import { contactFormSchema } from '@/lib/schemas';
-import { submitContactForm } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
 import Section from '@/components/common/Section';
 import { Button } from '@/components/ui/button';
@@ -31,10 +29,6 @@ function SubmitButton() {
 
 export default function ContactSection() {
   const { toast } = useToast();
-  const [state, formAction] = useActionState(submitContactForm, {
-    success: false,
-    message: '',
-  });
 
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactFormSchema),
@@ -46,22 +40,8 @@ export default function ContactSection() {
   });
 
   useEffect(() => {
-    if (state.message) {
-      if (state.success) {
-        toast({
-          title: "Success!",
-          description: state.message,
-        });
-        form.reset();
-      } else {
-        toast({
-          title: "Error",
-          description: state.message,
-          variant: "destructive",
-        });
-      }
-    }
-  }, [state, toast, form]);
+    // noop: state-driven toasts handled after submit
+  }, []);
 
   return (
     <Section
@@ -80,7 +60,28 @@ export default function ContactSection() {
           </CardHeader>
           <CardContent>
             <Form {...form}>
-              <form action={formAction} className="space-y-6">
+              <form
+                onSubmit={form.handleSubmit(async (values) => {
+                  try {
+                    const res = await fetch('/api/contact', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify(values),
+                    });
+                    const json = await res.json();
+                    if (res.ok && json.success) {
+                      toast({ title: 'Success!', description: json.message });
+                      form.reset();
+                    } else {
+                      toast({ title: 'Error', description: json.message || 'Submission failed', variant: 'destructive' });
+                    }
+                  } catch (err) {
+                    console.error('Contact submit error', err);
+                    toast({ title: 'Error', description: 'Something went wrong. Please try again later.', variant: 'destructive' });
+                  }
+                })}
+                className="space-y-6"
+              >
                 <FormField
                   control={form.control}
                   name="name"

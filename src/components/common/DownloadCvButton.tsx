@@ -5,15 +5,24 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { getDownloadCount, incrementDownloadCount } from '@/app/actions';
 
 export default function DownloadCvButton() {
   const [downloadCount, setDownloadCount] = useState<number | null>(null);
 
   useEffect(() => {
     async function fetchCount() {
-      const count = await getDownloadCount();
-      setDownloadCount(count);
+      try {
+        const res = await fetch('/api/cv');
+        if (res.ok) {
+          const json = await res.json();
+          setDownloadCount(json.count ?? 0);
+        } else {
+          setDownloadCount(0);
+        }
+      } catch (err) {
+        console.error('Error fetching download count', err);
+        setDownloadCount(0);
+      }
     }
     fetchCount();
   }, []);
@@ -22,7 +31,11 @@ export default function DownloadCvButton() {
     // Optimistically update the UI
     setDownloadCount(prevCount => (prevCount !== null ? prevCount + 1 : 1));
     // Then call the server to increment the count
-    await incrementDownloadCount();
+    try {
+      await fetch('/api/cv', { method: 'POST' });
+    } catch (err) {
+      console.error('Error incrementing download count', err);
+    }
   };
 
   return (
