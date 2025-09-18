@@ -29,7 +29,7 @@ const projects: Array<{
     repoLink: 'https://github.com/mukki00/studio.git',
   },
   {
-    title: 'Job Tracker',
+    title: 'Job Tracker Tool',
     description: 'A tool that extracts jobs from multiple portals and applies automatically to save time and boost efficiency',
     imageUrl: '/images/JobTracker/JobTracker.png',
     imageHint: 'Python, Oracle, GitHub Actions',
@@ -54,7 +54,7 @@ export default function ProjectsSection() {
       className="bg-primary/5"
     >
       {projects.length > 0 ? (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
           {projects.map((project) => (
             <ProjectCard key={project.title} {...project} />
           ))}
