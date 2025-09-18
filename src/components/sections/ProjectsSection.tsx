@@ -35,6 +35,13 @@ const projects: Array<{
     imageHint: 'Python, Oracle, GitHub Actions',
     tags: ['Python', 'Oracle', 'GitHub Actions'],
     repoLink: 'https://github.com/mukki00/JobTracker.git',
+  },
+  {
+    title: 'Stock Market Analysis Tool',
+    description: 'A web application that provides real-time stock market data, analysis, and visualization tools for investors and traders.',
+    imageUrl: '/images/StockMarketAnalysisTool/StockMarketAnalysisTool.png',
+    imageHint: 'React, Node.js, Express, MongoDB, Chart.js',
+    tags: ['React', 'Node.js', 'Express', 'MongoDB', 'Chart.js', 'Tailwind CSS'],
   }
 ];
 
