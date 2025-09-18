@@ -4,7 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/common/ThemeProvider";
 import WhatsAppButton from '@/components/common/WhatsAppButton';
 import { PT_Sans } from 'next/font/google';
-
+import { Analytics } from "@vercel/analytics/next"
 const ptSans = PT_Sans({
   subsets: ['latin'],
   weight: ['400', '700'],
