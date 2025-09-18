@@ -6,4 +6,4 @@ Allow: /
 # Disallow: /private/
 
 # Location of sitemap
-Sitemap: https://muksith.com/sitemap.xml
+Sitemap: https://muksith.dev/sitemap.xml
