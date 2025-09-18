@@ -30,7 +30,7 @@ const projects: Array<{
   },
   {
     title: 'Job Tracker Tool',
-    description: 'A tool that extracts jobs from multiple portals and applies automatically to save time and boost efficiency',
+    description: 'A tool that extracts jobs from multiple portals to save time and boost efficiency',
     imageUrl: '/images/JobTracker/JobTracker.png',
     imageHint: 'Python, Oracle, GitHub Actions',
     tags: ['Python', 'Oracle', 'GitHub Actions'],
