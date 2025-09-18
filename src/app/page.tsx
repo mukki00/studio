@@ -22,7 +22,7 @@ export default function HomePage() {
           <h1 className="text-4xl font-bold mb-2">Mohamedh Muksith</h1>
           <h2 className="text-2xl font-semibold mb-4">Full Stack Developer & Software Architect</h2>
           <p className="max-w-2xl mx-auto text-lg">
-            Welcome! I am Mohamedh Muksith, a passionate Full Stack Developer and Software Architect. If you searched for Muksith, Mohamedh Muksith, Full Stack Developer, or Software Architect, you are in the right place. Explore my portfolio, projects, and blog to learn more about my expertise in building scalable software solutions.
+            Welcome! I am Mohamedh Muksith, a passionate Full Stack Developer and Software Architect. Explore my portfolio, projects, and blog to learn more about my expertise in building scalable software solutions.
           </p>
         </section>
         <AboutSection />
