@@ -74,14 +74,14 @@ export default function AboutSection() {
           <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4 pt-4">
             <DownloadCvButton />
             <div className="flex gap-4">
-              <Button asChild variant="outline" size="icon" aria-label="LinkedIn Profile">
+              <Button asChild variant="outline" size="icon" aria-label="LinkedIn Profile" className="border-accent/30 text-accent hover:bg-accent/10 hover:border-accent/50">
                 <Link href="https://www.linkedin.com/in/mukki00" target="_blank" rel="noopener noreferrer">
-                  <Linkedin className="h-5 w-5 text-accent" />
+                  <Linkedin className="h-5 w-5" />
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="icon" aria-label="GitHub Profile">
+              <Button asChild variant="outline" size="icon" aria-label="GitHub Profile" className="border-accent/30 text-accent hover:bg-accent/10 hover:border-accent/50">
                 <Link href="https://github.com/mukki00" target="_blank" rel="noopener noreferrer">
-                  <Github className="h-5 w-5 text-accent" />
+                  <Github className="h-5 w-5" />
                 </Link>
               </Button>
             </div>

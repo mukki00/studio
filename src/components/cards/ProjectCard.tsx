@@ -13,9 +13,11 @@ interface ProjectCardProps {
   tags: string[];
   liveLink?: string;
   repoLink?: string;
+  clickCount?: number;
+  onLiveLinkClick?: () => void;
 }
 
-export default function ProjectCard({ title, description, imageUrl, imageHint, tags, liveLink, repoLink }: ProjectCardProps) {
+export default function ProjectCard({ title, description, imageUrl, imageHint, tags, liveLink, repoLink, clickCount = 0, onLiveLinkClick }: ProjectCardProps) {
   return (
     <Card className="flex flex-col h-full overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1">
       <CardHeader className="p-0">
@@ -41,20 +43,34 @@ export default function ProjectCard({ title, description, imageUrl, imageHint, t
         </div>
         <p className="text-foreground/80 text-sm leading-relaxed">{description}</p>
       </CardContent>
-      <CardFooter className="p-6 pt-0 flex gap-3">
-        {liveLink && (
-          <Button asChild variant="default" className="flex-1 bg-accent hover:bg-accent/90 text-accent-foreground">
-            <Link href={liveLink} target="_blank" rel="noopener noreferrer">
-              <ExternalLink className="mr-2 h-4 w-4" /> Live Link
-            </Link>
-          </Button>
-        )}
-        {repoLink && (
-          <Button asChild variant="outline" className="flex-1 border-accent text-accent hover:bg-accent/10 hover:text-accent">
-            <Link href={repoLink} target="_blank" rel="noopener noreferrer">
-              <Github className="mr-2 h-4 w-4" /> Repository
-            </Link>
-          </Button>
+      <CardFooter className="p-6 pt-0 flex flex-col gap-3">
+        <div className="flex gap-3 w-full">
+          {liveLink && (
+            <Button 
+              variant="default" 
+              className="flex-1 bg-accent hover:bg-accent/90 text-accent-foreground"
+              onClick={() => {
+                if (onLiveLinkClick) {
+                  onLiveLinkClick();
+                }
+                window.open(liveLink, '_blank', 'noopener,noreferrer');
+              }}
+            >
+              <ExternalLink className="mr-2 h-4 w-4" /> Live Demo
+            </Button>
+          )}
+          {repoLink && (
+            <Button asChild variant="outline" className="flex-1 border-accent text-accent hover:bg-accent/10 hover:text-accent">
+              <Link href={repoLink} target="_blank" rel="noopener noreferrer">
+                <Github className="mr-2 h-4 w-4" /> Repository
+              </Link>
+            </Button>
+          )}
+        </div>
+        {liveLink && clickCount > 0 && (
+          <div className="text-center text-sm text-accent border-t border-border/50 pt-3">
+            🚀 Growing interest – {clickCount} {clickCount === 1 ? 'visit' : 'visits'} so far
+          </div>
         )}
       </CardFooter>
     </Card>

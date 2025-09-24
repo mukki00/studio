@@ -62,6 +62,7 @@ export default function ProjectsSection() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+  const [clickCounts, setClickCounts] = useState<Record<string, number>>({});
 
   const checkScrollButtons = () => {
     if (scrollContainerRef.current) {
@@ -93,6 +94,58 @@ export default function ProjectsSection() {
 
     return () => clearTimeout(timer);
   }, []);
+
+  // Load click counts from MongoDB on component mount
+  useEffect(() => {
+    const fetchClickCounts = async () => {
+      try {
+        const response = await fetch('/api/project-clicks');
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Loaded click counts:', data.clickCounts);
+          setClickCounts(data.clickCounts || {});
+        } else {
+          console.error('Failed to fetch click counts:', response.status, response.statusText);
+        }
+      } catch (error) {
+        console.error('Error loading click counts:', error);
+      }
+    };
+
+    fetchClickCounts();
+  }, []);
+
+  const handleLiveLinkClick = async (projectTitle: string) => {
+    console.log('Handling live link click for:', projectTitle);
+    try {
+      const response = await fetch('/api/project-clicks', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ projectTitle }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Click count updated:', data);
+        // Update local state with the new count from server
+        setClickCounts(prev => ({
+          ...prev,
+          [projectTitle]: data.clickCount
+        }));
+      } else {
+        console.error('Failed to update click count:', response.status, response.statusText);
+      }
+    } catch (error) {
+      console.error('Error updating click count:', error);
+      // Fallback: still increment locally if API fails
+      setClickCounts(prev => ({
+        ...prev,
+        [projectTitle]: (prev[projectTitle] || 0) + 1
+      }));
+    }
+  };
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
@@ -162,7 +215,11 @@ export default function ProjectsSection() {
           >
             {projects.map((project, index) => (
               <div key={`${index}-${project.title}`} className="flex-none w-[calc(25%-12px)] min-w-[300px] sm:min-w-[280px] lg:min-w-[300px]">
-                <ProjectCard {...project} />
+                <ProjectCard 
+                  {...project} 
+                  clickCount={clickCounts[project.title] || 0}
+                  onLiveLinkClick={() => handleLiveLinkClick(project.title)}
+                />
               </div>
             ))}
           </div>
