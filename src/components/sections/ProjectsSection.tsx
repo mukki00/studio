@@ -1,5 +1,10 @@
+'use client';
+
 import Section from '@/components/common/Section';
 import ProjectCard from '@/components/cards/ProjectCard';
+import { Button } from '@/components/ui/button';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
 
 const projects: Array<{
   title: string;
@@ -37,6 +42,14 @@ const projects: Array<{
     repoLink: 'https://github.com/mukki00/JobTracker.git',
   },
   {
+    title: 'Job Portal',
+    description: 'A web application that connects job seekers with employers, featuring job listings, company profiles, and application tracking.',
+    imageUrl: '/images/JobPortal/job_portal.png',
+    imageHint: 'Next.js, Node.js, Express, MongoDB, Tailwind CSS',
+    tags: ['Next.js', 'Node.js', 'Express', 'MongoDB', 'Tailwind CSS'],
+    repoLink: 'https://github.com/mukki00/JobPortal.git',
+  },
+  {
     title: 'Stock Market Analysis Tool',
     description: 'A web application that provides real-time stock market data, analysis, and visualization tools for investors and traders.',
     imageUrl: '/images/stock_market_analysis/stock_market_analysis.png',
@@ -46,6 +59,65 @@ const projects: Array<{
 ];
 
 export default function ProjectsSection() {
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const checkScrollButtons = () => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+      // Can scroll left if we're not at the beginning
+      setCanScrollLeft(scrollLeft > 5); // Small threshold to account for rounding
+      // Can scroll right if there's more content to the right
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 5); // Small threshold
+    }
+  };
+
+  useEffect(() => {
+    // Add a small delay to ensure the container is properly rendered
+    const timer = setTimeout(() => {
+      checkScrollButtons();
+    }, 100);
+
+    const container = scrollContainerRef.current;
+    if (container) {
+      container.addEventListener('scroll', checkScrollButtons);
+      // Also check on resize
+      window.addEventListener('resize', checkScrollButtons);
+      return () => {
+        container.removeEventListener('scroll', checkScrollButtons);
+        window.removeEventListener('resize', checkScrollButtons);
+        clearTimeout(timer);
+      };
+    }
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      // Scroll by one item width (25% of container + gap)
+      const containerWidth = scrollContainerRef.current.clientWidth;
+      const itemWidth = (containerWidth - 32) / 4 + 16; // Account for padding and gap
+      scrollContainerRef.current.scrollBy({
+        left: -itemWidth,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      // Scroll by one item width (25% of container + gap)
+      const containerWidth = scrollContainerRef.current.clientWidth;
+      const itemWidth = (containerWidth - 32) / 4 + 16; // Account for padding and gap
+      scrollContainerRef.current.scrollBy({
+        left: itemWidth,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   return (
     <Section 
       id="projects" 
@@ -54,10 +126,46 @@ export default function ProjectsSection() {
       className="bg-primary/5"
     >
       {projects.length > 0 ? (
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {projects.map((project) => (
-            <ProjectCard key={project.title} {...project} />
-          ))}
+        <div className="relative">
+          {/* Left scroll button - only show when there are items to scroll back to */}
+          {canScrollLeft && (
+            <Button
+              variant="outline"
+              size="icon"
+              className="absolute left-2 top-1/2 -translate-y-1/2 z-20 bg-background/90 backdrop-blur-sm shadow-lg border-2 transition-all duration-200 hover:bg-background hover:scale-105 hover:shadow-xl"
+              onClick={scrollLeft}
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </Button>
+          )}
+
+          {/* Right scroll button - only show when there are more items to scroll to */}
+          {canScrollRight && (
+            <Button
+              variant="outline"
+              size="icon"
+              className="absolute right-2 top-1/2 -translate-y-1/2 z-20 bg-background/90 backdrop-blur-sm shadow-lg border-2 transition-all duration-200 hover:bg-background hover:scale-105 hover:shadow-xl"
+              onClick={scrollRight}
+            >
+              <ChevronRight className="h-5 w-5" />
+            </Button>
+          )}
+
+          {/* Scrollable container */}
+          <div
+            ref={scrollContainerRef}
+            className="flex gap-4 overflow-x-auto scrollbar-hide px-8"
+            style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+            }}
+          >
+            {projects.map((project, index) => (
+              <div key={`${index}-${project.title}`} className="flex-none w-[calc(25%-12px)] min-w-[300px] sm:min-w-[280px] lg:min-w-[300px]">
+                <ProjectCard {...project} />
+              </div>
+            ))}
+          </div>
         </div>
       ) : (
         <div className="text-center text-foreground/70">
