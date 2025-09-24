@@ -44,7 +44,7 @@ const projects: Array<{
   {
     title: 'Job Portal',
     description: 'A web application that connects job seekers with employers, featuring job listings, company profiles, and application tracking.',
-    imageUrl: '/images/JobPortal/job_portal.png',
+    imageUrl: '/images/JobPortal/Job_portal.png',
     imageHint: 'Next.js, Node.js, Express, MongoDB, Tailwind CSS',
     tags: ['Next.js', 'Node.js', 'Express', 'MongoDB', 'Tailwind CSS'],
     repoLink: 'https://github.com/mukki00/JobPortal.git',
