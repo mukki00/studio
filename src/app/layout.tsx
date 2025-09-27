@@ -14,7 +14,7 @@ const ptSans = PT_Sans({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://muksith.com'), // Replace with your actual domain
+  metadataBase: new URL('https://muksith.dev'),
   title: {
     default: 'Mohammedh Muksith | Personal Portfolio',
     template: '%s | Mohammedh Muksith',
@@ -22,11 +22,21 @@ export const metadata: Metadata = {
   description: 'A personal portfolio website showcasing projects, blog posts, and skills of Mohammedh Muksith, a Tech Lead.',
   keywords: ['portfolio', 'personal website', 'developer', 'Tech Lead', 'Mohammedh Muksith', 'projects', 'blog', 'Angular', 'React', 'Node.js'],
   creator: 'Mohammedh Muksith',
-  authors: [{ name: 'Mohammedh Muksith', url: 'https://muksith.com' }], // Replace with your actual domain
+  authors: [{ name: 'Mohammedh Muksith', url: 'https://muksith.dev' }],
   icons: {
-    icon: '/profile.ico',
-    shortcut: '/profile.ico',
-    apple: '/profile.ico'
+    icon: [
+      { url: '/favicon.ico', sizes: '16x16 32x32', type: 'image/x-icon' },
+      { url: '/favicon.ico', sizes: 'any' }
+    ],
+    shortcut: '/favicon.ico',
+    apple: '/favicon.ico',
+    other: [
+      {
+        rel: 'icon',
+        type: 'image/x-icon',
+        url: '/favicon.ico',
+      }
+    ]
   },
 };
 
