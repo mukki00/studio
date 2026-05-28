@@ -3,11 +3,12 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { Menu, X, User, Briefcase, FileText, Send } from 'lucide-react';
+import { Menu, X, User, Briefcase, FileText, Send, ListTodo, LogIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from '@/components/common/ThemeToggle';
+import { useAuth } from '@/context/AuthContext';
 
 interface NavItem {
   href: string;
@@ -25,6 +26,7 @@ const navItems: NavItem[] = [
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
+  const { user } = useAuth();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -140,6 +142,17 @@ export default function Header() {
               <NavLinks />
             </nav>
             <ThemeToggle className="hidden md:flex" />
+            <Link href={user ? '/todo' : '/login'} className="hidden md:block">
+              <Button
+                size="sm"
+                variant={user ? 'default' : 'outline'}
+                className={user
+                  ? 'bg-accent hover:bg-accent/90 text-accent-foreground gap-1.5'
+                  : 'border-accent/40 text-accent hover:bg-accent/10 gap-1.5'}
+              >
+                {user ? <><ListTodo className="h-4 w-4" /> My Todos</> : <><LogIn className="h-4 w-4" /> Login</>}
+              </Button>
+            </Link>
             <div className="md:hidden">
               <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                 <SheetTrigger asChild>
@@ -155,8 +168,19 @@ export default function Header() {
                   </SheetHeader>
                   <nav className="flex flex-col space-y-1 p-4">
                     <NavLinks mobile />
-                    <div className="pt-4 border-t border-border mt-4">
+                    <div className="pt-4 border-t border-border mt-4 flex flex-col gap-2">
                        <ThemeToggle className="w-full flex justify-start"/>
+                       <Link href={user ? '/todo' : '/login'} onClick={() => setIsMobileMenuOpen(false)}>
+                         <Button
+                           size="sm"
+                           variant={user ? 'default' : 'outline'}
+                           className={cn('w-full gap-2', user
+                             ? 'bg-accent hover:bg-accent/90 text-accent-foreground'
+                             : 'border-accent/40 text-accent hover:bg-accent/10')}
+                         >
+                           {user ? <><ListTodo className="h-4 w-4" /> My Todos</> : <><LogIn className="h-4 w-4" /> Login</>}
+                         </Button>
+                       </Link>
                     </div>
                   </nav>
                 </SheetContent>

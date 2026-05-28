@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/common/ThemeProvider";
 import WhatsAppButton from '@/components/common/WhatsAppButton';
 import { PT_Sans, Raleway } from 'next/font/google';
 import { Analytics } from "@vercel/analytics/next"
+import { AuthProvider } from '@/context/AuthContext';
 
 const ptSans = PT_Sans({
   subsets: ['latin'],
@@ -82,10 +83,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
-          <Analytics />
-          <Toaster />
-          <WhatsAppButton />
+          <AuthProvider>
+            {children}
+            <Analytics />
+            <Toaster />
+            <WhatsAppButton />
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

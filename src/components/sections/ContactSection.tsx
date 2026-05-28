@@ -20,7 +20,7 @@ type ContactFormData = z.infer<typeof contactFormSchema>;
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" disabled={pending} className="w-full bg-accent hover:bg-accent/90 text-accent-foreground">
+    <Button type="submit" disabled={pending} suppressHydrationWarning className="w-full bg-accent hover:bg-accent/90 text-accent-foreground">
       {pending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Submitting...</> : 'Send Message'}
     </Button>
   );
