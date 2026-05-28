@@ -10,7 +10,7 @@ import { db } from '@/lib/firebase';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Loader2, Plus, Trash2, LogOut, Waves, CheckCircle2, Circle } from 'lucide-react';
+import { Loader2, Plus, Trash2, LogOut, CheckCircle2, Circle } from 'lucide-react';
 
 interface Todo {
   id: string;
@@ -93,28 +93,41 @@ export default function TodoPage() {
   return (
     <div className="relative min-h-screen hero-wave-bg overflow-hidden">
 
-      {/* Floating bubbles */}
-      {[
-        { left: '5%',  bottom: '12%', size: 'w-3 h-3', delay: '0s',   dur: '4.2s' },
-        { left: '15%', bottom: '30%', size: 'w-2 h-2', delay: '1.5s', dur: '3.8s' },
-        { right: '8%', bottom: '20%', size: 'w-4 h-4', delay: '2.4s', dur: '5.0s' },
-        { right: '20%',bottom: '40%', size: 'w-2 h-2', delay: '0.8s', dur: '4.6s' },
-      ].map((b, i) => (
-        <span
-          key={i}
-          aria-hidden="true"
-          className={`pointer-events-none absolute ${b.size} rounded-full bg-accent/20 animate-float`}
-          style={{ left: b.left, right: b.right, bottom: b.bottom, animationDelay: b.delay, animationDuration: b.dur } as React.CSSProperties}
-        />
-      ))}
+      {/* Dome silhouette */}
+      <div aria-hidden="true" className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2" style={{ width: 'min(460px, 80vw)', opacity: 0.06 }}>
+        <svg viewBox="0 0 480 220" xmlns="http://www.w3.org/2000/svg" className="w-full" fill="currentColor">
+          <rect x="10" y="205" width="460" height="15" rx="3"/>
+          <rect x="40" y="186" width="400" height="19" rx="2"/>
+          <polygon points="55,186 425,186 405,138 75,138"/>
+          <rect x="168" y="86" width="144" height="52" rx="5"/>
+          <path d="M153,86 Q240,-35 327,86 Z"/>
+          <rect x="237" y="-35" width="6" height="32" rx="2"/>
+          <rect x="57" y="103" width="22" height="83" rx="3"/>
+          <rect x="51" y="122" width="34" height="7" rx="1"/>
+          <polygon points="57,103 79,103 68,74"/>
+          <rect x="401" y="103" width="22" height="83" rx="3"/>
+          <rect x="395" y="122" width="34" height="7" rx="1"/>
+          <polygon points="401,103 423,103 412,74"/>
+        </svg>
+      </div>
+
+      {/* Floating watermelons */}
+      <span aria-hidden="true" className="pointer-events-none select-none absolute left-[4%]  bottom-[14%] text-2xl" style={{ animation: 'float-up-down 5s ease-in-out infinite' }}>🍉</span>
+      <span aria-hidden="true" className="pointer-events-none select-none absolute right-[5%] bottom-[22%] text-xl" style={{ animation: 'float-up-down 6s ease-in-out infinite', animationDelay: '1.5s' }}>🍉</span>
+      <span aria-hidden="true" className="pointer-events-none select-none absolute left-[12%] top-[10%] text-lg opacity-40" style={{ animation: 'float-up-down 7s ease-in-out infinite', animationDelay: '0.8s' }}>🍉</span>
 
       <div className="relative z-10 max-w-xl mx-auto px-4 py-12">
 
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-accent/10 border border-accent/20 flex items-center justify-center">
-              <Waves className="h-5 w-5 text-accent" />
+            <div className="w-10 h-10 rounded-full border border-accent/20 overflow-hidden flex items-center justify-center bg-background/30">
+              <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+                <rect width="200" height="33.33" fill="#000000"/>
+                <rect y="33.33" width="200" height="33.34" fill="#FFFFFF"/>
+                <rect y="66.67" width="200" height="33.33" fill="#009639"/>
+                <polygon points="0,0 90,50 0,100" fill="#CE1126"/>
+              </svg>
             </div>
             <div>
               <h1 className="font-headline text-xl font-extrabold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent leading-tight">

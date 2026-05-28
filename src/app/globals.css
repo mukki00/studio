@@ -9,117 +9,121 @@ body {
 
 @layer base {
   :root {
-    /* === SWIMMING UI — LIGHT MODE (Ocean Surface) === */
-    --background: 206 80% 97%;       /* Light sky-over-ocean */
-    --foreground: 214 45% 14%;       /* Deep ocean ink */
+    /* === PALESTINE THEME — LIGHT MODE (Warm Parchment & Olive) === */
+    --background: 43 38% 97%;        /* Warm cream parchment */
+    --foreground: 30 15% 12%;        /* Dark olive ink */
 
-    --card: 200 60% 99%;
-    --card-foreground: 214 45% 14%;
+    --card: 40 30% 99%;
+    --card-foreground: 30 15% 12%;
 
-    --popover: 200 60% 99%;
-    --popover-foreground: 214 45% 14%;
+    --popover: 40 30% 99%;
+    --popover-foreground: 30 15% 12%;
 
-    --primary: 210 90% 42%;          /* Deep ocean blue */
+    --primary: 144 100% 29%;         /* Palestinian green #009639 */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 196 65% 88%;        /* Shallow lagoon */
-    --secondary-foreground: 214 40% 22%;
+    --secondary: 43 30% 91%;         /* Warm sand */
+    --secondary-foreground: 30 12% 22%;
 
-    --muted: 202 55% 93%;            /* Sea foam */
-    --muted-foreground: 214 20% 52%;
+    --muted: 40 22% 92%;             /* Soft parchment */
+    --muted-foreground: 30 10% 48%;
 
-    --accent: 186 92% 38%;           /* Teal/bioluminescent */
+    --accent: 352 84% 44%;           /* Palestinian red #CE1126 */
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 70% 50%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 200 40% 85%;
-    --input: 202 55% 94%;
-    --ring: 210 90% 42%;
+    --border: 40 18% 84%;
+    --input: 40 22% 90%;
+    --ring: 144 100% 29%;
 
-    --chart-1: 210 90% 42%;
-    --chart-2: 186 92% 38%;
-    --chart-3: 196 75% 58%;
-    --chart-4: 160 70% 45%;
-    --chart-5: 230 75% 60%;
+    --chart-1: 144 100% 29%;
+    --chart-2: 352 84% 44%;
+    --chart-3: 43 80% 55%;
+    --chart-4: 180 50% 40%;
+    --chart-5: 30 70% 50%;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 202 70% 95%;
-    --sidebar-foreground: 214 45% 14%;
-    --sidebar-primary: 210 90% 42%;
+    --sidebar-background: 43 30% 95%;
+    --sidebar-foreground: 30 15% 12%;
+    --sidebar-primary: 144 100% 29%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 186 92% 38%;
+    --sidebar-accent: 352 84% 44%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 200 40% 85%;
-    --sidebar-ring: 210 90% 42%;
+    --sidebar-border: 40 18% 84%;
+    --sidebar-ring: 144 100% 29%;
 
-    --gradient-start: 206 80% 97%;
-    --gradient-end: 196 70% 91%;
+    --gradient-start: 43 38% 97%;
+    --gradient-end: 43 30% 93%;
 
-    /* Swimming UI custom vars */
-    --wave-color-1: 210 90% 42%;
-    --wave-color-2: 186 92% 38%;
-    --glass-bg: rgba(255, 255, 255, 0.55);
-    --glass-border: rgba(255, 255, 255, 0.75);
-    --water-shimmer: rgba(0, 180, 230, 0.12);
+    /* Palestinian theme custom vars */
+    --pal-green: 144 100% 29%;
+    --pal-red: 352 84% 44%;
+    --glass-bg: rgba(255, 252, 244, 0.65);
+    --glass-border: rgba(0, 150, 57, 0.18);
+    --keffiyeh-h: rgba(206, 17, 38, 0.055);
+    --keffiyeh-v: rgba(0, 150, 57, 0.055);
+    --keffiyeh-d: rgba(0, 0, 0, 0.03);
   }
 
   .dark {
-    /* === SWIMMING UI — DARK MODE (Deep Ocean Abyss) === */
-    --background: 222 48% 5%;        /* Deep abyss */
-    --foreground: 195 65% 88%;       /* Bioluminescent surface light */
+    /* === PALESTINE THEME — DARK MODE (Olive Night) === */
+    --background: 33 14% 6%;         /* Deep olive-black */
+    --foreground: 40 25% 92%;        /* Warm near-white */
 
-    --card: 220 42% 8%;              /* Dark water surface */
-    --card-foreground: 195 65% 88%;
+    --card: 33 12% 9%;
+    --card-foreground: 40 25% 92%;
 
-    --popover: 220 42% 8%;
-    --popover-foreground: 195 65% 88%;
+    --popover: 33 12% 9%;
+    --popover-foreground: 40 25% 92%;
 
-    --primary: 210 92% 62%;          /* Bright ocean in dark */
-    --primary-foreground: 222 48% 6%;
+    --primary: 144 80% 44%;          /* Brighter Palestinian green */
+    --primary-foreground: 33 14% 5%;
 
-    --secondary: 220 35% 15%;        /* Mid-ocean layer */
-    --secondary-foreground: 195 50% 78%;
+    --secondary: 33 12% 16%;
+    --secondary-foreground: 40 18% 80%;
 
-    --muted: 220 35% 11%;
-    --muted-foreground: 205 30% 58%;
+    --muted: 33 10% 14%;
+    --muted-foreground: 40 12% 52%;
 
-    --accent: 186 100% 52%;          /* Bioluminescent cyan */
-    --accent-foreground: 222 48% 5%;
+    --accent: 352 85% 56%;           /* Brighter Palestinian red */
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 65% 55%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 220 28% 18%;
-    --input: 220 30% 14%;
-    --ring: 210 92% 62%;
+    --border: 33 14% 18%;
+    --input: 33 12% 16%;
+    --ring: 144 80% 44%;
 
-    --chart-1: 210 92% 62%;
-    --chart-2: 186 100% 52%;
-    --chart-3: 196 80% 65%;
-    --chart-4: 160 80% 50%;
-    --chart-5: 230 80% 68%;
+    --chart-1: 144 80% 44%;
+    --chart-2: 352 85% 56%;
+    --chart-3: 43 75% 60%;
+    --chart-4: 180 60% 48%;
+    --chart-5: 30 65% 55%;
 
-    --sidebar-background: 222 45% 7%;
-    --sidebar-foreground: 195 65% 88%;
-    --sidebar-primary: 210 92% 62%;
-    --sidebar-primary-foreground: 222 48% 6%;
-    --sidebar-accent: 186 100% 52%;
-    --sidebar-accent-foreground: 222 48% 5%;
-    --sidebar-border: 220 28% 16%;
-    --sidebar-ring: 210 92% 62%;
+    --sidebar-background: 33 12% 8%;
+    --sidebar-foreground: 40 25% 92%;
+    --sidebar-primary: 144 80% 44%;
+    --sidebar-primary-foreground: 33 14% 5%;
+    --sidebar-accent: 352 85% 56%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 33 14% 16%;
+    --sidebar-ring: 144 80% 44%;
 
-    --gradient-start: 222 48% 5%;
-    --gradient-end: 218 52% 9%;
+    --gradient-start: 33 14% 6%;
+    --gradient-end: 33 10% 9%;
 
-    /* Swimming UI custom vars — dark */
-    --wave-color-1: 210 92% 62%;
-    --wave-color-2: 186 100% 52%;
-    --glass-bg: rgba(255, 255, 255, 0.04);
-    --glass-border: rgba(255, 255, 255, 0.10);
-    --water-shimmer: rgba(0, 210, 255, 0.08);
+    /* Palestinian theme custom vars — dark */
+    --pal-green: 144 80% 44%;
+    --pal-red: 352 85% 56%;
+    --glass-bg: rgba(18, 12, 6, 0.65);
+    --glass-border: rgba(0, 180, 70, 0.20);
+    --keffiyeh-h: rgba(206, 17, 38, 0.08);
+    --keffiyeh-v: rgba(0, 150, 57, 0.08);
+    --keffiyeh-d: rgba(255, 255, 255, 0.04);
   }
 }
 
@@ -198,6 +202,23 @@ body {
   50%       { opacity: 0.8; transform: translateX(8px) scaleX(1.04); }
 }
 
+@keyframes flag-wave {
+  0%, 100% { transform: skewY(0deg) scaleX(1); }
+  25%       { transform: skewY(-0.8deg) scaleX(1.012); }
+  75%       { transform: skewY(0.8deg) scaleX(0.988); }
+}
+
+@keyframes olive-sway {
+  0%, 100% { transform: rotate(0deg); }
+  25%       { transform: rotate(3.5deg); }
+  75%       { transform: rotate(-3.5deg); }
+}
+
+@keyframes tatreez-slide {
+  0%   { background-position: 0 0; }
+  100% { background-position: 40px 40px; }
+}
+
 /* ============================================================
    SWIMMING UI — BASE STYLES
    ============================================================ */
@@ -208,18 +229,21 @@ body {
   }
 
   body {
-    /* Deep ocean base gradient */
+    /* Warm parchment base + keffiyeh grid texture */
     background-color: hsl(var(--background));
-    background-image: linear-gradient(160deg, hsl(var(--gradient-start)) 0%, hsl(var(--gradient-end)) 100%);
+    background-image:
+      repeating-linear-gradient(0deg,   transparent, transparent 19px, var(--keffiyeh-h) 19px, var(--keffiyeh-h) 20px),
+      repeating-linear-gradient(90deg,  transparent, transparent 19px, var(--keffiyeh-v) 19px, var(--keffiyeh-v) 20px),
+      repeating-linear-gradient(45deg,  transparent, transparent 13px, var(--keffiyeh-d) 13px, var(--keffiyeh-d) 14px),
+      repeating-linear-gradient(-45deg, transparent, transparent 13px, var(--keffiyeh-d) 13px, var(--keffiyeh-d) 14px);
     background-attachment: fixed;
-    background-repeat: no-repeat;
     color: hsl(var(--foreground));
     font-family: var(--font-body);
     min-height: 100vh;
     overflow-x: hidden;
   }
 
-  /* Animated ambient ocean orbs — layer 1 */
+  /* Animated ambient orbs — layer 1: Palestinian green */
   body::before {
     content: '';
     position: fixed;
@@ -227,12 +251,12 @@ body {
     pointer-events: none;
     z-index: -1;
     background:
-      radial-gradient(ellipse at 15% 40%, hsl(var(--wave-color-1) / 0.12) 0%, transparent 55%),
-      radial-gradient(ellipse at 85% 20%, hsl(var(--wave-color-2) / 0.10) 0%, transparent 45%);
+      radial-gradient(ellipse at 15% 40%, hsl(var(--pal-green) / 0.10) 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 20%, hsl(var(--pal-red)   / 0.08) 0%, transparent 45%);
     animation: drift-orb-1 28s ease-in-out infinite;
   }
 
-  /* Animated ambient ocean orbs — layer 2 */
+  /* Animated ambient orbs — layer 2: Palestinian red */
   body::after {
     content: '';
     position: fixed;
@@ -240,8 +264,8 @@ body {
     pointer-events: none;
     z-index: -1;
     background:
-      radial-gradient(ellipse at 60% 85%, hsl(var(--wave-color-1) / 0.08) 0%, transparent 50%),
-      radial-gradient(ellipse at 30% 15%, hsl(var(--accent) / 0.07) 0%, transparent 40%);
+      radial-gradient(ellipse at 60% 85%, hsl(var(--pal-red)   / 0.07) 0%, transparent 50%),
+      radial-gradient(ellipse at 30% 15%, hsl(var(--pal-green) / 0.06) 0%, transparent 40%);
     animation: drift-orb-2 35s ease-in-out infinite reverse;
   }
   h1, h2, h3, h4, h5, h6 {
@@ -259,8 +283,8 @@ body {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
   box-shadow:
-    0 8px 32px rgba(0, 100, 200, 0.08),
-    0 2px 8px rgba(0, 180, 230, 0.06),
+    0 8px 32px rgba(0, 100, 40, 0.08),
+    0 2px 8px  rgba(206, 17, 38, 0.05),
     inset 0 1px 0 rgba(255, 255, 255, 0.18);
   transition: transform 260ms ease, box-shadow 260ms ease, border-color 260ms ease;
 }
@@ -363,9 +387,9 @@ body {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse at 30% 60%, hsl(var(--wave-color-1) / 0.14) 0%, transparent 55%),
-    radial-gradient(ellipse at 75% 30%, hsl(var(--wave-color-2) / 0.12) 0%, transparent 45%),
-    radial-gradient(ellipse at 50% 100%, hsl(var(--accent) / 0.08) 0%, transparent 40%);
+    radial-gradient(ellipse at 25% 55%, hsl(var(--pal-green) / 0.13) 0%, transparent 55%),
+    radial-gradient(ellipse at 78% 25%, hsl(var(--pal-red)   / 0.10) 0%, transparent 45%),
+    radial-gradient(ellipse at 50% 100%, hsl(var(--pal-green) / 0.07) 0%, transparent 40%);
   pointer-events: none;
   animation: drift-orb-1 20s ease-in-out infinite;
 }
@@ -431,9 +455,11 @@ body {
   background: linear-gradient(
     90deg,
     transparent 0%,
-    hsl(var(--accent)) 20%,
-    hsl(var(--primary)) 50%,
-    hsl(var(--accent)) 80%,
+    #009639 15%,
+    #ffffff 35%,
+    #000000 50%,
+    #CE1126 65%,
+    #009639 85%,
     transparent 100%
   );
   background-size: 300% auto;

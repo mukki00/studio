@@ -13,15 +13,15 @@ export default function Footer() {
           preserveAspectRatio="none"
           className="absolute inset-0 w-full h-full"
         >
-          {/* Wave layer 1 */}
+          {/* Wave layer 1 — Palestinian green tint */}
           <path
             d="M0,35 C360,70 720,0 1080,35 C1260,52 1380,18 1440,35 L1440,70 L0,70 Z"
-            fill="rgba(0,120,200,0.09)"
+            fill="rgba(0,150,57,0.09)"
           />
-          {/* Wave layer 2 */}
+          {/* Wave layer 2 — Palestinian red tint */}
           <path
             d="M0,50 C240,20 480,65 720,42 C960,18 1200,62 1440,50 L1440,70 L0,70 Z"
-            fill="rgba(0,180,210,0.07)"
+            fill="rgba(206,17,38,0.06)"
           />
         </svg>
       </div>
@@ -30,7 +30,7 @@ export default function Footer() {
       <div
         className="relative pb-8 pt-4 border-t border-accent/10"
         style={{
-          background: 'linear-gradient(180deg, rgba(0,120,200,0.06) 0%, rgba(0,180,210,0.10) 100%)',
+          background: 'linear-gradient(180deg, rgba(0,150,57,0.06) 0%, rgba(206,17,38,0.08) 100%)',
           backdropFilter: 'blur(12px)',
         }}
       >
@@ -41,7 +41,7 @@ export default function Footer() {
             style={{
               width: '40%', height: '120%',
               top: '-20%', right: '-5%',
-              background: 'radial-gradient(circle, rgba(0,120,200,0.07) 0%, transparent 70%)',
+              background: 'radial-gradient(circle, rgba(0,150,57,0.07) 0%, transparent 70%)',
               animation: 'drift-orb-1 28s ease-in-out infinite',
             }}
           />
@@ -50,7 +50,7 @@ export default function Footer() {
             style={{
               width: '30%', height: '120%',
               top: '-10%', left: '-5%',
-              background: 'radial-gradient(circle, rgba(0,200,220,0.05) 0%, transparent 70%)',
+              background: 'radial-gradient(circle, rgba(206,17,38,0.05) 0%, transparent 70%)',
               animation: 'drift-orb-2 34s ease-in-out infinite',
             }}
           />

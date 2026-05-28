@@ -85,7 +85,7 @@ export default function ContactSection() {
                     <FormItem>
                       <FormLabel className="text-foreground/80">Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Your Name" className="bg-background/50 border-accent/20 focus:border-accent/50" {...field} />
+                        <Input suppressHydrationWarning placeholder="Your Name" className="bg-background/50 border-accent/20 focus:border-accent/50" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -98,7 +98,7 @@ export default function ContactSection() {
                     <FormItem>
                       <FormLabel className="text-foreground/80">Email</FormLabel>
                       <FormControl>
-                        <Input placeholder="your.email@example.com" className="bg-background/50 border-accent/20 focus:border-accent/50" {...field} />
+                        <Input suppressHydrationWarning placeholder="your.email@example.com" className="bg-background/50 border-accent/20 focus:border-accent/50" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
