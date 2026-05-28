@@ -1,8 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { ExternalLink, Github } from 'lucide-react';
 
 interface ProjectCardProps {
@@ -17,62 +15,61 @@ interface ProjectCardProps {
   onLiveLinkClick?: () => void;
 }
 
-export default function ProjectCard({ title, description, imageUrl, imageHint, tags, liveLink, repoLink, clickCount = 0, onLiveLinkClick }: ProjectCardProps) {
+export default function ProjectCard({ title, description, imageUrl, tags, liveLink, repoLink, clickCount = 0, onLiveLinkClick }: ProjectCardProps) {
   return (
-    <Card className="flex flex-col h-full overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1">
-      <CardHeader className="p-0">
-        <div className="aspect-video relative overflow-hidden">
-          <Image
-            src={imageUrl}
-            alt={title}
-            layout="fill"
-            objectFit="cover"
-            className="transition-transform duration-500 group-hover:scale-105"
-            data-ai-hint={imageHint || 'project technology'}
-          />
-        </div>
-      </CardHeader>
-      <CardContent className="p-6 flex-grow">
-        <CardTitle className="text-2xl font-bold mb-3 text-accent font-headline">{title}</CardTitle>
-        <div className="flex flex-wrap gap-2 mb-4">
+    <div className="glass-card card-swim flex flex-col h-full overflow-hidden rounded-2xl">
+      {/* Image */}
+      <div className="aspect-video relative overflow-hidden rounded-t-2xl">
+        <Image
+          src={imageUrl}
+          alt={title}
+          fill
+          className="object-cover transition-transform duration-500 hover:scale-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+      </div>
+
+      {/* Content */}
+      <div className="p-5 flex flex-col flex-grow gap-3">
+        <h3 className="font-headline text-lg font-bold text-accent leading-tight">{title}</h3>
+
+        <div className="flex flex-wrap gap-1.5">
           {tags.map((tag) => (
-            <Badge key={tag} variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20">
-              {tag}
-            </Badge>
+            <span key={tag} className="skill-badge text-xs">{tag}</span>
           ))}
         </div>
-        <p className="text-foreground/80 text-sm leading-relaxed">{description}</p>
-      </CardContent>
-      <CardFooter className="p-6 pt-0 flex flex-col gap-3">
-        <div className="flex gap-3 w-full">
+
+        <p className="text-sm text-foreground/75 leading-relaxed flex-grow">{description}</p>
+
+        <div className="flex gap-2 pt-1">
           {liveLink && (
-            <Button 
-              variant="default" 
-              className="flex-1 bg-accent hover:bg-accent/90 text-accent-foreground"
+            <Button
+              variant="default"
+              size="sm"
+              className="flex-1 bg-accent hover:bg-accent/90 text-accent-foreground text-xs"
               onClick={() => {
-                if (onLiveLinkClick) {
-                  onLiveLinkClick();
-                }
+                onLiveLinkClick?.();
                 window.open(liveLink, '_blank', 'noopener,noreferrer');
               }}
             >
-              <ExternalLink className="mr-2 h-4 w-4" /> Live Demo
+              <ExternalLink className="mr-1.5 h-3.5 w-3.5" /> Live Demo
             </Button>
           )}
           {repoLink && (
-            <Button asChild variant="outline" className="flex-1 border-accent text-accent hover:bg-accent/10 hover:text-accent">
+            <Button asChild variant="outline" size="sm" className="flex-1 border-accent/40 text-accent hover:bg-accent/10 text-xs">
               <Link href={repoLink} target="_blank" rel="noopener noreferrer">
-                <Github className="mr-2 h-4 w-4" /> Repository
+                <Github className="mr-1.5 h-3.5 w-3.5" /> Repo
               </Link>
             </Button>
           )}
         </div>
+
         {liveLink && clickCount > 0 && (
-          <div className="text-center text-sm text-accent border-t border-border/50 pt-3">
-            🚀 Growing interest – {clickCount} {clickCount === 1 ? 'visit' : 'visits'} so far
-          </div>
+          <p className="text-center text-xs text-accent/70 border-t border-border/40 pt-2">
+            🚀 {clickCount} {clickCount === 1 ? 'visit' : 'visits'} so far
+          </p>
         )}
-      </CardFooter>
-    </Card>
+      </div>
+    </div>
   );
 }

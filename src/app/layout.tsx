@@ -3,14 +3,22 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/common/ThemeProvider";
 import WhatsAppButton from '@/components/common/WhatsAppButton';
-import { PT_Sans } from 'next/font/google';
+import { PT_Sans, Raleway } from 'next/font/google';
 import { Analytics } from "@vercel/analytics/next"
+
 const ptSans = PT_Sans({
   subsets: ['latin'],
   weight: ['400', '700'],
   style: ['normal', 'italic'],
   display: 'swap',
   variable: '--font-body',
+});
+
+const raleway = Raleway({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  display: 'swap',
+  variable: '--font-headline',
 });
 
 export const metadata: Metadata = {
@@ -46,7 +54,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${ptSans.variable} scroll-smooth`} suppressHydrationWarning>
+    <html lang="en" className={`${ptSans.variable} ${raleway.variable} scroll-smooth`} suppressHydrationWarning>
       <head>
         <script
           type="application/ld+json"

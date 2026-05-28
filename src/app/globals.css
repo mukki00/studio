@@ -9,121 +9,457 @@ body {
 
 @layer base {
   :root {
-    --background: 210 60% 98%; /* Very light, cool off-white */
-    --foreground: 215 25% 25%; /* Dark, desaturated cool gray/blue for text */
-    
-    --card: 0 0% 100%; 
-    --card-foreground: 215 25% 25%;
-    
-    --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 25%;
-    
-    --primary: 220 75% 55%; /* Vibrant, modern blue */
-    --primary-foreground: 0 0% 100%; /* White */
-    
-    --secondary: 210 30% 90%; /* Light cool gray */
-    --secondary-foreground: 215 25% 35%; /* Slightly darker text for secondary elements */
-    
-    --muted: 210 30% 94%; 
-    --muted-foreground: 215 15% 55%; 
-    
-    --accent: 195 85% 45%; /* Bright, energetic cyan/teal */
-    --accent-foreground: 0 0% 100%; /* White for text on accent */
-    
-    --destructive: 0 70% 50%; 
+    /* === SWIMMING UI — LIGHT MODE (Ocean Surface) === */
+    --background: 206 80% 97%;       /* Light sky-over-ocean */
+    --foreground: 214 45% 14%;       /* Deep ocean ink */
+
+    --card: 200 60% 99%;
+    --card-foreground: 214 45% 14%;
+
+    --popover: 200 60% 99%;
+    --popover-foreground: 214 45% 14%;
+
+    --primary: 210 90% 42%;          /* Deep ocean blue */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 196 65% 88%;        /* Shallow lagoon */
+    --secondary-foreground: 214 40% 22%;
+
+    --muted: 202 55% 93%;            /* Sea foam */
+    --muted-foreground: 214 20% 52%;
+
+    --accent: 186 92% 38%;           /* Teal/bioluminescent */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 100%;
-    
-    --border: 210 20% 88%; 
-    --input: 210 30% 96%; 
-    --ring: 220 75% 55%; /* Primary color for focus rings */
-    
-    --chart-1: 220 75% 55%; /* Primary */
-    --chart-2: 195 85% 45%; /* Accent */
-    --chart-3: 210 60% 65%; /* Lighter blue */
-    --chart-4: 30 90% 60%;  /* Soft orange */
-    --chart-5: 270 60% 70%; /* Soft purple */
-    
-    --radius: 0.5rem;
 
-    --sidebar-background: 210 50% 96%; /* Slightly off-white for sidebar */
-    --sidebar-foreground: 215 25% 25%;
-    --sidebar-primary: 220 75% 55%;
+    --border: 200 40% 85%;
+    --input: 202 55% 94%;
+    --ring: 210 90% 42%;
+
+    --chart-1: 210 90% 42%;
+    --chart-2: 186 92% 38%;
+    --chart-3: 196 75% 58%;
+    --chart-4: 160 70% 45%;
+    --chart-5: 230 75% 60%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 202 70% 95%;
+    --sidebar-foreground: 214 45% 14%;
+    --sidebar-primary: 210 90% 42%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 195 85% 45%;
+    --sidebar-accent: 186 92% 38%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 210 20% 85%;
-    --sidebar-ring: 220 75% 55%;
+    --sidebar-border: 200 40% 85%;
+    --sidebar-ring: 210 90% 42%;
 
-    --gradient-start: 210 60% 98%;   /* Matches background */
-    --gradient-end: 200 70% 92%;     /* Lighter, softer sky blue */
+    --gradient-start: 206 80% 97%;
+    --gradient-end: 196 70% 91%;
+
+    /* Swimming UI custom vars */
+    --wave-color-1: 210 90% 42%;
+    --wave-color-2: 186 92% 38%;
+    --glass-bg: rgba(255, 255, 255, 0.55);
+    --glass-border: rgba(255, 255, 255, 0.75);
+    --water-shimmer: rgba(0, 180, 230, 0.12);
   }
 
   .dark {
-    --background: 220 25% 12%;  /* Deep, dark blue-gray */
-    --foreground: 210 30% 88%;  /* Light cool gray for text */
-    
-    --card: 220 20% 18%; 
-    --card-foreground: 210 30% 88%;
-    
-    --popover: 220 20% 18%;
-    --popover-foreground: 210 30% 88%;
-    
-    --primary: 220 80% 65%; /* Brighter blue for dark mode */
-    --primary-foreground: 220 25% 15%; /* Dark for text on primary */
-    
-    --secondary: 220 15% 25%; 
-    --secondary-foreground: 210 30% 80%;
-    
-    --muted: 220 15% 22%; 
-    --muted-foreground: 210 20% 65%; 
-    
-    --accent: 195 90% 55%; /* Brighter cyan/teal for dark mode */
-    --accent-foreground: 220 25% 10%; /* Very dark for text on accent */
-    
-    --destructive: 0 65% 55%; 
+    /* === SWIMMING UI — DARK MODE (Deep Ocean Abyss) === */
+    --background: 222 48% 5%;        /* Deep abyss */
+    --foreground: 195 65% 88%;       /* Bioluminescent surface light */
+
+    --card: 220 42% 8%;              /* Dark water surface */
+    --card-foreground: 195 65% 88%;
+
+    --popover: 220 42% 8%;
+    --popover-foreground: 195 65% 88%;
+
+    --primary: 210 92% 62%;          /* Bright ocean in dark */
+    --primary-foreground: 222 48% 6%;
+
+    --secondary: 220 35% 15%;        /* Mid-ocean layer */
+    --secondary-foreground: 195 50% 78%;
+
+    --muted: 220 35% 11%;
+    --muted-foreground: 205 30% 58%;
+
+    --accent: 186 100% 52%;          /* Bioluminescent cyan */
+    --accent-foreground: 222 48% 5%;
+
+    --destructive: 0 65% 55%;
     --destructive-foreground: 0 0% 100%;
-    
-    --border: 220 15% 28%; 
-    --input: 220 15% 20%; 
-    --ring: 220 80% 65%; 
-    
-    --chart-1: 220 80% 65%;
-    --chart-2: 195 90% 55%;
-    --chart-3: 210 60% 70%;
-    --chart-4: 30 80% 65%;
-    --chart-5: 270 70% 75%;
 
-    --sidebar-background: 220 25% 10%; /* Even darker for sidebar in dark mode */
-    --sidebar-foreground: 210 30% 88%;
-    --sidebar-primary: 220 80% 65%;
-    --sidebar-primary-foreground: 220 25% 15%;
-    --sidebar-accent: 195 90% 55%;
-    --sidebar-accent-foreground: 220 25% 10%;
-    --sidebar-border: 220 15% 25%;
-    --sidebar-ring: 220 80% 65%;
+    --border: 220 28% 18%;
+    --input: 220 30% 14%;
+    --ring: 210 92% 62%;
 
-    --gradient-start: 220 25% 12%; 
-    --gradient-end: 225 30% 16%;   /* Deeper, slightly varied dark blue */
+    --chart-1: 210 92% 62%;
+    --chart-2: 186 100% 52%;
+    --chart-3: 196 80% 65%;
+    --chart-4: 160 80% 50%;
+    --chart-5: 230 80% 68%;
+
+    --sidebar-background: 222 45% 7%;
+    --sidebar-foreground: 195 65% 88%;
+    --sidebar-primary: 210 92% 62%;
+    --sidebar-primary-foreground: 222 48% 6%;
+    --sidebar-accent: 186 100% 52%;
+    --sidebar-accent-foreground: 222 48% 5%;
+    --sidebar-border: 220 28% 16%;
+    --sidebar-ring: 210 92% 62%;
+
+    --gradient-start: 222 48% 5%;
+    --gradient-end: 218 52% 9%;
+
+    /* Swimming UI custom vars — dark */
+    --wave-color-1: 210 92% 62%;
+    --wave-color-2: 186 100% 52%;
+    --glass-bg: rgba(255, 255, 255, 0.04);
+    --glass-border: rgba(255, 255, 255, 0.10);
+    --water-shimmer: rgba(0, 210, 255, 0.08);
   }
 }
+
+/* ============================================================
+   SWIMMING UI — ANIMATIONS
+   ============================================================ */
+
+@keyframes wave-flow {
+  0%   { transform: translateX(0) scaleY(1); }
+  50%  { transform: translateX(-20%) scaleY(0.85); }
+  100% { transform: translateX(-40%) scaleY(1); }
+}
+
+@keyframes wave-flow-slow {
+  0%   { transform: translateX(0) scaleY(1); }
+  50%  { transform: translateX(-15%) scaleY(0.9); }
+  100% { transform: translateX(-30%) scaleY(1); }
+}
+
+@keyframes float-up-down {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+
+@keyframes shimmer-pulse {
+  0%, 100% { opacity: 0.6; }
+  50%       { opacity: 1; }
+}
+
+@keyframes aurora-flow {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes ripple-out {
+  0%   { transform: scale(0.9); box-shadow: 0 0 0 0 hsl(var(--accent) / 0.4); }
+  70%  { transform: scale(1);   box-shadow: 0 0 0 12px hsl(var(--accent) / 0); }
+  100% { transform: scale(0.9); box-shadow: 0 0 0 0 hsl(var(--accent) / 0); }
+}
+
+@keyframes bubble-rise {
+  0%   { transform: translateY(0) scale(1); opacity: 0.6; }
+  100% { transform: translateY(-120px) scale(1.2); opacity: 0; }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes drift-orb-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(3%, -4%) scale(1.06); }
+  66%       { transform: translate(-2%, 3%) scale(0.96); }
+}
+
+@keyframes drift-orb-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(-4%, 5%) scale(0.95); }
+  66%       { transform: translate(3%, -2%) scale(1.04); }
+}
+
+@keyframes title-shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes glow-breathe {
+  0%, 100% { box-shadow: 0 0 18px hsl(var(--accent) / 0.10), 0 0 40px hsl(var(--primary) / 0.06); }
+  50%       { box-shadow: 0 0 32px hsl(var(--accent) / 0.22), 0 0 64px hsl(var(--primary) / 0.12); }
+}
+
+@keyframes caustic-shift {
+  0%, 100% { opacity: 0.5; transform: translateX(0) scaleX(1); }
+  50%       { opacity: 0.8; transform: translateX(8px) scaleX(1.04); }
+}
+
+/* ============================================================
+   SWIMMING UI — BASE STYLES
+   ============================================================ */
 
 @layer base {
   * {
     @apply border-border;
   }
+
   body {
-    background-image: linear-gradient(135deg, hsl(var(--gradient-start)) 0%, hsl(var(--gradient-end)) 100%);
+    /* Deep ocean base gradient */
+    background-color: hsl(var(--background));
+    background-image: linear-gradient(160deg, hsl(var(--gradient-start)) 0%, hsl(var(--gradient-end)) 100%);
+    background-attachment: fixed;
     background-repeat: no-repeat;
-    background-attachment: fixed; 
-    color: hsl(var(--foreground)); 
+    color: hsl(var(--foreground));
     font-family: var(--font-body);
     min-height: 100vh;
     overflow-x: hidden;
+  }
+
+  /* Animated ambient ocean orbs — layer 1 */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    background:
+      radial-gradient(ellipse at 15% 40%, hsl(var(--wave-color-1) / 0.12) 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 20%, hsl(var(--wave-color-2) / 0.10) 0%, transparent 45%);
+    animation: drift-orb-1 28s ease-in-out infinite;
+  }
+
+  /* Animated ambient ocean orbs — layer 2 */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    background:
+      radial-gradient(ellipse at 60% 85%, hsl(var(--wave-color-1) / 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 30% 15%, hsl(var(--accent) / 0.07) 0%, transparent 40%);
+    animation: drift-orb-2 35s ease-in-out infinite reverse;
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-headline);
   }
 }
+
+/* ============================================================
+   SWIMMING UI — GLASS CARD EFFECT
+   ============================================================ */
+
+.glass-card {
+  backdrop-filter: blur(20px) saturate(200%);
+  -webkit-backdrop-filter: blur(20px) saturate(200%);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow:
+    0 8px 32px rgba(0, 100, 200, 0.08),
+    0 2px 8px rgba(0, 180, 230, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transition: transform 260ms ease, box-shadow 260ms ease, border-color 260ms ease;
+}
+
+.glass-card:hover {
+  box-shadow:
+    0 16px 48px hsl(var(--primary) / 0.14),
+    0 4px 20px hsl(var(--accent) / 0.12),
+    0 0 0 1px hsl(var(--accent) / 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  border-color: hsl(var(--accent) / 0.28);
+}
+
+/* ============================================================
+   SWIMMING UI — WAVE DIVIDER
+   ============================================================ */
+
+.wave-divider {
+  position: relative;
+  overflow: hidden;
+}
+
+.wave-divider::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: -50%;
+  width: 200%;
+  height: 60px;
+  background: radial-gradient(ellipse at 50% 100%, hsl(var(--background)) 60%, transparent 100%);
+  animation: wave-flow 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* ============================================================
+   SWIMMING UI — FLOATING ANIMATION UTILITY
+   ============================================================ */
+
+.animate-float {
+  animation: float-up-down 4s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer-pulse 2.5s ease-in-out infinite;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out both;
+}
+
+.animate-fade-in {
+  animation: fade-in-up 0.5s ease-out both;
+}
+
+/* ============================================================
+   SWIMMING UI — SKILL BADGE / TAG STYLE
+   ============================================================ */
+
+.skill-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1;
+  background: linear-gradient(
+    135deg,
+    hsl(var(--primary) / 0.14),
+    hsl(var(--accent) / 0.10)
+  );
+  border: 1px solid hsl(var(--accent) / 0.30);
+  color: hsl(var(--accent));
+  transition: all 200ms ease;
+}
+
+.skill-badge:hover {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--primary) / 0.22),
+    hsl(var(--accent) / 0.18)
+  );
+  border-color: hsl(var(--accent) / 0.55);
+  color: hsl(var(--accent));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px hsl(var(--accent) / 0.18);
+}
+
+/* ============================================================
+   SWIMMING UI — HERO WAVE SVG BACKGROUND
+   ============================================================ */
+
+.hero-wave-bg {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-wave-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 30% 60%, hsl(var(--wave-color-1) / 0.14) 0%, transparent 55%),
+    radial-gradient(ellipse at 75% 30%, hsl(var(--wave-color-2) / 0.12) 0%, transparent 45%),
+    radial-gradient(ellipse at 50% 100%, hsl(var(--accent) / 0.08) 0%, transparent 40%);
+  pointer-events: none;
+  animation: drift-orb-1 20s ease-in-out infinite;
+}
+
+/* ============================================================
+   SWIMMING UI — SECTION AMBIENT DEPTH
+   ============================================================ */
+
+/* Adds drifting underwater orbs to any section */
+.ocean-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.ocean-section > .ocean-orb-1 {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+  width: 45%;
+  aspect-ratio: 1;
+  top: -15%;
+  right: -10%;
+  background: radial-gradient(circle, hsl(var(--primary) / 0.07) 0%, transparent 70%);
+  animation: drift-orb-1 24s ease-in-out infinite;
+  z-index: 0;
+}
+
+.ocean-section > .ocean-orb-2 {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+  width: 38%;
+  aspect-ratio: 1;
+  bottom: -15%;
+  left: -8%;
+  background: radial-gradient(circle, hsl(var(--accent) / 0.06) 0%, transparent 70%);
+  animation: drift-orb-2 30s ease-in-out infinite;
+  z-index: 0;
+}
+
+.ocean-section > .ocean-section-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
+   SWIMMING UI — SECTION HEADER UNDERLINE
+   ============================================================ */
+
+.section-title-wave {
+  position: relative;
+  display: inline-block;
+}
+
+.section-title-wave::after {
+  content: '';
+  position: absolute;
+  left: 10%;
+  bottom: -6px;
+  width: 80%;
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    hsl(var(--accent)) 20%,
+    hsl(var(--primary)) 50%,
+    hsl(var(--accent)) 80%,
+    transparent 100%
+  );
+  background-size: 300% auto;
+  animation: title-shimmer 4s linear infinite;
+  opacity: 0.85;
+}
+
+/* ============================================================
+   SWIMMING UI — CARD HOVER LIFT (WATER SURFACE EFFECT)
+   ============================================================ */
+
+.card-swim {
+  transition: transform 260ms ease, box-shadow 260ms ease;
+}
+
+.card-swim:hover {
+  transform: translateY(-6px);
+  box-shadow:
+    0 20px 50px hsl(var(--primary) / 0.15),
+    0 6px 20px hsl(var(--accent) / 0.14),
+    0 0 0 1px hsl(var(--accent) / 0.15);
+}
+
+/* ============================================================
+   SWIMMING UI — HIGHLIGHT QUOTE
+   ============================================================ */
 
 .highlight-quote {
   position: relative;
@@ -134,13 +470,25 @@ body {
   text-align: center;
   line-height: 1.2;
   padding-top: 0em;
+  background: linear-gradient(
+    135deg,
+    hsl(var(--primary) / 0.06),
+    hsl(var(--accent) / 0.05)
+  );
+  border: 1px solid hsl(var(--accent) / 0.15);
+  backdrop-filter: blur(8px);
 }
 
 .highlight-quote .quote-mark {
   font-size: 3.5rem;
   font-family: serif;
   margin: 0 0.1em;
+  color: hsl(var(--accent));
 }
+
+/* ============================================================
+   SWIMMING UI — SCROLLBAR (ocean teal theme)
+   ============================================================ */
 
 /* Hide scrollbar for Chrome, Safari and Opera */
 .scrollbar-hide::-webkit-scrollbar {
@@ -149,6 +497,32 @@ body {
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .scrollbar-hide {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    hsl(var(--primary) / 0.5),
+    hsl(var(--accent) / 0.5)
+  );
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    hsl(var(--primary) / 0.8),
+    hsl(var(--accent) / 0.8)
+  );
+}
+

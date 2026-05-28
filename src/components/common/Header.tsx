@@ -99,7 +99,9 @@ export default function Header() {
   );
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-md shadow-md border-b border-border/50">
+    <header className="sticky top-0 z-50 w-full border-b border-border/40
+      backdrop-blur-xl bg-background/60 supports-[backdrop-filter]:bg-background/40
+      shadow-[0_4px_30px_rgba(0,100,200,0.08)]">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           <Link
@@ -125,9 +127,11 @@ export default function Header() {
                 <polygon points="0,0 100,50 0,100" fill="#CE1126" />
               </svg>
             </div>
-            
-            {/* Name */}
-            <span className="block pl-4 pt-2 text-2xl font-bold text-accent font-headline group-hover:text-accent/90">
+
+            {/* Name — gradient text matching hero */}
+            <span className="block pl-4 pt-2 text-2xl font-extrabold font-headline tracking-tight
+              bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent
+              group-hover:opacity-90 transition-opacity">
               Mohammedh Muksith
             </span>
           </Link>
@@ -144,9 +148,10 @@ export default function Header() {
                     <span className="sr-only">Open menu</span>
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-[280px] bg-card p-0">
+                <SheetContent side="right" className="w-[280px] bg-card/90 backdrop-blur-xl p-0">
                   <SheetHeader className="p-6 border-b border-border text-left">
-                     <SheetTitle className="text-xl font-bold text-accent font-headline">Menu</SheetTitle>
+                     <SheetTitle className="text-xl font-bold font-headline
+                       bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Menu</SheetTitle>
                   </SheetHeader>
                   <nav className="flex flex-col space-y-1 p-4">
                     <NavLinks mobile />
