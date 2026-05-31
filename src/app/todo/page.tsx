@@ -1,12 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  collection, addDoc, deleteDoc, updateDoc,
-  doc, query, where, orderBy, onSnapshot, serverTimestamp,
-} from 'firebase/firestore';
-import { db } from '@/lib/firebase';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,9 +18,9 @@ export default function TodoPage() {
   const router = useRouter();
   const { user, loading, signOut } = useAuth();
 
-  const [todos, setTodos]       = useState<Todo[]>([]);
-  const [newText, setNewText]   = useState('');
-  const [adding, setAdding]     = useState(false);
+  const [todos, setTodos]     = useState<Todo[]>([]);
+  const [newText, setNewText] = useState('');
+  const [adding, setAdding]   = useState(false);
   const [dbLoading, setDbLoading] = useState(true);
 
   // Auth guard
@@ -33,46 +28,54 @@ export default function TodoPage() {
     if (!loading && !user) router.replace('/login');
   }, [user, loading, router]);
 
-  // Real-time Firestore listener
-  useEffect(() => {
-    if (!user) return;
-    const q = query(
-      collection(db, 'todos'),
-      where('uid', '==', user.uid),
-      orderBy('createdAt', 'asc'),
-    );
-    const unsub = onSnapshot(q, (snap) => {
-      setTodos(snap.docs.map((d) => ({
-        id: d.id,
-        text: d.data().text as string,
-        done: d.data().done as boolean,
-        createdAt: d.data().createdAt?.toDate() ?? null,
-      })));
+  // Fetch all todos from MongoDB
+  const fetchTodos = useCallback(async () => {
+    try {
+      const res  = await fetch('/api/workload');
+      const data = await res.json() as Todo[];
+      setTodos(data);
+    } catch (err) {
+      console.error('fetchTodos', err);
+    } finally {
       setDbLoading(false);
-    });
-    return unsub;
-  }, [user]);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user) fetchTodos();
+  }, [user, fetchTodos]);
 
   async function addTodo(e: React.FormEvent) {
     e.preventDefault();
     if (!newText.trim() || !user) return;
     setAdding(true);
-    await addDoc(collection(db, 'todos'), {
-      uid: user.uid,
-      text: newText.trim(),
-      done: false,
-      createdAt: serverTimestamp(),
+    const res = await fetch('/api/workload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: newText.trim() }),
     });
+    const created = await res.json() as Todo;
+    setTodos((prev) => [...prev, created]);
     setNewText('');
     setAdding(false);
   }
 
   async function toggleTodo(todo: Todo) {
-    await updateDoc(doc(db, 'todos', todo.id), { done: !todo.done });
+    await fetch('/api/workload', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: todo.id, done: !todo.done }),
+    });
+    setTodos((prev) => prev.map((t) => t.id === todo.id ? { ...t, done: !t.done } : t));
   }
 
   async function deleteTodo(id: string) {
-    await deleteDoc(doc(db, 'todos', id));
+    await fetch('/api/workload', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    });
+    setTodos((prev) => prev.filter((t) => t.id !== id));
   }
 
   async function handleSignOut() {
@@ -121,17 +124,12 @@ export default function TodoPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full border border-accent/20 overflow-hidden flex items-center justify-center bg-background/30">
-              <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                <rect width="200" height="33.33" fill="#000000"/>
-                <rect y="33.33" width="200" height="33.34" fill="#FFFFFF"/>
-                <rect y="66.67" width="200" height="33.33" fill="#009639"/>
-                <polygon points="0,0 90,50 0,100" fill="#CE1126"/>
-              </svg>
+            <div className="w-10 h-10 rounded-full border border-accent/20 overflow-hidden flex-shrink-0">
+              <img src="/profile_photo.png" alt="Profile" className="w-full h-full object-cover" />
             </div>
             <div>
               <h1 className="font-headline text-xl font-extrabold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent leading-tight">
-                My Todos
+                Workload
               </h1>
               <p className="text-xs text-foreground/50">{user.email}</p>
             </div>
