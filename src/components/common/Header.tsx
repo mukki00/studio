@@ -103,7 +103,35 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40
       backdrop-blur-xl bg-background/60 supports-[backdrop-filter]:bg-background/40
-      shadow-[0_4px_30px_rgba(0,100,200,0.08)]">
+      shadow-[0_4px_30px_rgba(0,100,40,0.12)]">
+
+      {/* ── SOLIDARITY TICKER ── */}
+      <div
+        aria-label="Free Palestine solidarity message"
+        className="relative overflow-hidden"
+        style={{
+          height: '30px',
+          background: 'linear-gradient(90deg, #000000 0%, #000000 18%, #009639 18%, #009639 52%, #FFFFFF 52%, #FFFFFF 65%, #CE1126 65%)',
+        }}
+      >
+        {/* Slight overlay for readability */}
+        <div className="absolute inset-0 bg-black/30" />
+        <div className="pal-ticker-track relative z-10 flex items-center h-full">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <span key={i} className="inline-flex items-center gap-3 px-8 text-white text-[11px] font-semibold tracking-wider whitespace-nowrap uppercase">
+              <span>🇵🇸</span><span>Free Palestine</span>
+              <span className="opacity-50 mx-1">✦</span>
+              <span>🍉</span><span>From the River to the Sea</span>
+              <span className="opacity-50 mx-1">✦</span>
+              <span>🫒</span><span>We Shall Return</span>
+              <span className="opacity-50 mx-1">✦</span>
+              <span>🕊️</span><span>Stand with Gaza</span>
+              <span className="opacity-50 mx-1">✦</span>
+            </span>
+          ))}
+        </div>
+      </div>
+
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           <Link
