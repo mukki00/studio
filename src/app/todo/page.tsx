@@ -83,6 +83,8 @@ export default function TodoPage() {
   /* delete confirmation */
   const [confirmDeleteId,  setConfirmDeleteId]  = useState<string | null>(null);
   const [confirmDeleteSub, setConfirmDeleteSub] = useState<{ todoId: string; subIndex: number } | null>(null);
+  const [confirmDoneId,    setConfirmDoneId]    = useState<string | null>(null);
+  const [confirmDoneSub,   setConfirmDoneSub]   = useState<{ todoId: string; subIndex: number } | null>(null);
 
   /* edit task state */
   const [editingTaskId,  setEditingTaskId]  = useState<string | null>(null);
@@ -850,12 +852,13 @@ export default function TodoPage() {
                   <div className="px-4 pt-3.5 pb-3">
                     {/* Title + action toolbar row */}
                     <div className="flex items-start gap-3">
-                      <button onClick={() => toggleTodo(todo)}
+                      <button
+                        onClick={() => todo.done ? toggleTodo(todo) : setConfirmDoneId(confirmDoneId === todo.id ? null : todo.id)}
                         aria-label={todo.done ? 'Mark incomplete' : 'Mark complete'}
                         className="shrink-0 mt-0.5 transition-transform hover:scale-110">
                         {todo.done
                           ? <CheckCircle2 className="h-5 w-5 text-primary fill-primary/20" />
-                          : <Circle className="h-5 w-5 text-foreground/30" />}
+                          : <Circle className={`h-5 w-5 ${confirmDoneId === todo.id ? 'text-primary/60' : 'text-foreground/30'}`} />}
                       </button>
 
                       <div className="flex-1 min-w-0 pt-0.5">
@@ -1009,6 +1012,30 @@ export default function TodoPage() {
                   </div>
                   )}
 
+                  {/* Complete confirmation strip */}
+                  {confirmDoneId === todo.id && (
+                    <div className="px-4 py-2.5 flex items-center justify-between gap-3 bg-primary/8 border-t border-primary/20">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <CheckCircle2 className="h-3.5 w-3.5 text-primary/70 shrink-0" />
+                        <span className="text-xs text-foreground/60 truncate">
+                          Mark <span className="font-semibold text-foreground/80">&ldquo;{todo.text}&rdquo;</span> as complete?
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <button
+                          onClick={() => setConfirmDoneId(null)}
+                          className="text-xs px-2.5 py-1 rounded-md text-foreground/50 hover:text-foreground hover:bg-accent/10 transition-colors">
+                          Cancel
+                        </button>
+                        <button
+                          onClick={() => { toggleTodo(todo); setConfirmDoneId(null); }}
+                          className="text-xs px-3 py-1 rounded-md bg-primary hover:bg-primary/90 text-primary-foreground font-medium transition-colors flex items-center gap-1.5">
+                          <CheckCircle2 className="h-3 w-3" /> Mark Done
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Delete confirmation strip */}
                   {confirmDeleteId === todo.id && (
                     <div className="px-4 py-2.5 flex items-center justify-between gap-3 bg-destructive/8 border-t border-destructive/20">
@@ -1112,11 +1139,14 @@ export default function TodoPage() {
                                 </>
                               ) : (
                                 <>
-                                  <button onClick={() => toggleSubtask(todo, i)}
+                                  <button
+                                    onClick={() => sub.done ? toggleSubtask(todo, i) : setConfirmDoneSub(
+                                      confirmDoneSub?.todoId === todo.id && confirmDoneSub?.subIndex === i ? null : { todoId: todo.id, subIndex: i }
+                                    )}
                                     className="shrink-0 mt-0.5 text-accent/70 hover:scale-110 transition-transform">
                                     {sub.done
                                       ? <CheckCircle2 className="h-4 w-4 fill-accent/15" />
-                                      : <Circle className="h-4 w-4 opacity-40" />}
+                                      : <Circle className={`h-4 w-4 ${confirmDoneSub?.todoId === todo.id && confirmDoneSub?.subIndex === i ? 'opacity-70 text-primary' : 'opacity-40'}`} />}
                                   </button>
                                   <div className="flex-1 min-w-0">
                                     <span className={`text-xs font-medium leading-snug ${sub.done ? 'line-through text-foreground/30' : 'text-foreground/65'}`}>
@@ -1212,6 +1242,26 @@ export default function TodoPage() {
                                 </>
                               )}
                               {/* Sub-task delete confirmation strip */}
+                              {/* Sub-task complete confirmation */}
+                              {confirmDoneSub?.todoId === todo.id && confirmDoneSub?.subIndex === i && (
+                                <div className="mt-1 mx-1 flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-md bg-primary/8 border border-primary/20">
+                                  <span className="text-[10px] text-foreground/55 truncate min-w-0 flex items-center gap-1">
+                                    <CheckCircle2 className="h-3 w-3 text-primary/60 shrink-0" />
+                                    Mark <span className="font-semibold text-foreground/75 mx-0.5">&ldquo;{sub.text}&rdquo;</span> as complete?
+                                  </span>
+                                  <div className="flex items-center gap-1 shrink-0">
+                                    <button onClick={() => setConfirmDoneSub(null)}
+                                      className="text-[10px] px-2 py-0.5 rounded text-foreground/50 hover:text-foreground hover:bg-accent/10 transition-colors">
+                                      Cancel
+                                    </button>
+                                    <button onClick={() => { toggleSubtask(todo, i); setConfirmDoneSub(null); }}
+                                      className="text-[10px] px-2 py-0.5 rounded bg-primary hover:bg-primary/90 text-primary-foreground font-medium transition-colors flex items-center gap-1">
+                                      <CheckCircle2 className="h-2.5 w-2.5" /> Done
+                                    </button>
+                                  </div>
+                                </div>
+                              )}
+                              {/* Sub-task delete confirmation */}
                               {confirmDeleteSub?.todoId === todo.id && confirmDeleteSub?.subIndex === i && (
                                 <div className="mt-1 mx-1 mb-0.5 flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-md bg-destructive/8 border border-destructive/20">
                                   <span className="text-[10px] text-foreground/55 truncate min-w-0">
