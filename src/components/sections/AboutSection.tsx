@@ -102,25 +102,6 @@ export default function AboutSection() {
         </div>
       </div>
 
-      {/* Palestinian solidarity quote */}
-      <div className="mt-8 glass-card rounded-2xl p-5 relative overflow-hidden flex items-start gap-4">
-        {/* Flag stripe accent */}
-        <div aria-hidden="true" className="absolute top-0 left-0 w-full h-1 rounded-t-2xl" style={{ background: 'linear-gradient(to right, #000000 25%, #FFFFFF 25% 50%, #009639 50% 75%, #CE1126 75%)' }} />
-        <div className="shrink-0 mt-1">
-          <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg" className="w-10 h-auto rounded shadow-sm" aria-hidden="true">
-            <rect width="200" height="33.33" fill="#000000"/>
-            <rect y="33.33" width="200" height="33.34" fill="#FFFFFF"/>
-            <rect y="66.67" width="200" height="33.33" fill="#009639"/>
-            <polygon points="0,0 100,50 0,100" fill="#CE1126"/>
-          </svg>
-        </div>
-        <div>
-          <p className="text-sm italic text-foreground/75 leading-relaxed">
-            &ldquo;We have on this earth what makes life worth living.&rdquo;
-          </p>
-          <p className="text-xs font-bold mt-1" style={{ color: '#009639' }}>— Mahmoud Darwish &nbsp;·&nbsp; 🍉 Free Palestine</p>
-        </div>
-      </div>
     </Section>
   );
 }

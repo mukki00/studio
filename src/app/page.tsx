@@ -16,62 +16,6 @@ export default function HomePage() {
   return (
     <div className="relative flex flex-col min-h-screen bg-background">
 
-      {/* ── FULL-PAGE SCATTERED PALESTINIAN FLAGS ── */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden" style={{ zIndex: 0 }}>
-        {([
-          { left: '3%',   top: '4%',   rotate: -10, delay: '0s',    size: 44, opacity: 0.18 },
-          { left: '91%',  top: '2%',   rotate:   7, delay: '1.2s',  size: 36, opacity: 0.15 },
-          { left: '47%',  top: '7%',   rotate:  -4, delay: '0.6s',  size: 30, opacity: 0.12 },
-          { left: '76%',  top: '11%',  rotate:  12, delay: '2.1s',  size: 40, opacity: 0.16 },
-          { left: '14%',  top: '15%',  rotate:  -7, delay: '0.9s',  size: 34, opacity: 0.14 },
-          { left: '62%',  top: '19%',  rotate:   5, delay: '1.7s',  size: 48, opacity: 0.20 },
-          { left: '88%',  top: '23%',  rotate: -13, delay: '0.3s',  size: 32, opacity: 0.13 },
-          { left: '28%',  top: '27%',  rotate:   9, delay: '2.4s',  size: 38, opacity: 0.17 },
-          { left: '5%',   top: '32%',  rotate:  -5, delay: '1.0s',  size: 42, opacity: 0.15 },
-          { left: '53%',  top: '35%',  rotate:  14, delay: '0.5s',  size: 30, opacity: 0.12 },
-          { left: '79%',  top: '40%',  rotate:  -8, delay: '1.9s',  size: 46, opacity: 0.19 },
-          { left: '20%',  top: '44%',  rotate:   3, delay: '0.7s',  size: 36, opacity: 0.14 },
-          { left: '40%',  top: '50%',  rotate: -11, delay: '2.7s',  size: 34, opacity: 0.13 },
-          { left: '93%',  top: '53%',  rotate:   6, delay: '1.4s',  size: 40, opacity: 0.16 },
-          { left: '10%',  top: '58%',  rotate:  -3, delay: '0.2s',  size: 28, opacity: 0.11 },
-          { left: '66%',  top: '61%',  rotate:  10, delay: '2.0s',  size: 44, opacity: 0.18 },
-          { left: '35%',  top: '66%',  rotate:  -9, delay: '1.1s',  size: 38, opacity: 0.15 },
-          { left: '82%',  top: '70%',  rotate:   4, delay: '0.8s',  size: 32, opacity: 0.13 },
-          { left: '2%',   top: '74%',  rotate: -14, delay: '2.3s',  size: 50, opacity: 0.20 },
-          { left: '57%',  top: '78%',  rotate:   8, delay: '1.6s',  size: 36, opacity: 0.14 },
-          { left: '24%',  top: '82%',  rotate:  -6, delay: '0.4s',  size: 42, opacity: 0.17 },
-          { left: '70%',  top: '86%',  rotate:  11, delay: '2.8s',  size: 30, opacity: 0.12 },
-          { left: '45%',  top: '90%',  rotate:  -2, delay: '1.3s',  size: 46, opacity: 0.18 },
-          { left: '87%',  top: '93%',  rotate:  -7, delay: '0.1s',  size: 34, opacity: 0.14 },
-          { left: '12%',  top: '97%',  rotate:  13, delay: '1.8s',  size: 38, opacity: 0.16 },
-        ] as { left: string; top: string; rotate: number; delay: string; size: number; opacity: number }[]).map((f, i) => (
-          <svg
-            key={i}
-            viewBox="0 0 40 20"
-            xmlns="http://www.w3.org/2000/svg"
-            style={{
-              position: 'absolute',
-              left: f.left,
-              top: f.top,
-              width: `${f.size}px`,
-              height: `${Math.round(f.size * 0.5)}px`,
-              transform: `rotate(${f.rotate}deg)`,
-              animation: 'float-up-down 5s ease-in-out infinite',
-              animationDelay: f.delay,
-              opacity: f.opacity,
-              borderRadius: '2px',
-              overflow: 'hidden',
-              filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.15))',
-            }}
-          >
-            <rect x="0" y="0"      width="40" height="6.67"  fill="#000000" />
-            <rect x="0" y="6.67"  width="40" height="6.66"  fill="#EBEBEB" />
-            <rect x="0" y="13.33" width="40" height="6.67"  fill="#009639" />
-            <polygon points="0,0 16,10 0,20" fill="#CE1126" />
-          </svg>
-        ))}
-      </div>
-
       <Header />
       <main className="flex-grow" style={{ position: 'relative', zIndex: 1 }}>
 
@@ -113,10 +57,10 @@ export default function HomePage() {
             <div className="pal-ring w-full h-full" style={{ borderColor: 'rgba(0,150,57,0.18)', animationDelay: '3s' }} />
           </div>
 
-          {/* Dome of the Rock silhouette — more prominent */}
-          <div aria-hidden="true" className="pointer-events-none absolute bottom-20 left-1/2 -translate-x-1/2" style={{ width: 'min(560px, 92vw)' }}>
+          {/* Dome of the Rock silhouette */}
+          <div aria-hidden="true" className="pointer-events-none absolute bottom-20 left-1/2 -translate-x-1/2" style={{ width: 'min(500px, 88vw)' }}>
             <svg viewBox="0 0 480 220" xmlns="http://www.w3.org/2000/svg"
-              className="w-full opacity-[0.14] dark:opacity-[0.20]" fill="currentColor">
+              className="w-full opacity-[0.09] dark:opacity-[0.13]" fill="currentColor">
               {/* Platform */}
               <rect x="10" y="205" width="460" height="15" rx="3"/>
               {/* Terrace */}
@@ -142,25 +86,10 @@ export default function HomePage() {
             </svg>
           </div>
 
-          {/* Crescent & star — right side decoration */}
-          <div aria-hidden="true" className="pointer-events-none absolute" style={{ top: '12%', right: '6%', opacity: 0.12, animation: 'float-up-down 9s ease-in-out infinite', animationDelay: '2s' }}>
-            <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" style={{ width: '54px', height: '54px' }}>
-              <path d="M30,5 A25,25 0 1,0 55,30 A18,18 0 1,1 30,5 Z" fill="#009639"/>
-              <polygon points="38,8 40,14 46,14 41,18 43,24 38,20 33,24 35,18 30,14 36,14" fill="#CE1126"/>
-            </svg>
-          </div>
-          {/* Crescent — left side */}
-          <div aria-hidden="true" className="pointer-events-none absolute" style={{ top: '20%', left: '4%', opacity: 0.10, animation: 'float-up-down 7s ease-in-out infinite', animationDelay: '0.5s' }}>
-            <svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg" style={{ width: '40px', height: '40px' }}>
-              <path d="M25,4 A21,21 0 1,0 46,25 A15,15 0 1,1 25,4 Z" fill="#CE1126"/>
-            </svg>
-          </div>
-
           {/* Left olive branch */}
-          {/* Left olive branch — larger */}
-          <div aria-hidden="true" className="pointer-events-none absolute left-0 top-10 hidden sm:block"
-            style={{ width: '110px', animation: 'olive-sway 7s ease-in-out infinite', transformOrigin: 'bottom center' }}>
-            <svg viewBox="0 0 80 170" xmlns="http://www.w3.org/2000/svg" className="w-full opacity-[0.28] dark:opacity-[0.34] text-primary" fill="currentColor">
+          <div aria-hidden="true" className="pointer-events-none absolute left-1 top-16 hidden sm:block"
+            style={{ width: '88px', animation: 'olive-sway 7s ease-in-out infinite', transformOrigin: 'bottom center' }}>
+            <svg viewBox="0 0 80 170" xmlns="http://www.w3.org/2000/svg" className="w-full opacity-[0.20] dark:opacity-[0.25] text-primary" fill="currentColor">
               <path d="M42,170 Q39,140 34,118 Q28,95 20,70 Q14,50 10,25" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
               <ellipse cx="30" cy="130" rx="15" ry="6" transform="rotate(-35 30 130)"/>
               <ellipse cx="24" cy="107" rx="13" ry="5.5" transform="rotate(-25 24 107)"/>
@@ -171,10 +100,10 @@ export default function HomePage() {
             </svg>
           </div>
 
-          {/* Right olive branch (mirrored) — larger */}
-          <div aria-hidden="true" className="pointer-events-none absolute right-0 top-10 hidden sm:block"
-            style={{ width: '110px', transform: 'scaleX(-1)', animation: 'olive-sway 8s ease-in-out infinite reverse', transformOrigin: 'bottom center' }}>
-            <svg viewBox="0 0 80 170" xmlns="http://www.w3.org/2000/svg" className="w-full opacity-[0.28] dark:opacity-[0.34] text-primary" fill="currentColor">
+          {/* Right olive branch (mirrored) */}
+          <div aria-hidden="true" className="pointer-events-none absolute right-1 top-16 hidden sm:block"
+            style={{ width: '88px', transform: 'scaleX(-1)', animation: 'olive-sway 8s ease-in-out infinite reverse', transformOrigin: 'bottom center' }}>
+            <svg viewBox="0 0 80 170" xmlns="http://www.w3.org/2000/svg" className="w-full opacity-[0.20] dark:opacity-[0.25] text-primary" fill="currentColor">
               <path d="M42,170 Q39,140 34,118 Q28,95 20,70 Q14,50 10,25" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
               <ellipse cx="30" cy="130" rx="15" ry="6" transform="rotate(-35 30 130)"/>
               <ellipse cx="24" cy="107" rx="13" ry="5.5" transform="rotate(-25 24 107)"/>
@@ -185,44 +114,28 @@ export default function HomePage() {
             </svg>
           </div>
 
-          {/* Extra olive branch — lower left */}
-          <div aria-hidden="true" className="pointer-events-none absolute left-[7%] bottom-28 hidden lg:block"
-            style={{ width: '70px', opacity: 0.18, animation: 'olive-sway 9s ease-in-out infinite', animationDelay: '1.2s', transformOrigin: 'bottom center', transform: 'rotate(30deg)' }}>
-            <svg viewBox="0 0 80 170" xmlns="http://www.w3.org/2000/svg" fill="#009639">
-              <path d="M42,170 Q39,140 34,118 Q28,95 20,70 Q14,50 10,25" stroke="#009639" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
-              <ellipse cx="30" cy="130" rx="14" ry="5.5" transform="rotate(-35 30 130)"/>
-              <ellipse cx="24" cy="107" rx="12" ry="5" transform="rotate(-25 24 107)"/>
-              <ellipse cx="19" cy="84"  rx="11" ry="4.5" transform="rotate(-15 19 84)"/>
-            </svg>
-          </div>
-
-          {/* Floating watermelons + dove */}
-          <span aria-hidden="true" className="pointer-events-none select-none absolute left-[5%]  bottom-32 text-3xl" style={{ animation: 'float-up-down 5s ease-in-out infinite' }}>🍉</span>
-          <span aria-hidden="true" className="pointer-events-none select-none absolute right-[6%] bottom-40 text-2xl" style={{ animation: 'float-up-down 6s ease-in-out infinite', animationDelay: '1.5s' }}>🍉</span>
-          <span aria-hidden="true" className="pointer-events-none select-none absolute left-[17%] top-10  text-xl opacity-50" style={{ animation: 'float-up-down 7s ease-in-out infinite', animationDelay: '0.8s' }}>🍉</span>
-          <span aria-hidden="true" className="pointer-events-none select-none absolute right-[19%] top-14 text-xl opacity-40" style={{ animation: 'float-up-down 5.5s ease-in-out infinite', animationDelay: '2.2s' }}>🍉</span>
-          <span aria-hidden="true" className="pointer-events-none select-none absolute left-[42%] top-6  text-2xl opacity-30" style={{ animation: 'float-up-down 8s ease-in-out infinite', animationDelay: '3.1s' }}>🕊️</span>
-          <span aria-hidden="true" className="pointer-events-none select-none absolute right-[32%] bottom-24 text-lg opacity-35" style={{ animation: 'float-up-down 6.5s ease-in-out infinite', animationDelay: '1.0s' }}>🌿</span>
+          {/* Floating watermelons */}
+          <span aria-hidden="true" className="pointer-events-none select-none absolute left-[5%]  bottom-32 text-2xl opacity-60" style={{ animation: 'float-up-down 5s ease-in-out infinite' }}>🍉</span>
+          <span aria-hidden="true" className="pointer-events-none select-none absolute right-[6%] bottom-40 text-xl opacity-50" style={{ animation: 'float-up-down 6s ease-in-out infinite', animationDelay: '1.5s' }}>🍉</span>
 
           {/* Content */}
           <div className="relative z-10 max-w-3xl mx-auto animate-fade-in-up">
 
-            {/* Free Palestine badge — pulsing glow */}
-            <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-xs font-semibold tracking-widest uppercase mb-6
-              bg-accent/10 border border-accent/30 text-accent pal-badge-pulse">
-              <span className="text-base leading-none">🇵🇸</span>
-              Free Palestine — From the River to the Sea
+            {/* Free Palestine badge */}
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold tracking-widest uppercase mb-6
+              bg-accent/10 border border-accent/30 text-accent">
+              <span className="text-sm leading-none">🇵🇸</span>
+              Free Palestine
             </span>
 
             <h1 className="font-headline text-5xl sm:text-6xl lg:text-7xl font-extrabold mb-4 tracking-tight leading-[1.05]"
               style={{
-                background: 'linear-gradient(135deg, #009639 0%, #c8b97a 30%, #e8d5a3 45%, #CE1126 70%, #009639 100%)',
-                backgroundSize: '250% auto',
+                background: 'linear-gradient(135deg, #009639 0%, #e8d5a3 42%, #CE1126 82%, #009639 100%)',
+                backgroundSize: '200% auto',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
-                animation: 'aurora-flow 6s linear infinite',
-                filter: 'drop-shadow(0 0 30px rgba(0,150,57,0.25)) drop-shadow(0 2px 8px rgba(0,0,0,0.15))',
+                animation: 'aurora-flow 7s linear infinite',
               }}>
               Mohamedh Muksith
             </h1>
@@ -252,8 +165,6 @@ export default function HomePage() {
 
           {/* Wave into page */}
           <div aria-hidden="true" className="absolute bottom-0 left-0 right-0 pointer-events-none">
-            {/* Tatreez embroidery band */}
-            <div className="tatreez-band w-full" style={{ height: '8px', marginBottom: '2px' }} />
             <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" className="w-full h-12 sm:h-16">
               <path d="M0,30 C240,60 480,0 720,30 C960,60 1200,0 1440,30 L1440,60 L0,60 Z" className="fill-background opacity-80"/>
               <path d="M0,42 C360,15 720,55 1080,22 C1260,8 1380,38 1440,42 L1440,60 L0,60 Z" className="fill-background"/>
