@@ -60,24 +60,25 @@ export default function Footer() {
           <p className="text-sm font-medium" style={{ color: 'hsl(var(--foreground) / 0.65)' }}>
             &copy; {currentYear} Mohammedh Muksith. All rights reserved.
           </p>
-          <p
-            className="text-sm mt-3 flex items-center justify-center gap-2"
-            style={{ color: 'hsl(var(--foreground) / 0.55)' }}
-          >
-            Free Palestine
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 200 100"
-              className="w-7 h-auto rounded-sm shadow-sm"
-              aria-hidden="true"
-              focusable="false"
-            >
-              <rect width="200" height="33.33" fill="#000000" />
-              <rect y="33.33" width="200" height="33.34" fill="#FFFFFF" />
-              <rect y="66.67" width="200" height="33.33" fill="#009639" />
-              <polygon points="0,0 100,50 0,100" fill="#CE1126" />
-            </svg>
-          </p>
+          {/* Palestinian solidarity row */}
+          <div className="mt-4 flex flex-col items-center gap-2">
+            <div className="flex items-center gap-1.5" aria-label="Free Palestine">
+              {[{r:-7,w:28,d:'0s'},{r:3,w:34,d:'0.5s'},{r:-4,w:30,d:'1.1s'},{r:8,w:36,d:'0.3s'},{r:-6,w:32,d:'1.6s'},{r:5,w:28,d:'0.8s'},{r:-9,w:34,d:'2.0s'}].map((f,i) => (
+                <svg key={i} viewBox="0 0 40 20" xmlns="http://www.w3.org/2000/svg"
+                  style={{ width:`${f.w}px`, height:`${Math.round(f.w*0.5)}px`, transform:`rotate(${f.r}deg)`, opacity:0.75, borderRadius:'2px', overflow:'hidden', animation:'float-up-down 6s ease-in-out infinite', animationDelay:f.d, filter:'drop-shadow(0 1px 3px rgba(0,0,0,0.18))' }}>
+                  <rect x="0" y="0"      width="40" height="6.67" fill="#000000"/>
+                  <rect x="0" y="6.67"  width="40" height="6.66" fill="#EBEBEB"/>
+                  <rect x="0" y="13.33" width="40" height="6.67" fill="#009639"/>
+                  <polygon points="0,0 16,10 0,20" fill="#CE1126"/>
+                </svg>
+              ))}
+            </div>
+            <p className="text-xs italic flex items-center gap-1.5" style={{ color: 'hsl(var(--foreground) / 0.50)' }}>
+              <span>🍉</span>
+              <span>Free Palestine — From the River to the Sea</span>
+              <span>🕊️</span>
+            </p>
+          </div>
         </div>
       </div>
     </footer>

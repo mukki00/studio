@@ -14,9 +14,66 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
   return (
-    <div className="flex flex-col min-h-screen bg-background">
+    <div className="relative flex flex-col min-h-screen bg-background">
+
+      {/* ── FULL-PAGE SCATTERED PALESTINIAN FLAGS ── */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden" style={{ zIndex: 0 }}>
+        {([
+          { left: '3%',   top: '4%',   rotate: -10, delay: '0s',    size: 44, opacity: 0.18 },
+          { left: '91%',  top: '2%',   rotate:   7, delay: '1.2s',  size: 36, opacity: 0.15 },
+          { left: '47%',  top: '7%',   rotate:  -4, delay: '0.6s',  size: 30, opacity: 0.12 },
+          { left: '76%',  top: '11%',  rotate:  12, delay: '2.1s',  size: 40, opacity: 0.16 },
+          { left: '14%',  top: '15%',  rotate:  -7, delay: '0.9s',  size: 34, opacity: 0.14 },
+          { left: '62%',  top: '19%',  rotate:   5, delay: '1.7s',  size: 48, opacity: 0.20 },
+          { left: '88%',  top: '23%',  rotate: -13, delay: '0.3s',  size: 32, opacity: 0.13 },
+          { left: '28%',  top: '27%',  rotate:   9, delay: '2.4s',  size: 38, opacity: 0.17 },
+          { left: '5%',   top: '32%',  rotate:  -5, delay: '1.0s',  size: 42, opacity: 0.15 },
+          { left: '53%',  top: '35%',  rotate:  14, delay: '0.5s',  size: 30, opacity: 0.12 },
+          { left: '79%',  top: '40%',  rotate:  -8, delay: '1.9s',  size: 46, opacity: 0.19 },
+          { left: '20%',  top: '44%',  rotate:   3, delay: '0.7s',  size: 36, opacity: 0.14 },
+          { left: '40%',  top: '50%',  rotate: -11, delay: '2.7s',  size: 34, opacity: 0.13 },
+          { left: '93%',  top: '53%',  rotate:   6, delay: '1.4s',  size: 40, opacity: 0.16 },
+          { left: '10%',  top: '58%',  rotate:  -3, delay: '0.2s',  size: 28, opacity: 0.11 },
+          { left: '66%',  top: '61%',  rotate:  10, delay: '2.0s',  size: 44, opacity: 0.18 },
+          { left: '35%',  top: '66%',  rotate:  -9, delay: '1.1s',  size: 38, opacity: 0.15 },
+          { left: '82%',  top: '70%',  rotate:   4, delay: '0.8s',  size: 32, opacity: 0.13 },
+          { left: '2%',   top: '74%',  rotate: -14, delay: '2.3s',  size: 50, opacity: 0.20 },
+          { left: '57%',  top: '78%',  rotate:   8, delay: '1.6s',  size: 36, opacity: 0.14 },
+          { left: '24%',  top: '82%',  rotate:  -6, delay: '0.4s',  size: 42, opacity: 0.17 },
+          { left: '70%',  top: '86%',  rotate:  11, delay: '2.8s',  size: 30, opacity: 0.12 },
+          { left: '45%',  top: '90%',  rotate:  -2, delay: '1.3s',  size: 46, opacity: 0.18 },
+          { left: '87%',  top: '93%',  rotate:  -7, delay: '0.1s',  size: 34, opacity: 0.14 },
+          { left: '12%',  top: '97%',  rotate:  13, delay: '1.8s',  size: 38, opacity: 0.16 },
+        ] as { left: string; top: string; rotate: number; delay: string; size: number; opacity: number }[]).map((f, i) => (
+          <svg
+            key={i}
+            viewBox="0 0 40 20"
+            xmlns="http://www.w3.org/2000/svg"
+            style={{
+              position: 'absolute',
+              left: f.left,
+              top: f.top,
+              width: `${f.size}px`,
+              height: `${Math.round(f.size * 0.5)}px`,
+              transform: `rotate(${f.rotate}deg)`,
+              animation: 'float-up-down 5s ease-in-out infinite',
+              animationDelay: f.delay,
+              opacity: f.opacity,
+              borderRadius: '2px',
+              overflow: 'hidden',
+              filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.15))',
+            }}
+          >
+            <rect x="0" y="0"      width="40" height="6.67"  fill="#000000" />
+            <rect x="0" y="6.67"  width="40" height="6.66"  fill="#EBEBEB" />
+            <rect x="0" y="13.33" width="40" height="6.67"  fill="#009639" />
+            <polygon points="0,0 16,10 0,20" fill="#CE1126" />
+          </svg>
+        ))}
+      </div>
+
       <Header />
-      <main className="flex-grow">
+      <main className="flex-grow" style={{ position: 'relative', zIndex: 1 }}>
 
         {/* ── HERO SECTION ── Palestinian Theme */}
         <section className="relative hero-wave-bg px-4 pt-20 pb-36 text-center overflow-hidden">
@@ -135,20 +192,8 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* Palestinian flag strip + wave transition */}
+          {/* Wave into page */}
           <div aria-hidden="true" className="absolute bottom-0 left-0 right-0 pointer-events-none">
-            {/* Flag strip */}
-            <div className="w-full overflow-hidden" style={{ height: '18px', position: 'relative', animation: 'flag-wave 5s ease-in-out infinite' }}>
-              <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column' }}>
-                <div style={{ flex: 1, background: 'rgba(0,0,0,0.72)' }} />
-                <div style={{ flex: 1, background: 'rgba(235,235,235,0.72)' }} />
-                <div style={{ flex: 1, background: 'rgba(0,150,57,0.72)' }} />
-              </div>
-              <svg style={{ position: 'absolute', top: 0, left: 0, height: '100%', width: 'auto' }} viewBox="0 0 36 18" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-                <polygon points="0,0 36,9 0,18" fill="rgba(206,17,38,0.85)" />
-              </svg>
-            </div>
-            {/* Wave into page */}
             <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" className="w-full h-12 sm:h-16">
               <path d="M0,30 C240,60 480,0 720,30 C960,60 1200,0 1440,30 L1440,60 L0,60 Z" className="fill-background opacity-80"/>
               <path d="M0,42 C360,15 720,55 1080,22 C1260,8 1380,38 1440,42 L1440,60 L0,60 Z" className="fill-background"/>

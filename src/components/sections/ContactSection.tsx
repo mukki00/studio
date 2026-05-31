@@ -124,6 +124,22 @@ export default function ContactSection() {
                 <SubmitButton />
               </form>
             </Form>
+            {/* Palestinian solidarity footer */}
+            <div className="mt-5 pt-4 border-t border-accent/10 flex items-center justify-center gap-2">
+              <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg" className="w-6 h-auto rounded-sm opacity-70" aria-hidden="true">
+                <rect width="200" height="33.33" fill="#000000"/>
+                <rect y="33.33" width="200" height="33.34" fill="#FFFFFF"/>
+                <rect y="66.67" width="200" height="33.33" fill="#009639"/>
+                <polygon points="0,0 100,50 0,100" fill="#CE1126"/>
+              </svg>
+              <p className="text-xs text-foreground/45 italic">🕊️ For the children of Palestine — Free Gaza</p>
+              <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg" className="w-6 h-auto rounded-sm opacity-70" aria-hidden="true">
+                <rect width="200" height="33.33" fill="#000000"/>
+                <rect y="33.33" width="200" height="33.34" fill="#FFFFFF"/>
+                <rect y="66.67" width="200" height="33.33" fill="#009639"/>
+                <polygon points="0,0 100,50 0,100" fill="#CE1126"/>
+              </svg>
+            </div>
         </div>
       </div>
     </Section>
