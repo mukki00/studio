@@ -31,10 +31,17 @@ export async function GET() {
     const todos = await col.find({}).sort({ createdAt: 1 }).toArray();
     return NextResponse.json(
       todos.map((t) => ({
-        id:        t._id.toString(),
-        text:      t.text as string,
-        done:      t.done as boolean,
-        createdAt: t.createdAt ?? null,
+        id:             t._id.toString(),
+        text:           t.text           as string,
+        done:           t.done           as boolean,
+        date:           t.date           ?? null,
+        assignee:       t.assignee       ?? null,
+        budget:         t.budget         ?? null,
+        budgetCurrency: (t.budgetCurrency as string) ?? 'USD',
+        estimatedHours: t.estimatedHours ?? null,
+        estimatedUnit:  t.estimatedUnit  ?? 'hrs',
+        subtasks:       (t.subtasks      ?? []) as { text: string; done: boolean; date: string | null; assignee: string | null; budget: number | null; estimatedHours: number | null }[],
+        createdAt:      t.createdAt      ?? null,
       })),
     );
   } catch (err) {
@@ -43,29 +50,88 @@ export async function GET() {
   }
 }
 
-// POST — create a new todo  { text: string }
+// POST — create a new todo
 export async function POST(req: NextRequest) {
   try {
-    const { text } = await req.json() as { text?: string };
-    if (!text?.trim()) {
+    const body = await req.json() as {
+      text?: string;
+      date?: string | null;
+      assignee?: string | null;
+      budget?: number | null;
+      budgetCurrency?: string | null;
+      estimatedHours?: number | null;
+      estimatedUnit?: string | null;
+      subtasks?: { text: string; done: boolean; date?: string | null; assignee?: string | null; budget?: number | null; estimatedHours?: number | null }[];
+    };
+    if (!body.text?.trim()) {
       return NextResponse.json({ error: 'text is required' }, { status: 400 });
     }
+    const doc = {
+      text:           body.text.trim(),
+      done:           false,
+      date:           body.date           ?? null,
+      assignee:       body.assignee       ?? null,
+      budget:         body.budget         ?? null,
+      budgetCurrency: body.budgetCurrency ?? 'USD',
+      estimatedHours: body.estimatedHours ?? null,
+      estimatedUnit:  body.estimatedUnit  ?? 'hrs',
+      subtasks:       body.subtasks       ?? [],
+      createdAt:      new Date(),
+    };
     const col    = await getDb();
-    const result = await col.insertOne({ text: text.trim(), done: false, createdAt: new Date() });
-    return NextResponse.json({ id: result.insertedId.toString(), text: text.trim(), done: false });
+    const result = await col.insertOne(doc);
+    return NextResponse.json({ id: result.insertedId.toString(), ...doc });
   } catch (err) {
     console.error('POST /api/workload', err);
     return NextResponse.json({ error: 'Failed to create todo' }, { status: 500 });
   }
 }
 
-// PATCH — toggle done  { id: string }
+// PATCH — toggle done | toggle subtask done | add subtask | edit task | edit subtask
+// { id, done }                                            → toggle main task done
+// { id, subtaskIndex, done }                             → toggle subtask done
+// { id, addSubtask: {...} }                              → push new subtask
+// { id, updateTask: { text, date, assignee, … } }       → update task fields
+// { id, subtaskIndex, updateSubtask: {...} }             → replace subtask at index
 export async function PATCH(req: NextRequest) {
   try {
-    const { id, done } = await req.json() as { id?: string; done?: boolean };
-    if (!id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
+    const body = await req.json() as {
+      id?: string;
+      done?: boolean;
+      subtaskIndex?: number;
+      addSubtask?: { text: string; done: boolean; date?: string | null; assignee?: string | null; budget?: number | null; estimatedHours?: number | null };
+      updateTask?: { text: string; date: string | null; assignee: string | null; budget: number | null; budgetCurrency: string; estimatedHours: number | null; estimatedUnit: string };
+      updateSubtask?: { text: string; done: boolean; date: string | null; assignee: string | null; budget: number | null; estimatedHours: number | null };
+    };
+    if (!body.id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
     const col = await getDb();
-    await col.updateOne({ _id: new ObjectId(id) }, { $set: { done: !!done } });
+    if (body.addSubtask) {
+      await col.updateOne(
+        { _id: new ObjectId(body.id) },
+        { $push: { subtasks: body.addSubtask } } as never,
+      );
+    } else if (body.subtaskIndex !== undefined && body.updateSubtask) {
+      await col.updateOne(
+        { _id: new ObjectId(body.id) },
+        { $set: { [`subtasks.${body.subtaskIndex}`]: body.updateSubtask } },
+      );
+    } else if (body.subtaskIndex !== undefined) {
+      await col.updateOne(
+        { _id: new ObjectId(body.id) },
+        { $set: { [`subtasks.${body.subtaskIndex}.done`]: !!body.done } },
+      );
+    } else if (body.updateTask) {
+      const { text, date, assignee, budget, budgetCurrency, estimatedHours, estimatedUnit } = body.updateTask;
+      await col.updateOne(
+        { _id: new ObjectId(body.id) },
+        { $set: { text, date, assignee, budget, budgetCurrency, estimatedHours, estimatedUnit } },
+      );
+    } else {
+      await col.updateOne(
+        { _id: new ObjectId(body.id) },
+        { $set: { done: !!body.done } },
+      );
+    }
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error('PATCH /api/workload', err);
