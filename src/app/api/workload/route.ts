@@ -40,8 +40,9 @@ export async function GET() {
         budgetCurrency: (t.budgetCurrency as string) ?? 'USD',
         estimatedHours: t.estimatedHours ?? null,
         estimatedUnit:  t.estimatedUnit  ?? 'hrs',
-        subtasks:       (t.subtasks      ?? []) as { text: string; done: boolean; date: string | null; assignee: string | null; budget: number | null; estimatedHours: number | null }[],
+        subtasks:       (t.subtasks      ?? []) as { text: string; done: boolean; date: string | null; assignee: string | null; budget: number | null; estimatedHours: number | null; progress: number | null }[],
         createdAt:      t.createdAt      ?? null,
+        progress:       t.progress       ?? null,
       })),
     );
   } catch (err) {
@@ -98,10 +99,13 @@ export async function PATCH(req: NextRequest) {
     const body = await req.json() as {
       id?: string;
       done?: boolean;
+      progress?: number;
+      subProgress?: number;
       subtaskIndex?: number;
+      deleteSubtaskIndex?: number;
       addSubtask?: { text: string; done: boolean; date?: string | null; assignee?: string | null; budget?: number | null; estimatedHours?: number | null };
       updateTask?: { text: string; date: string | null; assignee: string | null; budget: number | null; budgetCurrency: string; estimatedHours: number | null; estimatedUnit: string };
-      updateSubtask?: { text: string; done: boolean; date: string | null; assignee: string | null; budget: number | null; estimatedHours: number | null };
+      updateSubtask?: { text: string; done: boolean; date: string | null; assignee: string | null; budget: number | null; estimatedHours: number | null; progress: number | null };
     };
     if (!body.id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
     const col = await getDb();
@@ -115,16 +119,38 @@ export async function PATCH(req: NextRequest) {
         { _id: new ObjectId(body.id) },
         { $set: { [`subtasks.${body.subtaskIndex}`]: body.updateSubtask } },
       );
+    } else if (body.subtaskIndex !== undefined && body.subProgress !== undefined) {
+      const p = Math.max(0, Math.min(100, Math.round(body.subProgress)));
+      await col.updateOne(
+        { _id: new ObjectId(body.id) },
+        { $set: { [`subtasks.${body.subtaskIndex}.progress`]: p, ...(p === 100 ? { [`subtasks.${body.subtaskIndex}.done`]: true } : {}) } },
+      );
     } else if (body.subtaskIndex !== undefined) {
       await col.updateOne(
         { _id: new ObjectId(body.id) },
-        { $set: { [`subtasks.${body.subtaskIndex}.done`]: !!body.done } },
+        { $set: { [`subtasks.${body.subtaskIndex}.done`]: !!body.done, ...(body.done ? { [`subtasks.${body.subtaskIndex}.progress`]: 100 } : {}) } },
       );
     } else if (body.updateTask) {
       const { text, date, assignee, budget, budgetCurrency, estimatedHours, estimatedUnit } = body.updateTask;
       await col.updateOne(
         { _id: new ObjectId(body.id) },
         { $set: { text, date, assignee, budget, budgetCurrency, estimatedHours, estimatedUnit } },
+      );
+    } else if (body.deleteSubtaskIndex !== undefined) {
+      // $unset sets the element to null, then $pull removes all nulls
+      await col.updateOne(
+        { _id: new ObjectId(body.id) },
+        { $unset: { [`subtasks.${body.deleteSubtaskIndex}`]: 1 } } as never,
+      );
+      await col.updateOne(
+        { _id: new ObjectId(body.id) },
+        { $pull: { subtasks: null } } as never,
+      );
+    } else if (body.progress !== undefined) {
+      const p = Math.max(0, Math.min(100, Math.round(body.progress)));
+      await col.updateOne(
+        { _id: new ObjectId(body.id) },
+        { $set: { progress: p, ...(p === 100 ? { done: true } : {}) } },
       );
     } else {
       await col.updateOne(

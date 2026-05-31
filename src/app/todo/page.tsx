@@ -31,6 +31,7 @@ interface Subtask {
   assignee: string | null;
   budget: number | null;
   estimatedHours: number | null;
+  progress: number | null;
 }
 
 interface Todo {
@@ -45,6 +46,7 @@ interface Todo {
   estimatedUnit: string;
   subtasks: Subtask[];
   createdAt: Date | null;
+  progress: number | null;
 }
 
 export default function TodoPage() {
@@ -79,7 +81,8 @@ export default function TodoPage() {
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
 
   /* delete confirmation */
-  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [confirmDeleteId,  setConfirmDeleteId]  = useState<string | null>(null);
+  const [confirmDeleteSub, setConfirmDeleteSub] = useState<{ todoId: string; subIndex: number } | null>(null);
 
   /* edit task state */
   const [editingTaskId,  setEditingTaskId]  = useState<string | null>(null);
@@ -93,6 +96,11 @@ export default function TodoPage() {
   const [editingSubtask, setEditingSubtask] = useState<{ todoId: string; index: number } | null>(null);
   const [editSubDraft,   setEditSubDraft]   = useState(emptyDraft);
   const [editLoading,    setEditLoading]    = useState(false);
+
+  /* progress inline editing */
+  const [editingProgressId,  setEditingProgressId]  = useState<string | null>(null);
+  const [editingSubProgress, setEditingSubProgress] = useState<{ todoId: string; subIndex: number } | null>(null);
+  const [progressDraft,      setProgressDraft]      = useState('');
 
   // Auth guard
   useEffect(() => {
@@ -142,6 +150,7 @@ export default function TodoPage() {
       assignee:       stDraft.assignee === 'other' ? (stDraft.assigneeOther.trim() || null) : (stDraft.assignee || null),
       budget:         stDraft.budget !== '' ? parseFloat(stDraft.budget) : null,
       estimatedHours: stDraft.estHours !== '' ? parseFloat(stDraft.estHours) : null,
+      progress:       null,
     }]);
     setStDraft(emptyDraft); setStError(''); setStFormOpen(false);
   }
@@ -183,24 +192,48 @@ export default function TodoPage() {
   }
 
   async function toggleTodo(todo: Todo) {
-    await fetch('/api/workload', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: todo.id, done: !todo.done }),
-    });
-    setTodos((p) => p.map((t) => t.id === todo.id ? { ...t, done: !t.done } : t));
+    const newDone = !todo.done;
+    if (newDone) {
+      // Marking done → progress branch sets both progress: 100 and done: true
+      await fetch('/api/workload', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: todo.id, progress: 100 }),
+      });
+      setTodos((p) => p.map((t) => t.id === todo.id ? { ...t, done: true, progress: 100 } : t));
+    } else {
+      await fetch('/api/workload', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: todo.id, done: false }),
+      });
+      setTodos((p) => p.map((t) => t.id === todo.id ? { ...t, done: false } : t));
+    }
   }
 
   async function toggleSubtask(todo: Todo, idx: number) {
+    const newDone = !todo.subtasks[idx].done;
+    // When checking a subtask, also set its progress to 100
     const updated = todo.subtasks.map((s, i) =>
-      i === idx ? { ...s, done: !s.done } : s
+      i === idx ? { ...s, done: newDone, ...(newDone ? { progress: 100 } : {}) } : s
     );
     await fetch('/api/workload', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: todo.id, subtaskIndex: idx, done: !todo.subtasks[idx].done }),
+      body: JSON.stringify({ id: todo.id, subtaskIndex: idx, done: newDone }),
     });
-    setTodos((p) => p.map((t) => t.id === todo.id ? { ...t, subtasks: updated } : t));
+    // Auto-complete the parent task if all subtasks are now done
+    const allDone = updated.length > 0 && updated.every((s) => s.done);
+    if (allDone && !todo.done) {
+      await fetch('/api/workload', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: todo.id, progress: 100 }),
+      });
+      setTodos((p) => p.map((t) => t.id === todo.id ? { ...t, done: true, progress: 100, subtasks: updated } : t));
+    } else {
+      setTodos((p) => p.map((t) => t.id === todo.id ? { ...t, subtasks: updated } : t));
+    }
   }
 
   async function addSubtaskToTodo(todo: Todo) {
@@ -226,6 +259,7 @@ export default function TodoPage() {
       assignee:       subDraft.assignee === 'other' ? (subDraft.assigneeOther.trim() || null) : (subDraft.assignee || null),
       budget:         subDraft.budget !== '' ? parseFloat(subDraft.budget) : null,
       estimatedHours: subDraft.estHours !== '' ? parseFloat(subDraft.estHours) : null,
+      progress:       null,
     };
     await fetch('/api/workload', {
       method: 'PATCH',
@@ -248,6 +282,20 @@ export default function TodoPage() {
       body: JSON.stringify({ id }),
     });
     setTodos((p) => p.filter((t) => t.id !== id));
+  }
+
+  async function deleteSubtask(todoId: string, subIndex: number) {
+    setConfirmDeleteSub(null);
+    await fetch('/api/workload', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: todoId, deleteSubtaskIndex: subIndex }),
+    });
+    setTodos((p) => p.map((t) =>
+      t.id === todoId
+        ? { ...t, subtasks: t.subtasks.filter((_, i) => i !== subIndex) }
+        : t
+    ));
   }
 
   async function saveEditTask() {
@@ -288,6 +336,7 @@ export default function TodoPage() {
                         : (editSubDraft.assignee || null),
       budget:         editSubDraft.budget !== '' ? parseFloat(editSubDraft.budget) : null,
       estimatedHours: editSubDraft.estHours !== '' ? parseFloat(editSubDraft.estHours) : null,
+      progress:       parentTodo.subtasks[index].progress,
     };
     await fetch('/api/workload', {
       method: 'PATCH',
@@ -302,6 +351,45 @@ export default function TodoPage() {
     setEditingSubtask(null);
     setEditSubDraft(emptyDraft);
     setEditLoading(false);
+  }
+
+  async function updateTaskProgress(todoId: string, progress: number) {
+    const p = Math.max(0, Math.min(100, Math.round(progress)));
+    await fetch('/api/workload', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: todoId, progress: p }),
+    });
+    setTodos((prev) => prev.map((t) =>
+      t.id === todoId ? { ...t, progress: p, done: p === 100 ? true : t.done } : t
+    ));
+    setEditingProgressId(null);
+  }
+
+  async function updateSubtaskProgress(todoId: string, subIndex: number, progress: number) {
+    const p = Math.max(0, Math.min(100, Math.round(progress)));
+    const todo = todos.find((t) => t.id === todoId);
+    if (!todo) return;
+    const updatedSubs = todo.subtasks.map((s, i) =>
+      i === subIndex ? { ...s, progress: p, done: p === 100 ? true : s.done } : s
+    );
+    const allDone = updatedSubs.length > 0 && updatedSubs.every((s) => s.done || (s.progress ?? 0) >= 100);
+    await fetch('/api/workload', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: todoId, subtaskIndex: subIndex, subProgress: p }),
+    });
+    if (allDone && !todo.done) {
+      await fetch('/api/workload', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: todoId, done: true }),
+      });
+    }
+    setTodos((prev) => prev.map((t) =>
+      t.id === todoId ? { ...t, done: allDone ? true : t.done, subtasks: updatedSubs } : t
+    ));
+    setEditingSubProgress(null);
   }
 
   async function handleSignOut() {
@@ -667,9 +755,15 @@ export default function TodoPage() {
               const isExpanded  = expanded.has(todo.id);
               const doneCount   = (todo.subtasks ?? []).filter((s) => s.done).length;
               const totalSubs   = (todo.subtasks ?? []).length;
+              const today       = new Date().toISOString().split('T')[0];
+              const isOverdue   = !todo.done && !!todo.date && todo.date < today;
+              // avgProgress: done tasks always show 100; for tasks with subtasks use average of each sub's progress; else use task's own progress
+              const avgProgress = todo.done ? 100 : (totalSubs > 0
+                ? Math.round((todo.subtasks ?? []).reduce((s, sub) => s + (sub.done ? 100 : (sub.progress ?? 0)), 0) / totalSubs)
+                : (todo.progress ?? 0));
 
               return (
-                <li key={todo.id} className={`glass-card card-swim rounded-xl overflow-hidden group transition-shadow ${confirmDeleteId === todo.id ? 'ring-1 ring-destructive/40 shadow-destructive/10' : ''}`}>
+                <li key={todo.id} className={`glass-card card-swim rounded-xl overflow-hidden group transition-all ${todo.done ? 'border-l-[3px] border-l-primary/35 opacity-80' : isOverdue ? 'border-l-[3px] border-l-destructive/60' : 'border-l-[3px] border-l-accent/55'} ${confirmDeleteId === todo.id ? 'ring-1 ring-destructive/40' : ''}`}>
                   {/* Main task row or inline edit form */}
                   {editingTaskId === todo.id ? (
                     <div className="px-4 py-3 space-y-3">
@@ -753,92 +847,165 @@ export default function TodoPage() {
                       </div>
                     </div>
                   ) : (
-                  <div className="px-4 py-3 flex gap-3">
-                    <button onClick={() => toggleTodo(todo)}
-                      aria-label={todo.done ? 'Mark incomplete' : 'Mark complete'}
-                      className="shrink-0 mt-0.5 text-accent hover:scale-110 transition-transform">
-                      {todo.done
-                        ? <CheckCircle2 className="h-5 w-5 fill-accent/20" />
-                        : <Circle className="h-5 w-5 opacity-50" />}
-                    </button>
+                  <div className="px-4 pt-3.5 pb-3">
+                    {/* Title + action toolbar row */}
+                    <div className="flex items-start gap-3">
+                      <button onClick={() => toggleTodo(todo)}
+                        aria-label={todo.done ? 'Mark incomplete' : 'Mark complete'}
+                        className="shrink-0 mt-0.5 transition-transform hover:scale-110">
+                        {todo.done
+                          ? <CheckCircle2 className="h-5 w-5 text-primary fill-primary/20" />
+                          : <Circle className="h-5 w-5 text-foreground/30" />}
+                      </button>
 
-                    <div className="flex-1 min-w-0">
-                      <span className={`block text-sm font-medium leading-snug ${todo.done ? 'line-through text-foreground/35' : 'text-foreground/85'}`}>
-                        {todo.text}
-                      </span>
-                      {/* Meta badges */}
-                      <div className="flex flex-wrap gap-1.5 mt-1.5">
+                      <div className="flex-1 min-w-0 pt-0.5">
+                        <span className={`block text-sm font-semibold leading-snug ${todo.done ? 'line-through text-foreground/35' : 'text-foreground/90'}`}>
+                          {todo.text}
+                        </span>
+                      </div>
+
+                      {/* Grouped action toolbar */}
+                      <div className={`flex items-center gap-0.5 shrink-0 transition-opacity ${confirmDeleteId === todo.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                        <button
+                          onClick={() => {
+                            setEditTaskDraft({
+                              text: todo.text,
+                              date: todo.date || '',
+                              assignee: todo.assignee ? (todo.assignee === 'Myself' ? 'Myself' : 'other') : '',
+                              assigneeOther: (todo.assignee && todo.assignee !== 'Myself') ? todo.assignee : '',
+                              budget: todo.budget != null ? todo.budget.toString() : '',
+                              budgetCurrency: todo.budgetCurrency as 'USD' | 'LKR',
+                              estHours: todo.estimatedHours != null ? todo.estimatedHours.toString() : '',
+                              estUnit: todo.estimatedUnit as 'hrs' | 'days',
+                            });
+                            setEditingTaskId(todo.id);
+                          }}
+                          aria-label="Edit task"
+                          className="p-1.5 rounded-md text-foreground/35 hover:text-accent hover:bg-accent/10 transition-colors">
+                          <Pencil className="h-3.5 w-3.5" />
+                        </button>
+                        <button
+                          onClick={() => setConfirmDeleteId(confirmDeleteId === todo.id ? null : todo.id)}
+                          aria-label="Delete task"
+                          className={`p-1.5 rounded-md transition-colors ${confirmDeleteId === todo.id ? 'text-destructive bg-destructive/10' : 'text-foreground/35 hover:text-destructive hover:bg-destructive/10'}`}>
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            setActiveSubtaskId(todo.id);
+                            setSubDraft(emptyDraft);
+                            setSubError('');
+                            setExpanded((p) => { const s = new Set(p); s.add(todo.id); return s; });
+                          }}
+                          aria-label="Add sub-task"
+                          className="p-1.5 rounded-md text-foreground/35 hover:text-accent hover:bg-accent/10 transition-colors">
+                          <ListTree className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Meta badges */}
+                    {(todo.date || todo.assignee || todo.budget != null || todo.estimatedHours != null) && (
+                      <div className="flex flex-wrap gap-1.5 mt-2.5 pl-8">
                         {todo.date && (
-                          <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-accent/8 border border-accent/15 text-foreground/55">
+                          <span className={`inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full font-medium ${
+                            isOverdue
+                              ? 'bg-destructive/10 border border-destructive/30 text-destructive/80'
+                              : 'bg-sky-500/10 border border-sky-500/20 text-sky-600 dark:text-sky-400'
+                          }`}>
                             <Calendar className="h-2.5 w-2.5" />
                             {new Date(todo.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: '2-digit' })}
+                            {isOverdue && <span className="font-bold ml-0.5">· overdue</span>}
                           </span>
                         )}
                         {todo.assignee && (
-                          <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-accent/8 border border-accent/15 text-foreground/55">
+                          <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full font-medium bg-violet-500/10 border border-violet-500/20 text-violet-600 dark:text-violet-400">
                             <User className="h-2.5 w-2.5" />{todo.assignee}
                           </span>
                         )}
                         {todo.budget != null && (
-                          <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-accent/8 border border-accent/15 text-foreground/55">
+                          <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full font-medium bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-400">
                             <DollarSign className="h-2.5 w-2.5" />
                             {todo.budgetCurrency === 'LKR' ? '₨' : '$'}{todo.budget.toLocaleString()} {todo.budgetCurrency}
                           </span>
                         )}
                         {todo.estimatedHours != null && (
-                          <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-accent/8 border border-accent/15 text-foreground/55">
+                          <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full font-medium bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-400">
                             <Clock className="h-2.5 w-2.5" />{todo.estimatedHours} {todo.estimatedUnit}
                           </span>
                         )}
-                        {totalSubs > 0 && (
+                      </div>
+                    )}
+
+                    {/* Subtask progress bar */}
+                    {totalSubs > 0 && (
+                      <div className="mt-2.5 pl-8 flex items-center gap-2.5">
+                        <div className="flex-1 h-1.5 bg-accent/10 rounded-full overflow-hidden">
+                          <div
+                            style={{ width: `${avgProgress}%` }}
+                            className={`h-full rounded-full transition-all duration-500 ${avgProgress >= 100 ? 'bg-primary/60' : 'bg-accent/55'}`}
+                          />
+                        </div>
+                        <button
+                          onClick={() => setExpanded((p) => { const s = new Set(p); s.has(todo.id) ? s.delete(todo.id) : s.add(todo.id); return s; })}
+                          className={`inline-flex items-center gap-1 text-[10px] font-medium transition-colors shrink-0 ${
+                            avgProgress >= 100 ? 'text-primary/70 hover:text-primary' : 'text-foreground/45 hover:text-accent'
+                          }`}>
+                          <ListTree className="h-3 w-3" />
+                          <span className="font-semibold">{avgProgress}%</span>
+                          <span className="text-foreground/30">&middot;</span>
+                          {doneCount}/{totalSubs}
+                          {isExpanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Manual progress for tasks without subtasks */}
+                    {totalSubs === 0 && (
+                      <div className="mt-2.5 pl-8 flex items-center gap-2.5">
+                        <div className="flex-1 h-1.5 bg-accent/10 rounded-full overflow-hidden">
+                          <div
+                            style={{ width: `${avgProgress}%` }}
+                            className={`h-full rounded-full transition-all duration-500 ${avgProgress >= 100 ? 'bg-primary/60' : 'bg-accent/55'}`}
+                          />
+                        </div>
+                        {editingProgressId === todo.id ? (
+                          <div className="flex items-center gap-1 shrink-0">
+                            <input
+                              type="number" min="0" max="100" step="1"
+                              value={progressDraft}
+                              onChange={(e) => setProgressDraft(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') { const v = parseInt(e.currentTarget.value, 10); if (!isNaN(v)) updateTaskProgress(todo.id, v); }
+                                if (e.key === 'Escape') setEditingProgressId(null);
+                              }}
+                              className="w-14 h-6 rounded border border-accent/30 bg-background/80 px-2 text-xs text-center focus:outline-none focus:ring-1 focus:ring-accent/50"
+                              autoFocus
+                            />
+                            <span className="text-[10px] text-foreground/40">%</span>
+                            <button onClick={() => { const v = parseInt(progressDraft, 10); if (!isNaN(v)) updateTaskProgress(todo.id, v); }}
+                              className="text-primary/60 hover:text-primary transition-colors">
+                              <CheckCircle2 className="h-3.5 w-3.5" />
+                            </button>
+                            <button onClick={() => setEditingProgressId(null)}
+                              className="text-foreground/30 hover:text-foreground/60 transition-colors">
+                              <X className="h-3 w-3" />
+                            </button>
+                          </div>
+                        ) : (
                           <button
-                            onClick={() => setExpanded((p) => {
-                              const s = new Set(p);
-                              s.has(todo.id) ? s.delete(todo.id) : s.add(todo.id);
-                              return s;
-                            })}
-                            className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-accent/8 border border-accent/15 text-accent hover:bg-accent/15 transition-colors">
-                            <ListTree className="h-2.5 w-2.5" />
-                            {doneCount}/{totalSubs} subtasks
-                            {isExpanded ? <ChevronUp className="h-2.5 w-2.5" /> : <ChevronDown className="h-2.5 w-2.5" />}
+                            onClick={() => { setProgressDraft(avgProgress.toString()); setEditingProgressId(todo.id); }}
+                            className={`inline-flex items-center gap-1 text-[10px] font-medium transition-colors shrink-0 border rounded-full px-2 py-0.5 ${
+                              avgProgress >= 100
+                                ? 'border-primary/25 bg-primary/8 text-primary/70 hover:bg-primary/15'
+                                : 'border-accent/20 bg-accent/5 text-foreground/55 hover:text-accent hover:border-accent/35'
+                            }`}>
+                            <Pencil className="h-2.5 w-2.5 shrink-0" />
+                            <span className="font-semibold">{avgProgress}%</span>
                           </button>
                         )}
                       </div>
-                    </div>
-
-                    <button
-                      onClick={() => {
-                        setEditTaskDraft({
-                          text: todo.text,
-                          date: todo.date || '',
-                          assignee: todo.assignee ? (todo.assignee === 'Myself' ? 'Myself' : 'other') : '',
-                          assigneeOther: (todo.assignee && todo.assignee !== 'Myself') ? todo.assignee : '',
-                          budget: todo.budget != null ? todo.budget.toString() : '',
-                          budgetCurrency: todo.budgetCurrency as 'USD' | 'LKR',
-                          estHours: todo.estimatedHours != null ? todo.estimatedHours.toString() : '',
-                          estUnit: todo.estimatedUnit as 'hrs' | 'days',
-                        });
-                        setEditingTaskId(todo.id);
-                      }}
-                      aria-label="Edit task"
-                      className="shrink-0 mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity text-foreground/30 hover:text-accent">
-                      <Pencil className="h-4 w-4" />
-                    </button>
-                    <button onClick={() => setConfirmDeleteId(confirmDeleteId === todo.id ? null : todo.id)} aria-label="Delete task"
-                      className={`shrink-0 mt-0.5 transition-opacity text-foreground/30 hover:text-destructive ${confirmDeleteId === todo.id ? 'opacity-100 text-destructive' : 'opacity-0 group-hover:opacity-100'}`}>
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                    <button
-                      onClick={() => {
-                        setActiveSubtaskId(todo.id);
-                        setSubDraft(emptyDraft);
-                        setSubError('');
-                        setExpanded((p) => { const s = new Set(p); s.add(todo.id); return s; });
-                      }}
-                      aria-label="Add sub-task"
-                      className="shrink-0 mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity text-foreground/30 hover:text-accent">
-                      <ListTree className="h-4 w-4" />
-                    </button>
+                    )}
                   </div>
                   )}
 
@@ -967,6 +1134,52 @@ export default function TodoPage() {
                                         <span className={badge}><Clock className="h-2 w-2" />{sub.estimatedHours} {todo.estimatedUnit}</span>
                                       )}
                                     </div>
+                                    {/* Sub-task progress */}
+                                    <div className="flex items-center gap-1.5 mt-1.5">
+                                      <div className="w-20 h-1 bg-accent/10 rounded-full overflow-hidden">
+                                        <div
+                                          style={{ width: `${sub.done ? 100 : (sub.progress ?? 0)}%` }}
+                                          className={`h-full rounded-full transition-all duration-300 ${sub.done || (sub.progress ?? 0) >= 100 ? 'bg-primary/50' : 'bg-accent/40'}`}
+                                        />
+                                      </div>
+                                      {editingSubProgress?.todoId === todo.id && editingSubProgress?.subIndex === i ? (
+                                        <div className="flex items-center gap-1">
+                                          <input
+                                            type="number" min="0" max="100" step="1"
+                                            value={progressDraft}
+                                            onChange={(e) => setProgressDraft(e.target.value)}
+                                            onKeyDown={(e) => {
+                                              if (e.key === 'Enter') { const v = parseInt(e.currentTarget.value, 10); if (!isNaN(v)) updateSubtaskProgress(todo.id, i, v); }
+                                              if (e.key === 'Escape') setEditingSubProgress(null);
+                                            }}
+                                            className="w-12 h-5 rounded border border-accent/30 bg-background/80 px-1.5 text-[10px] text-center focus:outline-none focus:ring-1 focus:ring-accent/50"
+                                            autoFocus
+                                          />
+                                          <span className="text-[9px] text-foreground/40">%</span>
+                                          <button onClick={() => { const v = parseInt(progressDraft, 10); if (!isNaN(v)) updateSubtaskProgress(todo.id, i, v); }}
+                                            className="text-primary/60 hover:text-primary transition-colors">
+                                            <CheckCircle2 className="h-3 w-3" />
+                                          </button>
+                                          <button onClick={() => setEditingSubProgress(null)}
+                                            className="text-foreground/30 hover:text-foreground/60 transition-colors">
+                                            <X className="h-2.5 w-2.5" />
+                                          </button>
+                                        </div>
+                                      ) : (
+                                        <button
+                                          onClick={() => { setProgressDraft((sub.done ? 100 : (sub.progress ?? 0)).toString()); setEditingSubProgress({ todoId: todo.id, subIndex: i }); }}
+                                          className={`inline-flex items-center gap-0.5 text-[9px] font-medium px-1.5 py-0.5 rounded-full border transition-colors ${
+                                            sub.done || (sub.progress ?? 0) >= 100
+                                              ? 'bg-primary/10 border-primary/20 text-primary/70 hover:bg-primary/15'
+                                              : (sub.progress ?? 0) > 0
+                                                ? 'bg-accent/10 border-accent/20 text-accent/70 hover:bg-accent/15'
+                                                : 'bg-foreground/5 border-foreground/15 text-foreground/45 hover:bg-foreground/10'
+                                          }`}>
+                                          <Pencil className="h-2 w-2" />
+                                          {sub.done ? 100 : (sub.progress ?? 0)}%
+                                        </button>
+                                      )}
+                                    </div>
                                   </div>
                                   <button
                                     onClick={() => {
@@ -984,7 +1197,37 @@ export default function TodoPage() {
                                     className="shrink-0 mt-0.5 opacity-0 group-hover/sub:opacity-100 transition-opacity text-foreground/30 hover:text-accent">
                                     <Pencil className="h-3.5 w-3.5" />
                                   </button>
+                                  <button
+                                    onClick={() => setConfirmDeleteSub(
+                                      confirmDeleteSub?.todoId === todo.id && confirmDeleteSub?.subIndex === i ? null : { todoId: todo.id, subIndex: i }
+                                    )}
+                                    aria-label="Delete sub-task"
+                                    className={`shrink-0 mt-0.5 transition-opacity ${
+                                      confirmDeleteSub?.todoId === todo.id && confirmDeleteSub?.subIndex === i
+                                        ? 'opacity-100 text-destructive'
+                                        : 'opacity-0 group-hover/sub:opacity-100 text-foreground/30 hover:text-destructive'
+                                    }`}>
+                                    <Trash2 className="h-3.5 w-3.5" />
+                                  </button>
                                 </>
+                              )}
+                              {/* Sub-task delete confirmation strip */}
+                              {confirmDeleteSub?.todoId === todo.id && confirmDeleteSub?.subIndex === i && (
+                                <div className="mt-1 mx-1 mb-0.5 flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-md bg-destructive/8 border border-destructive/20">
+                                  <span className="text-[10px] text-foreground/55 truncate min-w-0">
+                                    Delete <span className="font-semibold text-foreground/75">&ldquo;{sub.text}&rdquo;</span>?
+                                  </span>
+                                  <div className="flex items-center gap-1 shrink-0">
+                                    <button onClick={() => setConfirmDeleteSub(null)}
+                                      className="text-[10px] px-2 py-0.5 rounded text-foreground/50 hover:text-foreground hover:bg-accent/10 transition-colors">
+                                      Cancel
+                                    </button>
+                                    <button onClick={() => deleteSubtask(todo.id, i)}
+                                      className="text-[10px] px-2 py-0.5 rounded bg-destructive hover:bg-destructive/90 text-white font-medium transition-colors flex items-center gap-1">
+                                      <Trash2 className="h-2.5 w-2.5" /> Delete
+                                    </button>
+                                  </div>
+                                </div>
                               )}
                             </li>
                           ))}
