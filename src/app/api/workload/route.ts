@@ -44,6 +44,7 @@ export async function GET() {
         createdAt:      t.createdAt      ?? null,
         progress:       t.progress       ?? null,
         priority:       t.priority        ?? null,
+        recurring:      t.recurring       ?? null,
       })),
     );
   } catch (err) {
@@ -64,6 +65,7 @@ export async function POST(req: NextRequest) {
       estimatedHours?: number | null;
       estimatedUnit?: string | null;
       priority?: string | null;
+      recurring?: string | null;
       subtasks?: { text: string; done: boolean; date?: string | null; assignee?: string | null; budget?: number | null; estimatedHours?: number | null }[];
     };
     if (!body.text?.trim()) {
@@ -80,6 +82,7 @@ export async function POST(req: NextRequest) {
       estimatedUnit:  body.estimatedUnit  ?? 'hrs',
       subtasks:       body.subtasks       ?? [],
       priority:       body.priority        ?? null,
+      recurring:      body.recurring       ?? null,
       createdAt:      new Date(),
     };
     const col    = await getDb();
@@ -107,7 +110,7 @@ export async function PATCH(req: NextRequest) {
       subtaskIndex?: number;
       deleteSubtaskIndex?: number;
       addSubtask?: { text: string; done: boolean; startDate?: string | null; assignee?: string | null; budget?: number | null; estimatedHours?: number | null };
-      updateTask?: { text: string; startDate: string | null; assignee: string | null; budget: number | null; budgetCurrency: string; estimatedHours: number | null; estimatedUnit: string; priority: string | null };
+      updateTask?: { text: string; startDate: string | null; assignee: string | null; budget: number | null; budgetCurrency: string; estimatedHours: number | null; estimatedUnit: string; priority: string | null; recurring: string | null };
       updateSubtask?: { text: string; done: boolean; startDate: string | null; assignee: string | null; budget: number | null; estimatedHours: number | null; progress: number | null };
     };
     if (!body.id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
@@ -134,10 +137,10 @@ export async function PATCH(req: NextRequest) {
         { $set: { [`subtasks.${body.subtaskIndex}.done`]: !!body.done, ...(body.done ? { [`subtasks.${body.subtaskIndex}.progress`]: 100 } : {}) } },
       );
     } else if (body.updateTask) {
-      const { text, startDate, assignee, budget, budgetCurrency, estimatedHours, estimatedUnit, priority } = body.updateTask;
+      const { text, startDate, assignee, budget, budgetCurrency, estimatedHours, estimatedUnit, priority, recurring } = body.updateTask;
       await col.updateOne(
         { _id: new ObjectId(body.id) },
-        { $set: { text, startDate, assignee, budget, budgetCurrency, estimatedHours, estimatedUnit, priority } },
+        { $set: { text, startDate, assignee, budget, budgetCurrency, estimatedHours, estimatedUnit, priority, recurring } },
       );
     } else if (body.deleteSubtaskIndex !== undefined) {
       // $unset sets the element to null, then $pull removes all nulls

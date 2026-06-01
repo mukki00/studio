@@ -43,6 +43,20 @@ function calcMaxSubEstimate(subStartDate: string, parentEndDateStr: string | und
   return unit === 'days' ? diffDays : diffDays * 24;
 }
 
+/** Advance a YYYY-MM-DD start date by one recurrence interval. */
+function nextRecurringDate(startDate: string | null, freq: RecurringFrequency): string | null {
+  if (!startDate) return null;
+  const d = new Date(startDate + 'T00:00:00');
+  switch (freq) {
+    case 'daily':    d.setDate(d.getDate() + 1);    break;
+    case 'weekly':   d.setDate(d.getDate() + 7);    break;
+    case 'biweekly': d.setDate(d.getDate() + 14);   break;
+    case 'monthly':  d.setMonth(d.getMonth() + 1);  break;
+    case 'yearly':   d.setFullYear(d.getFullYear() + 1); break;
+  }
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
 /* ── types ───────────────────────────────────────── */
 type Priority = 'critical' | 'high' | 'medium' | 'low';
 
@@ -54,6 +68,16 @@ const PRIORITY_STYLES: Record<Priority, string> = {
   medium:   'bg-yellow-500/10 border-yellow-500/30 text-yellow-600 dark:text-yellow-400',
   low:      'bg-green-500/10 border-green-500/30 text-green-600 dark:text-green-400',
 };
+
+type RecurringFrequency = 'daily' | 'weekly' | 'biweekly' | 'monthly' | 'yearly';
+const RECURRING_OPTIONS: { value: RecurringFrequency; label: string; short: string }[] = [
+  { value: 'daily',    label: 'Daily',         short: 'Daily' },
+  { value: 'weekly',   label: 'Weekly',        short: 'Weekly' },
+  { value: 'biweekly', label: 'Every 2 weeks', short: 'Biweekly' },
+  { value: 'monthly',  label: 'Monthly',       short: 'Monthly' },
+  { value: 'yearly',   label: 'Yearly',        short: 'Yearly' },
+];
+
 interface Subtask {
   text: string;
   done: boolean;
@@ -78,6 +102,7 @@ interface Todo {
   createdAt: Date | null;
   progress: number | null;
   priority: Priority | null;
+  recurring: RecurringFrequency | null;
 }
 
 export default function TodoPage() {
@@ -99,6 +124,7 @@ export default function TodoPage() {
   const [newEstHours,        setNewEstHours]        = useState('');
   const [newEstUnit,         setNewEstUnit]         = useState<'hrs' | 'days'>('hrs');
   const [newPriority,        setNewPriority]        = useState<Priority | null>(null);
+  const [newRecurring,       setNewRecurring]       = useState<RecurringFrequency | null>(null);
   const [newSubtasks,  setNewSubtasks]  = useState<Subtask[]>([]);
   const [stFormOpen,   setStFormOpen]   = useState(false);
   const [stDraft,      setStDraft]      = useState(emptyDraft);
@@ -125,6 +151,7 @@ export default function TodoPage() {
     budget: '', budgetCurrency: 'USD' as 'USD' | 'LKR',
     estHours: '', estUnit: 'hrs' as 'hrs' | 'days',
     priority: null as Priority | null,
+    recurring: null as RecurringFrequency | null,
   });
 
   /* edit subtask state */
@@ -202,6 +229,7 @@ export default function TodoPage() {
     setNewBudgetCurrency('USD'); setNewEstHours('');
     setNewEstUnit('hrs'); setNewSubtasks([]);
     setNewPriority(null);
+    setNewRecurring(null);
     setStDraft(emptyDraft); setStFormOpen(false); setStError('');
   }
 
@@ -224,6 +252,7 @@ export default function TodoPage() {
         estimatedHours: newEstHours !== '' ? parseFloat(newEstHours) : null,
         estimatedUnit:  newEstUnit,
         priority:       newPriority,
+        recurring:      newRecurring,
         subtasks:       newSubtasks,
       }),
     });
@@ -244,6 +273,29 @@ export default function TodoPage() {
         body: JSON.stringify({ id: todo.id, progress: 100 }),
       });
       setTodos((p) => p.map((t) => t.id === todo.id ? { ...t, done: true, progress: 100 } : t));
+
+      // Auto-create next occurrence for recurring tasks
+      if (todo.recurring) {
+        const nextStart = nextRecurringDate(todo.startDate, todo.recurring);
+        const res = await fetch('/api/workload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            text:           todo.text,
+            startDate:      nextStart,
+            assignee:       todo.assignee,
+            budget:         todo.budget,
+            budgetCurrency: todo.budgetCurrency,
+            estimatedHours: todo.estimatedHours,
+            estimatedUnit:  todo.estimatedUnit,
+            priority:       todo.priority,
+            recurring:      todo.recurring,
+            subtasks:       todo.subtasks.map((s) => ({ ...s, done: false, progress: null })),
+          }),
+        });
+        const next = await res.json() as Todo;
+        setTodos((p) => [...p, next]);
+      }
     } else {
       await fetch('/api/workload', {
         method: 'PATCH',
@@ -355,6 +407,7 @@ export default function TodoPage() {
       estimatedHours: editTaskDraft.estHours !== '' ? parseFloat(editTaskDraft.estHours) : null,
       estimatedUnit:  editTaskDraft.estUnit,
       priority:       editTaskDraft.priority,
+      recurring:      editTaskDraft.recurring,
     };
     await fetch('/api/workload', {
       method: 'PATCH',
@@ -878,6 +931,27 @@ export default function TodoPage() {
                 </div>
               </div>
 
+              {/* Recurring */}
+              <div>
+                <label className={lbl}>Recurring <span className="text-foreground/35 font-normal">(optional)</span></label>
+                <div className="flex flex-wrap gap-2">
+                  {RECURRING_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => setNewRecurring(newRecurring === opt.value ? null : opt.value)}
+                      className={`inline-flex items-center gap-1.5 text-xs px-3 py-1 rounded-full border font-medium transition-all ${
+                        newRecurring === opt.value
+                          ? 'bg-accent/15 border-accent/50 text-accent ring-1 ring-offset-1 ring-accent/30'
+                          : 'border-accent/20 text-foreground/45 hover:border-accent/40'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               {/* Sub-tasks */}
               <div>
                 <div className="flex items-center justify-between mb-2">
@@ -1277,6 +1351,26 @@ export default function TodoPage() {
                           ))}
                         </div>
                       </div>
+                      {/* Recurring */}
+                      <div>
+                        <label className={lbl}>Recurring <span className="text-foreground/35 font-normal">(optional)</span></label>
+                        <div className="flex flex-wrap gap-2">
+                          {RECURRING_OPTIONS.map((opt) => (
+                            <button
+                              key={opt.value}
+                              type="button"
+                              onClick={() => setEditTaskDraft({ ...editTaskDraft, recurring: editTaskDraft.recurring === opt.value ? null : opt.value })}
+                              className={`inline-flex items-center gap-1.5 text-xs px-3 py-1 rounded-full border font-medium transition-all ${
+                                editTaskDraft.recurring === opt.value
+                                  ? 'bg-accent/15 border-accent/50 text-accent ring-1 ring-offset-1 ring-accent/30'
+                                  : 'border-accent/20 text-foreground/45 hover:border-accent/40'
+                              }`}
+                            >
+                              {opt.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
                       <div className="flex gap-2 justify-end pt-1 border-t border-accent/10">
                         <Button type="button" variant="ghost" size="sm"
                           onClick={() => setEditingTaskId(null)}
@@ -1323,6 +1417,7 @@ export default function TodoPage() {
                               estHours: todo.estimatedHours != null ? todo.estimatedHours.toString() : '',
                               estUnit: todo.estimatedUnit as 'hrs' | 'days',
                               priority: todo.priority,
+                              recurring: todo.recurring,
                             });
                             setEditingTaskId(todo.id);
                           }}
@@ -1351,11 +1446,16 @@ export default function TodoPage() {
                     </div>
 
                     {/* Meta badges */}
-                    {(todo.priority || todo.startDate || todo.assignee || todo.budget != null || todo.estimatedHours != null) && (
+                    {(todo.priority || todo.recurring || todo.startDate || todo.assignee || todo.budget != null || todo.estimatedHours != null) && (
                       <div className="flex flex-wrap gap-1.5 mt-2.5 pl-8">
                         {todo.priority && (
                           <span className={`inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full font-medium border ${PRIORITY_STYLES[todo.priority]}`}>
                             {PRIORITY_LABEL[todo.priority]}
+                          </span>
+                        )}
+                        {todo.recurring && (
+                          <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full font-medium bg-accent/10 border border-accent/20 text-accent">
+                            ↻ {RECURRING_OPTIONS.find(o => o.value === todo.recurring)?.label ?? todo.recurring}
                           </span>
                         )}
                         {todo.startDate && (
