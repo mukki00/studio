@@ -25,6 +25,16 @@ function fmtCurrency(amount: number, currency: string) {
 }
 
 /* ── types ───────────────────────────────────────── */
+type Priority = 'critical' | 'high' | 'medium' | 'low';
+
+const PRIORITY_ORDER: Record<Priority, number> = { critical: 0, high: 1, medium: 2, low: 3 };
+const PRIORITY_LABEL: Record<Priority, string> = { critical: 'Critical', high: 'High', medium: 'Medium', low: 'Low' };
+const PRIORITY_STYLES: Record<Priority, string> = {
+  critical: 'bg-red-500/10 border-red-500/30 text-red-600 dark:text-red-400',
+  high:     'bg-orange-500/10 border-orange-500/30 text-orange-600 dark:text-orange-400',
+  medium:   'bg-yellow-500/10 border-yellow-500/30 text-yellow-600 dark:text-yellow-400',
+  low:      'bg-green-500/10 border-green-500/30 text-green-600 dark:text-green-400',
+};
 interface Subtask {
   text: string;
   done: boolean;
@@ -48,6 +58,7 @@ interface Todo {
   subtasks: Subtask[];
   createdAt: Date | null;
   progress: number | null;
+  priority: Priority | null;
 }
 
 export default function TodoPage() {
@@ -68,6 +79,7 @@ export default function TodoPage() {
   const [newBudgetCurrency,  setNewBudgetCurrency]  = useState<'USD' | 'LKR'>('USD');
   const [newEstHours,        setNewEstHours]        = useState('');
   const [newEstUnit,         setNewEstUnit]         = useState<'hrs' | 'days'>('hrs');
+  const [newPriority,        setNewPriority]        = useState<Priority | null>(null);
   const [newSubtasks,  setNewSubtasks]  = useState<Subtask[]>([]);
   const [stFormOpen,   setStFormOpen]   = useState(false);
   const [stDraft,      setStDraft]      = useState(emptyDraft);
@@ -93,6 +105,7 @@ export default function TodoPage() {
     text: '', startDate: '', assignee: '', assigneeOther: '',
     budget: '', budgetCurrency: 'USD' as 'USD' | 'LKR',
     estHours: '', estUnit: 'hrs' as 'hrs' | 'days',
+    priority: null as Priority | null,
   });
 
   /* edit subtask state */
@@ -109,6 +122,7 @@ export default function TodoPage() {
   const [filter, setFilter] = useState<'all' | 'pending'>('all');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedAssignees, setSelectedAssignees] = useState<Set<string>>(new Set());
+  const [selectedPriorities, setSelectedPriorities] = useState<Set<Priority>>(new Set());
 
   // Auth guard
   useEffect(() => {
@@ -168,6 +182,7 @@ export default function TodoPage() {
     setNewAssigneeOther(''); setNewBudget('');
     setNewBudgetCurrency('USD'); setNewEstHours('');
     setNewEstUnit('hrs'); setNewSubtasks([]);
+    setNewPriority(null);
     setStDraft(emptyDraft); setStFormOpen(false); setStError('');
   }
 
@@ -189,6 +204,7 @@ export default function TodoPage() {
         budgetCurrency: newBudgetCurrency,
         estimatedHours: newEstHours !== '' ? parseFloat(newEstHours) : null,
         estimatedUnit:  newEstUnit,
+        priority:       newPriority,
         subtasks:       newSubtasks,
       }),
     });
@@ -319,6 +335,7 @@ export default function TodoPage() {
       budgetCurrency: editTaskDraft.budgetCurrency,
       estimatedHours: editTaskDraft.estHours !== '' ? parseFloat(editTaskDraft.estHours) : null,
       estimatedUnit:  editTaskDraft.estUnit,
+      priority:       editTaskDraft.priority,
     };
     await fetch('/api/workload', {
       method: 'PATCH',
@@ -442,7 +459,19 @@ export default function TodoPage() {
   const assigneeFilteredTodos = selectedAssignees.size > 0
     ? dateFilteredTodos.filter((t) => t.assignee && selectedAssignees.has(t.assignee))
     : dateFilteredTodos;
-  const filteredTodos = filter === 'pending' ? assigneeFilteredTodos.filter((t) => !t.done) : assigneeFilteredTodos;
+  const priorityFilteredTodos = selectedPriorities.size > 0
+    ? assigneeFilteredTodos.filter((t) => t.priority && selectedPriorities.has(t.priority))
+    : assigneeFilteredTodos;
+  const filteredTodos = (filter === 'pending' ? priorityFilteredTodos.filter((t) => !t.done) : priorityFilteredTodos)
+    .slice()
+    .sort((a, b) => {
+      const pa = a.priority ? PRIORITY_ORDER[a.priority] : 999;
+      const pb = b.priority ? PRIORITY_ORDER[b.priority] : 999;
+      if (pa !== pb) return pa - pb;
+      // Secondary sort: pending before done
+      if (a.done !== b.done) return a.done ? 1 : -1;
+      return 0;
+    });
   /* unique assignees across all todos (excluding null) */
   const allAssignees = useMemo(
     () => Array.from(new Set(todos.map((t) => t.assignee).filter(Boolean) as string[])).sort(),
@@ -452,6 +481,13 @@ export default function TodoPage() {
     setSelectedAssignees((prev) => {
       const next = new Set(prev);
       if (next.has(name)) next.delete(name); else next.add(name);
+      return next;
+    });
+  };
+  const togglePriority = (p: Priority) => {
+    setSelectedPriorities((prev) => {
+      const next = new Set(prev);
+      if (next.has(p)) next.delete(p); else next.add(p);
       return next;
     });
   };
@@ -585,6 +621,33 @@ export default function TodoPage() {
                   </ul>
                 </div>
               )}
+              {/* ── priority filter ── */}
+              <div className="mt-3 border-t border-accent/10 pt-3 px-1">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[11px] font-medium text-foreground/55 uppercase tracking-wide">Priority</span>
+                  {selectedPriorities.size > 0 && (
+                    <button type="button" onClick={() => setSelectedPriorities(new Set())}
+                      className="text-[10px] text-accent hover:underline">Clear</button>
+                  )}
+                </div>
+                <ul className="space-y-1.5">
+                  {(['critical', 'high', 'medium', 'low'] as Priority[]).map((p) => (
+                    <li key={p}>
+                      <label className="flex items-center gap-2 cursor-pointer group">
+                        <input
+                          type="checkbox"
+                          checked={selectedPriorities.has(p)}
+                          onChange={() => togglePriority(p)}
+                          className="w-3.5 h-3.5 rounded border-accent/30 accent-accent cursor-pointer"
+                        />
+                        <span className={`text-xs font-medium transition-colors ${selectedPriorities.has(p) ? PRIORITY_STYLES[p].split(' ').filter(c => c.startsWith('text-')).join(' ') : 'text-foreground/70 group-hover:text-foreground'}`}>
+                          {PRIORITY_LABEL[p]}
+                        </span>
+                      </label>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
 
@@ -714,6 +777,27 @@ export default function TodoPage() {
                       <option value="days">days</option>
                     </select>
                   </div>
+                </div>
+              </div>
+
+              {/* Priority */}
+              <div>
+                <label className={lbl}>Priority <span className="text-foreground/35 font-normal">(optional)</span></label>
+                <div className="flex flex-wrap gap-2">
+                  {(['critical', 'high', 'medium', 'low'] as Priority[]).map((p) => (
+                    <button
+                      key={p}
+                      type="button"
+                      onClick={() => setNewPriority(newPriority === p ? null : p)}
+                      className={`inline-flex items-center gap-1.5 text-xs px-3 py-1 rounded-full border font-medium transition-all ${
+                        newPriority === p
+                          ? PRIORITY_STYLES[p] + ' ring-1 ring-offset-1 ring-current/30'
+                          : 'border-accent/20 text-foreground/45 hover:border-accent/40'
+                      }`}
+                    >
+                      {PRIORITY_LABEL[p]}
+                    </button>
+                  ))}
                 </div>
               </div>
 
@@ -925,6 +1009,31 @@ export default function TodoPage() {
                 </div>
               </div>
             )}
+            {/* ── mobile priority filter ── */}
+            <div className="border-t border-accent/10 px-4 py-3">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[11px] font-medium text-foreground/55 uppercase tracking-wide">Priority</span>
+                {selectedPriorities.size > 0 && (
+                  <button type="button" onClick={() => setSelectedPriorities(new Set())}
+                    className="text-[10px] text-accent hover:underline">Clear</button>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {(['critical', 'high', 'medium', 'low'] as Priority[]).map((p) => (
+                  <label key={p} className="flex items-center gap-1.5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={selectedPriorities.has(p)}
+                      onChange={() => togglePriority(p)}
+                      className="w-3.5 h-3.5 rounded border-accent/30 accent-accent cursor-pointer"
+                    />
+                    <span className={`text-xs font-medium ${selectedPriorities.has(p) ? PRIORITY_STYLES[p].split(' ').filter(c => c.startsWith('text-')).join(' ') : 'text-foreground/70'}`}>
+                      {PRIORITY_LABEL[p]}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </div>
           </details>
         </div>
 
@@ -942,7 +1051,7 @@ export default function TodoPage() {
                     : 'text-foreground/55 hover:text-accent'
                 }`}
               >
-                {f === 'all' ? `All (${assigneeFilteredTodos.length})` : `Pending (${assigneeFilteredTodos.filter((t) => !t.done).length})`}
+                {f === 'all' ? `All (${priorityFilteredTodos.length})` : `Pending (${priorityFilteredTodos.filter((t) => !t.done).length})`}
               </button>
             ))}
           </div>
@@ -1049,6 +1158,26 @@ export default function TodoPage() {
                           </div>
                         </div>
                       </div>
+                      {/* Priority */}
+                      <div>
+                        <label className={lbl}>Priority <span className="text-foreground/35 font-normal">(optional)</span></label>
+                        <div className="flex flex-wrap gap-2">
+                          {(['critical', 'high', 'medium', 'low'] as Priority[]).map((p) => (
+                            <button
+                              key={p}
+                              type="button"
+                              onClick={() => setEditTaskDraft({ ...editTaskDraft, priority: editTaskDraft.priority === p ? null : p })}
+                              className={`inline-flex items-center gap-1.5 text-xs px-3 py-1 rounded-full border font-medium transition-all ${
+                                editTaskDraft.priority === p
+                                  ? PRIORITY_STYLES[p] + ' ring-1 ring-offset-1 ring-current/30'
+                                  : 'border-accent/20 text-foreground/45 hover:border-accent/40'
+                              }`}
+                            >
+                              {PRIORITY_LABEL[p]}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
                       <div className="flex gap-2 justify-end pt-1 border-t border-accent/10">
                         <Button type="button" variant="ghost" size="sm"
                           onClick={() => setEditingTaskId(null)}
@@ -1094,6 +1223,7 @@ export default function TodoPage() {
                               budgetCurrency: todo.budgetCurrency as 'USD' | 'LKR',
                               estHours: todo.estimatedHours != null ? todo.estimatedHours.toString() : '',
                               estUnit: todo.estimatedUnit as 'hrs' | 'days',
+                              priority: todo.priority,
                             });
                             setEditingTaskId(todo.id);
                           }}
@@ -1122,8 +1252,13 @@ export default function TodoPage() {
                     </div>
 
                     {/* Meta badges */}
-                    {(todo.startDate || todo.assignee || todo.budget != null || todo.estimatedHours != null) && (
+                    {(todo.priority || todo.startDate || todo.assignee || todo.budget != null || todo.estimatedHours != null) && (
                       <div className="flex flex-wrap gap-1.5 mt-2.5 pl-8">
+                        {todo.priority && (
+                          <span className={`inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full font-medium border ${PRIORITY_STYLES[todo.priority]}`}>
+                            {PRIORITY_LABEL[todo.priority]}
+                          </span>
+                        )}
                         {todo.startDate && (
                           <span className={`inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full font-medium ${
                             isOverdue
