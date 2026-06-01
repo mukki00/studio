@@ -62,6 +62,7 @@ export default function ProjectsSection() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [clickCounts, setClickCounts] = useState<Record<string, number>>({});
 
   const checkScrollButtons = () => {
@@ -75,6 +76,7 @@ export default function ProjectsSection() {
   };
 
   useEffect(() => {
+    setMounted(true);
     // Add a small delay to ensure the container is properly rendered
     const timer = setTimeout(() => {
       checkScrollButtons();
@@ -181,7 +183,7 @@ export default function ProjectsSection() {
       {projects.length > 0 ? (
         <div className="relative">
           {/* Left scroll button - only show when there are items to scroll back to */}
-          {canScrollLeft && (
+          {mounted && canScrollLeft && (
             <Button
               variant="outline"
               size="icon"
@@ -193,7 +195,7 @@ export default function ProjectsSection() {
           )}
 
           {/* Right scroll button - only show when there are more items to scroll to */}
-          {canScrollRight && (
+          {mounted && canScrollRight && (
             <Button
               variant="outline"
               size="icon"

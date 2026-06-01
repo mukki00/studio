@@ -151,7 +151,7 @@ export default function Header() {
                   ? 'bg-accent hover:bg-accent/90 text-accent-foreground gap-1.5'
                   : 'border-accent/40 text-accent hover:bg-accent/10 gap-1.5'}
               >
-                {user ? <><ListTodo className="h-4 w-4" /> My Todos</> : <><LogIn className="h-4 w-4" /> Login</>}
+                {user ? <><ListTodo className="h-4 w-4" /> Workload</> : <><LogIn className="h-4 w-4" /> Login</>}
               </Button>
             </Link>
             <div className="md:hidden">
@@ -179,7 +179,7 @@ export default function Header() {
                              ? 'bg-accent hover:bg-accent/90 text-accent-foreground'
                              : 'border-accent/40 text-accent hover:bg-accent/10')}
                          >
-                           {user ? <><ListTodo className="h-4 w-4" /> My Todos</> : <><LogIn className="h-4 w-4" /> Login</>}
+                           {user ? <><ListTodo className="h-4 w-4" /> Workload</> : <><LogIn className="h-4 w-4" /> Login</>}
                          </Button>
                        </Link>
                     </div>
