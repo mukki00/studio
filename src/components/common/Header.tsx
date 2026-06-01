@@ -3,11 +3,12 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { Menu, X, User, Briefcase, FileText, Send } from 'lucide-react';
+import { Menu, X, User, Briefcase, FileText, Send, ListTodo, LogIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from '@/components/common/ThemeToggle';
+import { useAuth } from '@/context/AuthContext';
 
 interface NavItem {
   href: string;
@@ -25,6 +26,7 @@ const navItems: NavItem[] = [
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
+  const { user } = useAuth();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -99,7 +101,10 @@ export default function Header() {
   );
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-md shadow-md border-b border-border/50">
+    <header className="sticky top-0 z-50 w-full border-b border-border/40
+      backdrop-blur-xl bg-background/60 supports-[backdrop-filter]:bg-background/40
+      shadow-[0_4px_30px_rgba(0,100,40,0.08)]">
+
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           <Link
@@ -125,9 +130,11 @@ export default function Header() {
                 <polygon points="0,0 100,50 0,100" fill="#CE1126" />
               </svg>
             </div>
-            
-            {/* Name */}
-            <span className="block pl-4 pt-2 text-2xl font-bold text-accent font-headline group-hover:text-accent/90">
+
+            {/* Name — gradient text matching hero */}
+            <span className="block pl-4 pt-2 text-2xl font-extrabold font-headline tracking-tight
+              bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent
+              group-hover:opacity-90 transition-opacity">
               Mohammedh Muksith
             </span>
           </Link>
@@ -136,6 +143,17 @@ export default function Header() {
               <NavLinks />
             </nav>
             <ThemeToggle className="hidden md:flex" />
+            <Link href={user ? '/todo' : '/login'} className="hidden md:block">
+              <Button
+                size="sm"
+                variant={user ? 'default' : 'outline'}
+                className={user
+                  ? 'bg-accent hover:bg-accent/90 text-accent-foreground gap-1.5'
+                  : 'border-accent/40 text-accent hover:bg-accent/10 gap-1.5'}
+              >
+                {user ? <><ListTodo className="h-4 w-4" /> Workload</> : <><LogIn className="h-4 w-4" /> Login</>}
+              </Button>
+            </Link>
             <div className="md:hidden">
               <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                 <SheetTrigger asChild>
@@ -144,14 +162,26 @@ export default function Header() {
                     <span className="sr-only">Open menu</span>
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-[280px] bg-card p-0">
+                <SheetContent side="right" className="w-[280px] bg-card/90 backdrop-blur-xl p-0">
                   <SheetHeader className="p-6 border-b border-border text-left">
-                     <SheetTitle className="text-xl font-bold text-accent font-headline">Menu</SheetTitle>
+                     <SheetTitle className="text-xl font-bold font-headline
+                       bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Menu</SheetTitle>
                   </SheetHeader>
                   <nav className="flex flex-col space-y-1 p-4">
                     <NavLinks mobile />
-                    <div className="pt-4 border-t border-border mt-4">
+                    <div className="pt-4 border-t border-border mt-4 flex flex-col gap-2">
                        <ThemeToggle className="w-full flex justify-start"/>
+                       <Link href={user ? '/todo' : '/login'} onClick={() => setIsMobileMenuOpen(false)}>
+                         <Button
+                           size="sm"
+                           variant={user ? 'default' : 'outline'}
+                           className={cn('w-full gap-2', user
+                             ? 'bg-accent hover:bg-accent/90 text-accent-foreground'
+                             : 'border-accent/40 text-accent hover:bg-accent/10')}
+                         >
+                           {user ? <><ListTodo className="h-4 w-4" /> Workload</> : <><LogIn className="h-4 w-4" /> Login</>}
+                         </Button>
+                       </Link>
                     </div>
                   </nav>
                 </SheetContent>

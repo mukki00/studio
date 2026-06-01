@@ -12,16 +12,15 @@ import Section from '@/components/common/Section';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Loader2 } from 'lucide-react';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 
 type ContactFormData = z.infer<typeof contactFormSchema>;
 
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" disabled={pending} className="w-full bg-accent hover:bg-accent/90 text-accent-foreground">
+    <Button type="submit" disabled={pending} suppressHydrationWarning className="w-full bg-accent hover:bg-accent/90 text-accent-foreground">
       {pending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Submitting...</> : 'Send Message'}
     </Button>
   );
@@ -51,14 +50,11 @@ export default function ContactSection() {
       className="bg-primary/5"
     >
       <div className="max-w-2xl mx-auto">
-        <Card className="shadow-xl">
-          <CardHeader>
-            <CardTitle className="text-2xl font-headline text-accent">Contact Me</CardTitle>
-            <CardDescription>
-              Fill out the form below and I'll get back to you as soon as possible.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+        <div className="glass-card rounded-2xl p-6 sm:p-8">
+          <h3 className="font-headline text-xl font-bold text-accent mb-1">Send a Message</h3>
+          <p className="text-sm text-foreground/60 mb-6">
+            Fill out the form below and I&apos;ll get back to you as soon as possible.
+          </p>
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(async (values) => {
@@ -80,16 +76,16 @@ export default function ContactSection() {
                     toast({ title: 'Error', description: 'Something went wrong. Please try again later.', variant: 'destructive' });
                   }
                 })}
-                className="space-y-6"
+                className="space-y-5"
               >
                 <FormField
                   control={form.control}
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Name</FormLabel>
+                      <FormLabel className="text-foreground/80">Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Your Name" {...field} />
+                        <Input suppressHydrationWarning placeholder="Your Name" className="bg-background/50 border-accent/20 focus:border-accent/50" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -100,9 +96,9 @@ export default function ContactSection() {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel className="text-foreground/80">Email</FormLabel>
                       <FormControl>
-                        <Input placeholder="your.email@example.com" {...field} />
+                        <Input suppressHydrationWarning placeholder="your.email@example.com" className="bg-background/50 border-accent/20 focus:border-accent/50" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -113,11 +109,11 @@ export default function ContactSection() {
                   name="message"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Message</FormLabel>
+                      <FormLabel className="text-foreground/80">Message</FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder="Tell me about your project or inquiry..."
-                          className="min-h-[120px]"
+                          className="min-h-[120px] bg-background/50 border-accent/20 focus:border-accent/50"
                           {...field}
                         />
                       </FormControl>
@@ -128,8 +124,7 @@ export default function ContactSection() {
                 <SubmitButton />
               </form>
             </Form>
-          </CardContent>
-        </Card>
+        </div>
       </div>
     </Section>
   );
