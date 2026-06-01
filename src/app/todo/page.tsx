@@ -664,7 +664,7 @@ export default function TodoPage() {
       <span aria-hidden="true" className="pointer-events-none select-none absolute left-[4%]  bottom-[14%] text-2xl" style={{ animation: 'float-up-down 5s ease-in-out infinite' }}>🍉</span>
       <span aria-hidden="true" className="pointer-events-none select-none absolute right-[5%] bottom-[22%] text-xl" style={{ animation: 'float-up-down 6s ease-in-out infinite', animationDelay: '1.5s' }}>🍉</span>
 
-      <div className="relative z-10 max-w-5xl mx-auto px-4 py-12">
+      <div className="relative z-10 max-w-5xl mx-auto px-3 sm:px-4 py-8 sm:py-12">
 
         {/* ── page header ── */}
         <div className="flex items-center justify-between mb-8">
@@ -1210,6 +1210,49 @@ export default function TodoPage() {
           </details>
         </div>
 
+        {/* ── mobile budget overview (shown below lg, only when there's budget data) ── */}
+        {hasAnyBudget && (
+          <div className="xl:hidden mb-4">
+            <div className="glass-card rounded-2xl p-4">
+              <div className="flex items-center gap-1.5 mb-3">
+                <DollarSign className="h-3.5 w-3.5 text-emerald-500/70" />
+                <span className="text-[11px] font-medium text-foreground/55 uppercase tracking-wide">
+                  {isFiltered ? 'Filtered Budget' : 'Budget Overview'}
+                </span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {[
+                  { label: 'USD', symbol: '$', total: filteredBudgetUSD, spent: spentBudgetUSD, remaining: remainingBudgetUSD },
+                  { label: 'LKR', symbol: '₨', total: filteredBudgetLKR, spent: spentBudgetLKR, remaining: remainingBudgetLKR },
+                ].filter(c => c.total > 0).map(c => (
+                  <div key={c.label}>
+                    <p className="text-[10px] font-medium text-foreground/40 uppercase tracking-wide mb-1.5">{c.label}</p>
+                    <div className="flex items-stretch gap-px rounded-lg overflow-hidden border border-accent/10 text-center">
+                      <div className="flex-1 bg-accent/[0.04] px-2 py-2">
+                        <p className="text-[10px] text-foreground/45 mb-0.5">Total</p>
+                        <p className="text-sm font-semibold text-foreground/80">{c.symbol}{c.total.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</p>
+                      </div>
+                      <div className="flex-1 bg-red-500/[0.04] px-2 py-2">
+                        <p className="text-[10px] text-foreground/45 mb-0.5">Spent</p>
+                        <p className="text-sm font-semibold text-red-600 dark:text-red-400">{c.symbol}{c.spent.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</p>
+                      </div>
+                      <div className="flex-1 bg-emerald-500/[0.04] px-2 py-2">
+                        <p className="text-[10px] text-foreground/45 mb-0.5">Remaining</p>
+                        <p className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">{c.symbol}{c.remaining.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</p>
+                      </div>
+                    </div>
+                    {c.total > 0 && (
+                      <div className="mt-1.5 h-1.5 rounded-full bg-accent/10 overflow-hidden">
+                        <div className="h-full rounded-full bg-red-500/50 transition-all" style={{ width: `${Math.min(100, (c.spent / c.total) * 100)}%` }} />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* ── filter tabs ── */}
         {!dbLoading && todos.length > 0 && (
           <div className="flex gap-1 mb-4 p-1 glass-card rounded-full w-fit">
@@ -1403,8 +1446,8 @@ export default function TodoPage() {
                         </span>
                       </div>
 
-                      {/* Grouped action toolbar */}
-                      <div className={`flex items-center gap-0.5 shrink-0 transition-opacity ${confirmDeleteId === todo.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                      {/* Grouped action toolbar — always visible on touch, hover-revealed on pointer devices */}
+                      <div className={`flex items-center gap-0.5 shrink-0 transition-opacity ${confirmDeleteId === todo.id ? 'opacity-100' : 'opacity-100 sm:opacity-0 sm:group-hover:opacity-100'}`}>
                         <button
                           onClick={() => {
                             setEditTaskDraft({
