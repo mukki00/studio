@@ -24,6 +24,25 @@ function fmtCurrency(amount: number, currency: string) {
   return `${sym}${amount.toLocaleString()} ${currency}`;
 }
 
+/** Returns the last date (YYYY-MM-DD) of a task's duration, or undefined if not calculable. */
+function calcTaskEndDateStr(startDate: string | null | undefined, estimatedHours: number | null | undefined, estimatedUnit: string | null | undefined): string | undefined {
+  if (!startDate || estimatedHours == null) return undefined;
+  const days = (estimatedUnit === 'days') ? Math.ceil(estimatedHours) : Math.ceil(estimatedHours / 24);
+  const end = new Date(startDate + 'T00:00:00');
+  end.setDate(end.getDate() + Math.max(days, 1) - 1);
+  return `${end.getFullYear()}-${String(end.getMonth() + 1).padStart(2, '0')}-${String(end.getDate()).padStart(2, '0')}`;
+}
+
+/** Max estimate a subtask can have given its start date and the parent end date. */
+function calcMaxSubEstimate(subStartDate: string, parentEndDateStr: string | undefined, unit: string): number | undefined {
+  if (!subStartDate || !parentEndDateStr) return undefined;
+  const start = new Date(subStartDate + 'T00:00:00');
+  const end   = new Date(parentEndDateStr + 'T00:00:00');
+  const diffDays = Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+  if (diffDays <= 0) return 0;
+  return unit === 'days' ? diffDays : diffDays * 24;
+}
+
 /* ── types ───────────────────────────────────────── */
 type Priority = 'critical' | 'high' | 'medium' | 'low';
 
@@ -897,10 +916,19 @@ export default function TodoPage() {
                       <div>
                         <label className={lbl}>Start date</label>
                         <input type="date" value={stDraft.startDate}
-                          max={newDate || undefined}
+                          min={newDate || undefined}
+                          max={calcTaskEndDateStr(newDate, newEstHours !== '' ? parseFloat(newEstHours) : null, newEstUnit)}
                           style={{ colorScheme: 'light dark' }}
                           onChange={(e) => setStDraft({ ...stDraft, startDate: e.target.value })}
                           className={field} />
+                        {stDraft.startDate && stDraft.estHours !== '' && (() => {
+                          const eta = calcTaskEndDateStr(stDraft.startDate, parseFloat(stDraft.estHours), newEstUnit);
+                          return eta ? (
+                            <p className="text-[10px] text-foreground/45 mt-1">
+                              ETA: {new Date(eta + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: '2-digit' })}
+                            </p>
+                          ) : null;
+                        })()}
                       </div>
                       <div>
                         <label className={lbl}>Assignee</label>
@@ -942,17 +970,30 @@ export default function TodoPage() {
                       <div>
                         <label className={lbl}>
                           Estimate
-                          {newEstHours !== '' && (
-                            <span className="text-foreground/35 font-normal ml-1">
-                              (max {parseFloat(newEstHours) - newSubtasks.reduce((s,t) => s+(t.estimatedHours??0),0)} {newEstUnit})
-                            </span>
-                          )}
+                          {(() => {
+                            const poolMax = newEstHours !== '' ? parseFloat(newEstHours) - newSubtasks.reduce((s,t) => s+(t.estimatedHours??0),0) : undefined;
+                            const dateMax = calcMaxSubEstimate(stDraft.startDate, calcTaskEndDateStr(newDate, newEstHours !== '' ? parseFloat(newEstHours) : null, newEstUnit), newEstUnit);
+                            const effective = poolMax !== undefined && dateMax !== undefined ? Math.min(poolMax, dateMax) : (poolMax ?? dateMax);
+                            return effective !== undefined ? <span className="text-foreground/35 font-normal ml-1">(max {effective} {newEstUnit})</span> : null;
+                          })()}
                         </label>
                         <div className="flex items-center gap-1.5">
                           <input type="number" min="0" step="0.5" placeholder="0"
                             value={stDraft.estHours}
-                            max={newEstHours !== '' ? (parseFloat(newEstHours) - newSubtasks.reduce((s,t) => s+(t.estimatedHours??0),0)).toString() : undefined}
-                            onChange={(e) => { setStDraft({ ...stDraft, estHours: e.target.value }); setStError(''); }}
+                            max={(() => {
+                              const poolMax = newEstHours !== '' ? parseFloat(newEstHours) - newSubtasks.reduce((s,t) => s+(t.estimatedHours??0),0) : undefined;
+                              const dateMax = calcMaxSubEstimate(stDraft.startDate, calcTaskEndDateStr(newDate, newEstHours !== '' ? parseFloat(newEstHours) : null, newEstUnit), newEstUnit);
+                              const effective = poolMax !== undefined && dateMax !== undefined ? Math.min(poolMax, dateMax) : (poolMax ?? dateMax);
+                              return effective !== undefined ? effective.toString() : undefined;
+                            })()}
+                            onChange={(e) => {
+                              const poolMax = newEstHours !== '' ? parseFloat(newEstHours) - newSubtasks.reduce((s,t) => s+(t.estimatedHours??0),0) : undefined;
+                              const dateMax = calcMaxSubEstimate(stDraft.startDate, calcTaskEndDateStr(newDate, newEstHours !== '' ? parseFloat(newEstHours) : null, newEstUnit), newEstUnit);
+                              const cap = poolMax !== undefined && dateMax !== undefined ? Math.min(poolMax, dateMax) : (poolMax ?? dateMax);
+                              const val = e.target.value;
+                              const clamped = cap !== undefined && val !== '' && parseFloat(val) > cap ? cap.toString() : val;
+                              setStDraft({ ...stDraft, estHours: clamped }); setStError('');
+                            }}
                             className={`${field} flex-1`} />
                           <span className="text-xs text-foreground/50 shrink-0">{newEstUnit}</span>
                         </div>
@@ -1464,10 +1505,19 @@ export default function TodoPage() {
                                     <div>
                                       <label className={lbl}>Start date</label>
                                       <input type="date" value={editSubDraft.startDate}
-                                        max={todo.startDate || undefined}
+                                        min={todo.startDate || undefined}
+                                        max={calcTaskEndDateStr(todo.startDate, todo.estimatedHours, todo.estimatedUnit)}
                                         style={{ colorScheme: 'light dark' }}
                                         onChange={(e) => setEditSubDraft({ ...editSubDraft, startDate: e.target.value })}
                                         className={field} />
+                                      {editSubDraft.startDate && editSubDraft.estHours !== '' && (() => {
+                                        const eta = calcTaskEndDateStr(editSubDraft.startDate, parseFloat(editSubDraft.estHours), todo.estimatedUnit);
+                                        return eta ? (
+                                          <p className="text-[10px] text-foreground/45 mt-1">
+                                            ETA: {new Date(eta + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: '2-digit' })}
+                                          </p>
+                                        ) : null;
+                                      })()}
                                     </div>
                                     <div>
                                       <label className={lbl}>Assignee</label>
@@ -1499,11 +1549,23 @@ export default function TodoPage() {
                                       </div>
                                     </div>
                                     <div>
-                                      <label className={lbl}>Estimate</label>
+                                      <label className={lbl}>
+                                        Estimate
+                                        {(() => {
+                                          const dateMax = calcMaxSubEstimate(editSubDraft.startDate, calcTaskEndDateStr(todo.startDate, todo.estimatedHours, todo.estimatedUnit), todo.estimatedUnit);
+                                          return dateMax !== undefined ? <span className="text-foreground/35 font-normal ml-1">(max {dateMax} {todo.estimatedUnit})</span> : null;
+                                        })()}
+                                      </label>
                                       <div className="flex items-center gap-1.5">
                                         <input type="number" min="0" step="0.5" placeholder="0"
                                           value={editSubDraft.estHours}
-                                          onChange={(e) => setEditSubDraft({ ...editSubDraft, estHours: e.target.value })}
+                                          max={calcMaxSubEstimate(editSubDraft.startDate, calcTaskEndDateStr(todo.startDate, todo.estimatedHours, todo.estimatedUnit), todo.estimatedUnit)?.toString()}
+                                          onChange={(e) => {
+                                            const cap = calcMaxSubEstimate(editSubDraft.startDate, calcTaskEndDateStr(todo.startDate, todo.estimatedHours, todo.estimatedUnit), todo.estimatedUnit);
+                                            const val = e.target.value;
+                                            const clamped = cap !== undefined && val !== '' && parseFloat(val) > cap ? cap.toString() : val;
+                                            setEditSubDraft({ ...editSubDraft, estHours: clamped });
+                                          }}
                                           className={`${field} flex-1`} />
                                         <span className="text-xs text-foreground/50 shrink-0">{todo.estimatedUnit}</span>
                                       </div>
@@ -1686,10 +1748,19 @@ export default function TodoPage() {
                               <div>
                                 <label className={lbl}>Start date</label>
                                 <input type="date" value={subDraft.startDate}
-                                  max={todo.startDate || undefined}
+                                  min={todo.startDate || undefined}
+                                  max={calcTaskEndDateStr(todo.startDate, todo.estimatedHours, todo.estimatedUnit)}
                                   style={{ colorScheme: 'light dark' }}
                                   onChange={(e) => setSubDraft({ ...subDraft, startDate: e.target.value })}
                                   className={field} />
+                                {subDraft.startDate && subDraft.estHours !== '' && (() => {
+                                  const eta = calcTaskEndDateStr(subDraft.startDate, parseFloat(subDraft.estHours), todo.estimatedUnit);
+                                  return eta ? (
+                                    <p className="text-[10px] text-foreground/45 mt-1">
+                                      ETA: {new Date(eta + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: '2-digit' })}
+                                    </p>
+                                  ) : null;
+                                })()}
                               </div>
                               <div>
                                 <label className={lbl}>Assignee</label>
@@ -1729,15 +1800,27 @@ export default function TodoPage() {
                               <div>
                                 <label className={lbl}>
                                   Estimate
-                                  {remEst !== null && (
-                                    <span className="text-foreground/35 font-normal ml-1">(max {remEst} {todo.estimatedUnit})</span>
-                                  )}
+                                  {(() => {
+                                    const dateMax = calcMaxSubEstimate(subDraft.startDate, calcTaskEndDateStr(todo.startDate, todo.estimatedHours, todo.estimatedUnit), todo.estimatedUnit);
+                                    const effective = remEst !== null && dateMax !== undefined ? Math.min(remEst, dateMax) : (remEst !== null ? remEst : dateMax);
+                                    return effective !== undefined ? <span className="text-foreground/35 font-normal ml-1">(max {effective} {todo.estimatedUnit})</span> : null;
+                                  })()}
                                 </label>
                                 <div className="flex items-center gap-1.5">
                                   <input type="number" min="0" step="0.5" placeholder="0"
                                     value={subDraft.estHours}
-                                    max={remEst !== null ? remEst.toString() : undefined}
-                                    onChange={(e) => { setSubDraft({ ...subDraft, estHours: e.target.value }); setSubError(''); }}
+                                    max={(() => {
+                                      const dateMax = calcMaxSubEstimate(subDraft.startDate, calcTaskEndDateStr(todo.startDate, todo.estimatedHours, todo.estimatedUnit), todo.estimatedUnit);
+                                      const effective = remEst !== null && dateMax !== undefined ? Math.min(remEst, dateMax) : (remEst !== null ? remEst : dateMax);
+                                      return effective !== undefined ? effective.toString() : undefined;
+                                    })()}
+                                    onChange={(e) => {
+                                      const dateMax = calcMaxSubEstimate(subDraft.startDate, calcTaskEndDateStr(todo.startDate, todo.estimatedHours, todo.estimatedUnit), todo.estimatedUnit);
+                                      const cap = remEst !== null && dateMax !== undefined ? Math.min(remEst, dateMax) : (remEst !== null ? remEst : dateMax);
+                                      const val = e.target.value;
+                                      const clamped = cap !== undefined && val !== '' && parseFloat(val) > cap ? cap.toString() : val;
+                                      setSubDraft({ ...subDraft, estHours: clamped }); setSubError('');
+                                    }}
                                     className={`${field} flex-1`} />
                                   <span className="text-xs text-foreground/50 shrink-0">{todo.estimatedUnit}</span>
                                 </div>
