@@ -498,10 +498,11 @@ export default function TodoPage() {
   );
 
   const taskDateCounts = useMemo(() => {
-    const map = new Map<string, number>();
+    const map = new Map<string, { total: number; done: number }>();
     for (const t of todos) {
       for (const d of getTaskPeriodDates(t)) {
-        map.set(d, (map.get(d) ?? 0) + 1);
+        const prev = map.get(d) ?? { total: 0, done: 0 };
+        map.set(d, { total: prev.total + 1, done: prev.done + (t.done ? 1 : 0) });
       }
     }
     return map;
@@ -510,19 +511,51 @@ export default function TodoPage() {
 
   const CalDayContent = useMemo(() => {
     return function DayContent({ date }: { date: Date; displayMonth: Date }) {
-      const count = taskDateCounts.get(toLocalDateStr(date)) ?? 0;
+      const entry = taskDateCounts.get(toLocalDateStr(date));
+      const total   = entry?.total ?? 0;
+      const done    = entry?.done  ?? 0;
+      const pending = total - done;
+
+      const title = total === 0
+        ? undefined
+        : done === total
+          ? `${total} task${total !== 1 ? 's' : ''} — all completed ✓`
+          : done > 0
+            ? `${total} task${total !== 1 ? 's' : ''} — ${done} done, ${pending} pending`
+            : `${total} task${total !== 1 ? 's' : ''} — none completed`;
+
+      // status bar colour — does NOT use cell background so today's highlight is unaffected
+      const barColor = total === 0
+        ? ''
+        : pending === 0
+          ? 'bg-emerald-500'
+          : 'bg-red-500';
+
+      // dots capped at 3 + overflow badge
+      const SHOW = 3;
+      const overflow     = total > SHOW;
+      const visibleTotal = overflow ? SHOW - 1 : total;
+      const shownDone    = Math.min(done, visibleTotal);
+      const shownPending = visibleTotal - shownDone;
+      const extra        = total - (SHOW - 1);
+
       return (
-        <span className="flex flex-col items-center leading-none gap-0.5">
+        <span title={title} className="flex flex-col items-center leading-none gap-[3px] w-full h-full">
           <span>{date.getDate()}</span>
-          {count >= 1 && count <= 3 && (
-            <span className="flex gap-[3px]">
-              {Array.from({ length: count }).map((_, i) => (
-                <span key={i} className="w-[4px] h-[4px] rounded-full bg-black inline-block" />
+          {/* coloured status bar — green = all done, red = has pending */}
+          {total > 0 && <span className={`w-4 h-[3px] rounded-full ${barColor} opacity-70`} />}
+          {total > 0 && (
+            <span className="flex gap-[3px] items-center">
+              {Array.from({ length: shownDone }).map((_, i) => (
+                <span key={`d${i}`} className="w-[4px] h-[4px] rounded-full bg-emerald-600 dark:bg-emerald-400 inline-block" />
               ))}
+              {Array.from({ length: shownPending }).map((_, i) => (
+                <span key={`p${i}`} className="w-[4px] h-[4px] rounded-full bg-red-500 dark:bg-red-400 inline-block" />
+              ))}
+              {overflow && (
+                <span className="text-[9px] font-bold leading-none text-foreground/60">+{extra}</span>
+              )}
             </span>
-          )}
-          {count > 3 && (
-            <span className="text-[9px] font-bold leading-none text-black">{count}</span>
           )}
         </span>
       );
@@ -612,6 +645,18 @@ export default function TodoPage() {
                 components={{ DayContent: CalDayContent }}
                 className="w-full"
               />
+              {/* ── calendar legend ── */}
+              <div className="mt-2 mb-1 px-1 flex flex-wrap items-center gap-x-3 gap-y-1">
+                <span className="flex items-center gap-1.5 text-[10px] text-foreground/50">
+                  <span className="w-4 h-[3px] rounded-full bg-emerald-500 inline-block" />
+                  All done
+                </span>
+                <span className="flex items-center gap-1.5 text-[10px] text-foreground/50">
+                  <span className="w-4 h-[3px] rounded-full bg-red-500 inline-block" />
+                  Has pending
+                </span>
+                <span className="text-[10px] text-foreground/35 ml-auto">· = 1 task</span>
+              </div>
               {selectedDate && (
                 <div className="mt-2 px-2 pb-1 flex items-center justify-between">
                   <span className="text-[11px] text-foreground/55">
