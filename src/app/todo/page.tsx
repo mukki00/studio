@@ -108,6 +108,7 @@ export default function TodoPage() {
   /* filter */
   const [filter, setFilter] = useState<'all' | 'pending'>('all');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const [selectedAssignees, setSelectedAssignees] = useState<Set<string>>(new Set());
 
   // Auth guard
   useEffect(() => {
@@ -438,7 +439,22 @@ export default function TodoPage() {
   const dateFilteredTodos = selectedDateStr
     ? todos.filter((t) => getTaskPeriodDates(t).includes(selectedDateStr))
     : todos;
-  const filteredTodos = filter === 'pending' ? dateFilteredTodos.filter((t) => !t.done) : dateFilteredTodos;
+  const assigneeFilteredTodos = selectedAssignees.size > 0
+    ? dateFilteredTodos.filter((t) => t.assignee && selectedAssignees.has(t.assignee))
+    : dateFilteredTodos;
+  const filteredTodos = filter === 'pending' ? assigneeFilteredTodos.filter((t) => !t.done) : assigneeFilteredTodos;
+  /* unique assignees across all todos (excluding null) */
+  const allAssignees = useMemo(
+    () => Array.from(new Set(todos.map((t) => t.assignee).filter(Boolean) as string[])).sort(),
+    [todos],
+  );
+  const toggleAssignee = (name: string) => {
+    setSelectedAssignees((prev) => {
+      const next = new Set(prev);
+      if (next.has(name)) next.delete(name); else next.add(name);
+      return next;
+    });
+  };
   /* count tasks per date for dot indicators */
   const taskDateCounts = new Map<string, number>();
   for (const t of todos) {
@@ -540,6 +556,33 @@ export default function TodoPage() {
                   >
                     Clear
                   </button>
+                </div>
+              )}
+              {/* ── assignee filter ── */}
+              {allAssignees.length > 0 && (
+                <div className="mt-3 border-t border-accent/10 pt-3 px-1">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[11px] font-medium text-foreground/55 uppercase tracking-wide">Assignee</span>
+                    {selectedAssignees.size > 0 && (
+                      <button type="button" onClick={() => setSelectedAssignees(new Set())}
+                        className="text-[10px] text-accent hover:underline">Clear</button>
+                    )}
+                  </div>
+                  <ul className="space-y-1.5">
+                    {allAssignees.map((name) => (
+                      <li key={name}>
+                        <label className="flex items-center gap-2 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            checked={selectedAssignees.has(name)}
+                            onChange={() => toggleAssignee(name)}
+                            className="w-3.5 h-3.5 rounded border-accent/30 accent-accent cursor-pointer"
+                          />
+                          <span className="text-xs text-foreground/70 group-hover:text-foreground transition-colors truncate">{name}</span>
+                        </label>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               )}
             </div>
@@ -857,6 +900,31 @@ export default function TodoPage() {
                 components={{ DayContent: CalDayContent }}
               />
             </div>
+            {/* ── mobile assignee filter ── */}
+            {allAssignees.length > 0 && (
+              <div className="border-t border-accent/10 px-4 py-3">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[11px] font-medium text-foreground/55 uppercase tracking-wide">Assignee</span>
+                  {selectedAssignees.size > 0 && (
+                    <button type="button" onClick={() => setSelectedAssignees(new Set())}
+                      className="text-[10px] text-accent hover:underline">Clear</button>
+                  )}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {allAssignees.map((name) => (
+                    <label key={name} className="flex items-center gap-1.5 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={selectedAssignees.has(name)}
+                        onChange={() => toggleAssignee(name)}
+                        className="w-3.5 h-3.5 rounded border-accent/30 accent-accent cursor-pointer"
+                      />
+                      <span className="text-xs text-foreground/70">{name}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
           </details>
         </div>
 
@@ -874,7 +942,7 @@ export default function TodoPage() {
                     : 'text-foreground/55 hover:text-accent'
                 }`}
               >
-                {f === 'all' ? `All (${dateFilteredTodos.length})` : `Pending (${dateFilteredTodos.filter((t) => !t.done).length})`}
+                {f === 'all' ? `All (${assigneeFilteredTodos.length})` : `Pending (${assigneeFilteredTodos.filter((t) => !t.done).length})`}
               </button>
             ))}
           </div>
