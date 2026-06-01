@@ -34,13 +34,13 @@ export async function GET() {
         id:             t._id.toString(),
         text:           t.text           as string,
         done:           t.done           as boolean,
-        date:           t.date           ?? null,
+        startDate:      (t.startDate ?? t.date) ?? null,
         assignee:       t.assignee       ?? null,
         budget:         t.budget         ?? null,
         budgetCurrency: (t.budgetCurrency as string) ?? 'USD',
         estimatedHours: t.estimatedHours ?? null,
         estimatedUnit:  t.estimatedUnit  ?? 'hrs',
-        subtasks:       (t.subtasks      ?? []) as { text: string; done: boolean; date: string | null; assignee: string | null; budget: number | null; estimatedHours: number | null; progress: number | null }[],
+        subtasks:       (t.subtasks      ?? []) as { text: string; done: boolean; startDate: string | null; assignee: string | null; budget: number | null; estimatedHours: number | null; progress: number | null }[],
         createdAt:      t.createdAt      ?? null,
         progress:       t.progress       ?? null,
       })),
@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json() as {
       text?: string;
-      date?: string | null;
+      startDate?: string | null;
       assignee?: string | null;
       budget?: number | null;
       budgetCurrency?: string | null;
@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
     const doc = {
       text:           body.text.trim(),
       done:           false,
-      date:           body.date           ?? null,
+      startDate:      body.startDate      ?? null,
       assignee:       body.assignee       ?? null,
       budget:         body.budget         ?? null,
       budgetCurrency: body.budgetCurrency ?? 'USD',
@@ -92,7 +92,7 @@ export async function POST(req: NextRequest) {
 // { id, done }                                            → toggle main task done
 // { id, subtaskIndex, done }                             → toggle subtask done
 // { id, addSubtask: {...} }                              → push new subtask
-// { id, updateTask: { text, date, assignee, … } }       → update task fields
+// { id, updateTask: { text, startDate, assignee, … } }       → update task fields
 // { id, subtaskIndex, updateSubtask: {...} }             → replace subtask at index
 export async function PATCH(req: NextRequest) {
   try {
@@ -103,9 +103,9 @@ export async function PATCH(req: NextRequest) {
       subProgress?: number;
       subtaskIndex?: number;
       deleteSubtaskIndex?: number;
-      addSubtask?: { text: string; done: boolean; date?: string | null; assignee?: string | null; budget?: number | null; estimatedHours?: number | null };
-      updateTask?: { text: string; date: string | null; assignee: string | null; budget: number | null; budgetCurrency: string; estimatedHours: number | null; estimatedUnit: string };
-      updateSubtask?: { text: string; done: boolean; date: string | null; assignee: string | null; budget: number | null; estimatedHours: number | null; progress: number | null };
+      addSubtask?: { text: string; done: boolean; startDate?: string | null; assignee?: string | null; budget?: number | null; estimatedHours?: number | null };
+      updateTask?: { text: string; startDate: string | null; assignee: string | null; budget: number | null; budgetCurrency: string; estimatedHours: number | null; estimatedUnit: string };
+      updateSubtask?: { text: string; done: boolean; startDate: string | null; assignee: string | null; budget: number | null; estimatedHours: number | null; progress: number | null };
     };
     if (!body.id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
     const col = await getDb();
@@ -131,10 +131,10 @@ export async function PATCH(req: NextRequest) {
         { $set: { [`subtasks.${body.subtaskIndex}.done`]: !!body.done, ...(body.done ? { [`subtasks.${body.subtaskIndex}.progress`]: 100 } : {}) } },
       );
     } else if (body.updateTask) {
-      const { text, date, assignee, budget, budgetCurrency, estimatedHours, estimatedUnit } = body.updateTask;
+      const { text, startDate, assignee, budget, budgetCurrency, estimatedHours, estimatedUnit } = body.updateTask;
       await col.updateOne(
         { _id: new ObjectId(body.id) },
-        { $set: { text, date, assignee, budget, budgetCurrency, estimatedHours, estimatedUnit } },
+        { $set: { text, startDate, assignee, budget, budgetCurrency, estimatedHours, estimatedUnit } },
       );
     } else if (body.deleteSubtaskIndex !== undefined) {
       // $unset sets the element to null, then $pull removes all nulls
@@ -178,3 +178,5 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: 'Failed to delete todo' }, { status: 500 });
   }
 }
+
+

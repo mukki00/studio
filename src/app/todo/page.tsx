@@ -1,13 +1,14 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Calendar } from '@/components/ui/calendar';
 import {
   Loader2, Plus, Trash2, LogOut, CheckCircle2, Circle,
-  ChevronDown, ChevronUp, Calendar, User, DollarSign,
+  ChevronDown, ChevronUp, CalendarIcon, User, DollarSign,
   Clock, X, ListTree, Pencil,
 } from 'lucide-react';
 
@@ -17,7 +18,7 @@ const lbl    = 'block text-[11px] font-medium text-foreground/55 mb-1';
 const badge  = 'inline-flex items-center gap-1 text-[9px] px-1.5 py-0.5 rounded-full bg-accent/5 border border-accent/10 text-foreground/45';
 
 /* ── module-level helpers ────────────────────────── */
-const emptyDraft = { text: '', date: '', assignee: '', assigneeOther: '', budget: '', estHours: '' };
+const emptyDraft = { text: '', startDate: '', assignee: '', assigneeOther: '', budget: '', estHours: '' };
 function fmtCurrency(amount: number, currency: string) {
   const sym = currency === 'LKR' ? '₨' : '$';
   return `${sym}${amount.toLocaleString()} ${currency}`;
@@ -27,7 +28,7 @@ function fmtCurrency(amount: number, currency: string) {
 interface Subtask {
   text: string;
   done: boolean;
-  date: string | null;
+  startDate: string | null;
   assignee: string | null;
   budget: number | null;
   estimatedHours: number | null;
@@ -38,7 +39,7 @@ interface Todo {
   id: string;
   text: string;
   done: boolean;
-  date: string | null;
+  startDate: string | null;
   assignee: string | null;
   budget: number | null;
   budgetCurrency: string;
@@ -89,7 +90,7 @@ export default function TodoPage() {
   /* edit task state */
   const [editingTaskId,  setEditingTaskId]  = useState<string | null>(null);
   const [editTaskDraft,  setEditTaskDraft]  = useState({
-    text: '', date: '', assignee: '', assigneeOther: '',
+    text: '', startDate: '', assignee: '', assigneeOther: '',
     budget: '', budgetCurrency: 'USD' as 'USD' | 'LKR',
     estHours: '', estUnit: 'hrs' as 'hrs' | 'days',
   });
@@ -103,6 +104,10 @@ export default function TodoPage() {
   const [editingProgressId,  setEditingProgressId]  = useState<string | null>(null);
   const [editingSubProgress, setEditingSubProgress] = useState<{ todoId: string; subIndex: number } | null>(null);
   const [progressDraft,      setProgressDraft]      = useState('');
+
+  /* filter */
+  const [filter, setFilter] = useState<'all' | 'pending'>('all');
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
 
   // Auth guard
   useEffect(() => {
@@ -148,7 +153,7 @@ export default function TodoPage() {
     setNewSubtasks((p) => [...p, {
       text:           stDraft.text.trim(),
       done:           false,
-      date:           stDraft.date || null,
+      startDate:      stDraft.startDate || null,
       assignee:       stDraft.assignee === 'other' ? (stDraft.assigneeOther.trim() || null) : (stDraft.assignee || null),
       budget:         stDraft.budget !== '' ? parseFloat(stDraft.budget) : null,
       estimatedHours: stDraft.estHours !== '' ? parseFloat(stDraft.estHours) : null,
@@ -175,7 +180,7 @@ export default function TodoPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         text:           newText.trim(),
-        date:           newDate || null,
+        startDate:      newDate || null,
         assignee:       newAssignee === 'other'
                           ? (newAssigneeOther.trim() || null)
                           : (newAssignee || null),
@@ -257,7 +262,7 @@ export default function TodoPage() {
     const newSub: Subtask = {
       text:           subDraft.text.trim(),
       done:           false,
-      date:           subDraft.date || null,
+      startDate:      subDraft.startDate || null,
       assignee:       subDraft.assignee === 'other' ? (subDraft.assigneeOther.trim() || null) : (subDraft.assignee || null),
       budget:         subDraft.budget !== '' ? parseFloat(subDraft.budget) : null,
       estimatedHours: subDraft.estHours !== '' ? parseFloat(subDraft.estHours) : null,
@@ -305,7 +310,7 @@ export default function TodoPage() {
     setEditLoading(true);
     const patch = {
       text:           editTaskDraft.text.trim(),
-      date:           editTaskDraft.date || null,
+      startDate:      editTaskDraft.startDate || null,
       assignee:       editTaskDraft.assignee === 'other'
                         ? (editTaskDraft.assigneeOther.trim() || null)
                         : (editTaskDraft.assignee || null),
@@ -332,7 +337,7 @@ export default function TodoPage() {
     const updatedSub: Subtask = {
       text:           editSubDraft.text.trim(),
       done:           parentTodo.subtasks[index].done,
-      date:           editSubDraft.date || null,
+      startDate:      editSubDraft.startDate || null,
       assignee:       editSubDraft.assignee === 'other'
                         ? (editSubDraft.assigneeOther.trim() || null)
                         : (editSubDraft.assignee || null),
@@ -408,6 +413,60 @@ export default function TodoPage() {
   }
 
   const remaining = todos.filter((t) => !t.done).length;
+  const toLocalDateStr = (d: Date) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const selectedDateStr = selectedDate ? toLocalDateStr(selectedDate) : null;
+
+  /* helper: get the date strings covered by a task's period */
+  const getTaskPeriodDates = (t: Todo): string[] => {
+    if (!t.startDate) return [];
+    const start = new Date(t.startDate + 'T00:00:00');
+    let days = 0;
+    if (t.estimatedHours != null) {
+      days = t.estimatedUnit === 'days' ? Math.ceil(t.estimatedHours) : Math.ceil(t.estimatedHours / 24);
+    }
+    const totalDays = Math.max(days, 1);
+    const dates: string[] = [];
+    for (let i = 0; i < totalDays; i++) {
+      const d = new Date(start);
+      d.setDate(d.getDate() + i);
+      dates.push(toLocalDateStr(d));
+    }
+    return dates;
+  };
+
+  const dateFilteredTodos = selectedDateStr
+    ? todos.filter((t) => getTaskPeriodDates(t).includes(selectedDateStr))
+    : todos;
+  const filteredTodos = filter === 'pending' ? dateFilteredTodos.filter((t) => !t.done) : dateFilteredTodos;
+  /* count tasks per date for dot indicators */
+  const taskDateCounts = new Map<string, number>();
+  for (const t of todos) {
+    for (const d of getTaskPeriodDates(t)) {
+      taskDateCounts.set(d, (taskDateCounts.get(d) ?? 0) + 1);
+    }
+  }
+  /* custom day renderer — dots for 1-3 tasks, numeric badge for 4+ */
+  const CalDayContent = useMemo(() => {
+    return function DayContent({ date }: { date: Date; displayMonth: Date }) {
+      const count = taskDateCounts.get(toLocalDateStr(date)) ?? 0;
+      return (
+        <span className="flex flex-col items-center leading-none gap-0.5">
+          <span>{date.getDate()}</span>
+          {count >= 1 && count <= 3 && (
+            <span className="flex gap-[3px]">
+              {Array.from({ length: count }).map((_, i) => (
+                <span key={i} className="w-[4px] h-[4px] rounded-full bg-black inline-block" />
+              ))}
+            </span>
+          )}
+          {count > 3 && (
+            <span className="text-[9px] font-bold leading-none text-black">{count}</span>
+          )}
+        </span>
+      );
+    };
+  }, [taskDateCounts]);
 
   /* ── render ──────────────────────────────────── */
   return (
@@ -435,7 +494,7 @@ export default function TodoPage() {
       <span aria-hidden="true" className="pointer-events-none select-none absolute left-[4%]  bottom-[14%] text-2xl" style={{ animation: 'float-up-down 5s ease-in-out infinite' }}>🍉</span>
       <span aria-hidden="true" className="pointer-events-none select-none absolute right-[5%] bottom-[22%] text-xl" style={{ animation: 'float-up-down 6s ease-in-out infinite', animationDelay: '1.5s' }}>🍉</span>
 
-      <div className="relative z-10 max-w-xl mx-auto px-4 py-12">
+      <div className="relative z-10 max-w-5xl mx-auto px-4 py-12">
 
         {/* ── page header ── */}
         <div className="flex items-center justify-between mb-8">
@@ -455,6 +514,39 @@ export default function TodoPage() {
             <LogOut className="h-4 w-4" /> Sign out
           </Button>
         </div>
+
+        {/* ── two-column layout ── */}
+        <div className="flex gap-6 items-start">
+
+          {/* ── LEFT: calendar sidebar ── */}
+          <div className="hidden lg:block flex-shrink-0 w-[280px] sticky top-6">
+            <div className="glass-card rounded-2xl p-3">
+              <Calendar
+                mode="single"
+                selected={selectedDate}
+                onSelect={(d) => setSelectedDate(d === selectedDate ? undefined : d)}
+                components={{ DayContent: CalDayContent }}
+                className="w-full"
+              />
+              {selectedDate && (
+                <div className="mt-2 px-2 pb-1 flex items-center justify-between">
+                  <span className="text-[11px] text-foreground/55">
+                    {selectedDate.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedDate(undefined)}
+                    className="text-[10px] text-accent hover:underline"
+                  >
+                    Clear
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* ── RIGHT: main content ── */}
+          <div className="flex-1 min-w-0">
 
         {/* ── progress pill ── */}
         {todos.length > 0 && (
@@ -493,10 +585,10 @@ export default function TodoPage() {
                 />
               </div>
 
-              {/* Row 1 — Due date + Assignee */}
+              {/* Row 1 — Start date + Assignee */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className={lbl}>Due date <span className="text-accent">*</span></label>
+                  <label className={lbl}>Start date <span className="text-accent">*</span></label>
                   <input
                     type="date"
                     value={newDate}
@@ -609,8 +701,8 @@ export default function TodoPage() {
                         <div className="flex-1 min-w-0">
                           <span className="text-xs font-medium text-foreground/80">{st.text}</span>
                           <div className="flex flex-wrap gap-1 mt-1">
-                            {st.date && (
-                              <span className={badge}><Calendar className="h-2 w-2" />{new Date(st.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</span>
+                            {st.startDate && (
+                              <span className={badge}><CalendarIcon className="h-2 w-2" />{new Date(st.startDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</span>
                             )}
                             {st.assignee && <span className={badge}><User className="h-2 w-2" />{st.assignee}</span>}
                             {st.budget != null && (
@@ -640,11 +732,11 @@ export default function TodoPage() {
 
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <label className={lbl}>Due date</label>
-                        <input type="date" value={stDraft.date}
+                        <label className={lbl}>Start date</label>
+                        <input type="date" value={stDraft.startDate}
                           max={newDate || undefined}
                           style={{ colorScheme: 'light dark' }}
-                          onChange={(e) => setStDraft({ ...stDraft, date: e.target.value })}
+                          onChange={(e) => setStDraft({ ...stDraft, startDate: e.target.value })}
                           className={field} />
                       </div>
                       <div>
@@ -742,6 +834,52 @@ export default function TodoPage() {
           )}
         </div>
 
+        {/* ── mobile calendar (shown below lg) ── */}
+        <div className="lg:hidden mb-4">
+          <details className="glass-card rounded-2xl overflow-hidden">
+            <summary className="px-4 py-3 text-sm font-medium text-foreground/70 cursor-pointer hover:text-accent flex items-center gap-2 select-none">
+              <CalendarIcon className="h-4 w-4" />
+              {selectedDate
+                ? `Showing: ${selectedDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}`
+                : 'Filter by date'}
+              {selectedDate && (
+                <span
+                  onClick={(e) => { e.preventDefault(); setSelectedDate(undefined); }}
+                  className="ml-auto text-[10px] text-accent hover:underline"
+                >Clear</span>
+              )}
+            </summary>
+            <div className="border-t border-accent/10 flex justify-center">
+              <Calendar
+                mode="single"
+                selected={selectedDate}
+                onSelect={(d) => setSelectedDate(d === selectedDate ? undefined : d)}
+                components={{ DayContent: CalDayContent }}
+              />
+            </div>
+          </details>
+        </div>
+
+        {/* ── filter tabs ── */}
+        {!dbLoading && todos.length > 0 && (
+          <div className="flex gap-1 mb-4 p-1 glass-card rounded-full w-fit">
+            {(['all', 'pending'] as const).map((f) => (
+              <button
+                key={f}
+                type="button"
+                onClick={() => setFilter(f)}
+                className={`px-4 py-1 text-xs font-medium rounded-full transition-colors capitalize ${
+                  filter === f
+                    ? 'bg-accent text-white'
+                    : 'text-foreground/55 hover:text-accent'
+                }`}
+              >
+                {f === 'all' ? `All (${dateFilteredTodos.length})` : `Pending (${dateFilteredTodos.filter((t) => !t.done).length})`}
+              </button>
+            ))}
+          </div>
+        )}
+
         {/* ── task list ── */}
         {dbLoading ? (
           <div className="flex justify-center py-12">
@@ -751,14 +889,22 @@ export default function TodoPage() {
           <div className="glass-card rounded-2xl p-10 text-center">
             <p className="text-foreground/50 text-sm">No tasks yet. Add one above!</p>
           </div>
+        ) : filteredTodos.length === 0 ? (
+          <div className="glass-card rounded-2xl p-10 text-center">
+            <p className="text-foreground/50 text-sm">
+              {selectedDate
+                ? `No ${filter === 'pending' ? 'pending ' : ''}tasks for ${selectedDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}.`
+                : 'No pending tasks. All done! 🎉'}
+            </p>
+          </div>
         ) : (
           <ul className="space-y-3">
-            {todos.map((todo) => {
+            {filteredTodos.map((todo) => {
               const isExpanded  = expanded.has(todo.id);
               const doneCount   = (todo.subtasks ?? []).filter((s) => s.done).length;
               const totalSubs   = (todo.subtasks ?? []).length;
-              const today       = new Date().toISOString().split('T')[0];
-              const isOverdue   = !todo.done && !!todo.date && todo.date < today;
+              const today       = toLocalDateStr(new Date());
+              const isOverdue   = !todo.done && !!todo.startDate && todo.startDate < today;
               // avgProgress: done tasks always show 100; for tasks with subtasks use average of each sub's progress; else use task's own progress
               const avgProgress = todo.done ? 100 : (totalSubs > 0
                 ? Math.round((todo.subtasks ?? []).reduce((s, sub) => s + (sub.done ? 100 : (sub.progress ?? 0)), 0) / totalSubs)
@@ -780,9 +926,9 @@ export default function TodoPage() {
                       </div>
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className={lbl}>Due date</label>
-                          <input type="date" value={editTaskDraft.date}
-                            onChange={(e) => setEditTaskDraft({ ...editTaskDraft, date: e.target.value })}
+                          <label className={lbl}>Start date</label>
+                          <input type="date" value={editTaskDraft.startDate}
+                            onChange={(e) => setEditTaskDraft({ ...editTaskDraft, startDate: e.target.value })}
                             style={{ colorScheme: 'light dark' }} className={field} />
                         </div>
                         <div>
@@ -873,7 +1019,7 @@ export default function TodoPage() {
                           onClick={() => {
                             setEditTaskDraft({
                               text: todo.text,
-                              date: todo.date || '',
+                              startDate: todo.startDate || '',
                               assignee: todo.assignee ? (todo.assignee === 'Myself' ? 'Myself' : 'other') : '',
                               assigneeOther: (todo.assignee && todo.assignee !== 'Myself') ? todo.assignee : '',
                               budget: todo.budget != null ? todo.budget.toString() : '',
@@ -908,17 +1054,17 @@ export default function TodoPage() {
                     </div>
 
                     {/* Meta badges */}
-                    {(todo.date || todo.assignee || todo.budget != null || todo.estimatedHours != null) && (
+                    {(todo.startDate || todo.assignee || todo.budget != null || todo.estimatedHours != null) && (
                       <div className="flex flex-wrap gap-1.5 mt-2.5 pl-8">
-                        {todo.date && (
+                        {todo.startDate && (
                           <span className={`inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full font-medium ${
                             isOverdue
                               ? 'bg-destructive/10 border border-destructive/30 text-destructive/80'
                               : 'bg-sky-500/10 border border-sky-500/20 text-sky-600 dark:text-sky-400'
                           }`}>
-                            <Calendar className="h-2.5 w-2.5" />
-                            {new Date(todo.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: '2-digit' })}
-                            {isOverdue && <span className="font-bold ml-0.5">· overdue</span>}
+                            <CalendarIcon className="h-2.5 w-2.5" />
+                            {new Date(todo.startDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: '2-digit' })}
+                            {isOverdue && <span className="font-bold ml-0.5">· started</span>}
                           </span>
                         )}
                         {todo.assignee && (
@@ -1077,11 +1223,11 @@ export default function TodoPage() {
                                     className={field} autoFocus />
                                   <div className="grid grid-cols-2 gap-2">
                                     <div>
-                                      <label className={lbl}>Due date</label>
-                                      <input type="date" value={editSubDraft.date}
-                                        max={todo.date || undefined}
+                                      <label className={lbl}>Start date</label>
+                                      <input type="date" value={editSubDraft.startDate}
+                                        max={todo.startDate || undefined}
                                         style={{ colorScheme: 'light dark' }}
-                                        onChange={(e) => setEditSubDraft({ ...editSubDraft, date: e.target.value })}
+                                        onChange={(e) => setEditSubDraft({ ...editSubDraft, startDate: e.target.value })}
                                         className={field} />
                                     </div>
                                     <div>
@@ -1153,8 +1299,8 @@ export default function TodoPage() {
                                       {sub.text}
                                     </span>
                                     <div className="flex flex-wrap gap-1 mt-0.5">
-                                      {sub.date && (
-                                        <span className={badge}><Calendar className="h-2 w-2" />{new Date(sub.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: '2-digit' })}</span>
+                                      {sub.startDate && (
+                                        <span className={badge}><CalendarIcon className="h-2 w-2" />{new Date(sub.startDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: '2-digit' })}</span>
                                       )}
                                       {sub.assignee && <span className={badge}><User className="h-2 w-2" />{sub.assignee}</span>}
                                       {sub.budget != null && (
@@ -1215,7 +1361,7 @@ export default function TodoPage() {
                                     onClick={() => {
                                       setEditSubDraft({
                                         text: sub.text,
-                                        date: sub.date || '',
+                                        startDate: sub.startDate || '',
                                         assignee: sub.assignee ? (sub.assignee === 'Myself' ? 'Myself' : 'other') : '',
                                         assigneeOther: (sub.assignee && sub.assignee !== 'Myself') ? sub.assignee : '',
                                         budget: sub.budget != null ? sub.budget.toString() : '',
@@ -1299,11 +1445,11 @@ export default function TodoPage() {
 
                             <div className="grid grid-cols-2 gap-2">
                               <div>
-                                <label className={lbl}>Due date</label>
-                                <input type="date" value={subDraft.date}
-                                  max={todo.date || undefined}
+                                <label className={lbl}>Start date</label>
+                                <input type="date" value={subDraft.startDate}
+                                  max={todo.startDate || undefined}
                                   style={{ colorScheme: 'light dark' }}
-                                  onChange={(e) => setSubDraft({ ...subDraft, date: e.target.value })}
+                                  onChange={(e) => setSubDraft({ ...subDraft, startDate: e.target.value })}
                                   className={field} />
                               </div>
                               <div>
@@ -1389,7 +1535,12 @@ export default function TodoPage() {
             })}
           </ul>
         )}
+        </div>{/* end right column */}
+        </div>{/* end two-column flex */}
       </div>
     </div>
   );
 }
+
+
+

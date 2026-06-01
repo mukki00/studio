@@ -148,6 +148,8 @@ body {
   50%       { transform: translateY(-8px); }
 }
 
+/* Calendar: custom day content handles dots/counts inline */
+
 @keyframes shimmer-pulse {
   0%, 100% { opacity: 0.6; }
   50%       { opacity: 1; }
