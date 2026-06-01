@@ -482,10 +482,14 @@ export default function TodoPage() {
       return 0;
     });
 
-  const filteredBudgetUSD = filteredTodos.reduce((s, t) => t.budget != null && t.budgetCurrency === 'USD' ? s + t.budget : s, 0);
-  const filteredBudgetLKR = filteredTodos.reduce((s, t) => t.budget != null && t.budgetCurrency === 'LKR' ? s + t.budget : s, 0);
-  const hasAnyBudget      = todos.some((t) => t.budget != null);
-  const isFiltered        = selectedDate !== undefined || selectedAssignees.size > 0 || selectedPriorities.size > 0 || filter === 'pending';
+  const filteredBudgetUSD   = filteredTodos.reduce((s, t) => t.budget != null && t.budgetCurrency === 'USD' ? s + t.budget : s, 0);
+  const filteredBudgetLKR   = filteredTodos.reduce((s, t) => t.budget != null && t.budgetCurrency === 'LKR' ? s + t.budget : s, 0);
+  const spentBudgetUSD      = filteredTodos.reduce((s, t) => t.done && t.budget != null && t.budgetCurrency === 'USD' ? s + t.budget : s, 0);
+  const spentBudgetLKR      = filteredTodos.reduce((s, t) => t.done && t.budget != null && t.budgetCurrency === 'LKR' ? s + t.budget : s, 0);
+  const remainingBudgetUSD  = filteredBudgetUSD - spentBudgetUSD;
+  const remainingBudgetLKR  = filteredBudgetLKR - spentBudgetLKR;
+  const hasAnyBudget        = todos.some((t) => t.budget != null);
+  const isFiltered          = selectedDate !== undefined || selectedAssignees.size > 0 || selectedPriorities.size > 0 || filter === 'pending';
   const remaining         = todos.filter((t) => !t.done).length;
 
   const allAssignees = useMemo(
@@ -691,33 +695,6 @@ export default function TodoPage() {
             <span className="text-accent font-semibold">
               {todos.filter((t) => t.done).length} / {todos.length} completed
             </span>
-          </div>
-        )}
-
-        {/* ── budget summary ── */}
-        {hasAnyBudget && (
-          <div className="glass-card rounded-xl px-5 py-3 mb-6 flex flex-wrap items-center gap-x-6 gap-y-1.5">
-            <span className="flex items-center gap-1.5 text-xs text-foreground/55">
-              <DollarSign className="h-3.5 w-3.5 text-emerald-500/70" />
-              <span className="font-medium text-foreground/70">
-                {isFiltered ? 'Filtered budget' : 'Total budget'}
-              </span>
-            </span>
-            <div className="flex flex-wrap gap-3 ml-auto">
-              {filteredBudgetUSD > 0 && (
-                <span className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
-                  ${filteredBudgetUSD.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })} <span className="text-xs font-normal text-foreground/40">USD</span>
-                </span>
-              )}
-              {filteredBudgetLKR > 0 && (
-                <span className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
-                  ₨{filteredBudgetLKR.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })} <span className="text-xs font-normal text-foreground/40">LKR</span>
-                </span>
-              )}
-              {filteredBudgetUSD === 0 && filteredBudgetLKR === 0 && (
-                <span className="text-xs text-foreground/35 italic">No budget in current view</span>
-              )}
-            </div>
           </div>
         )}
 
@@ -1858,6 +1835,59 @@ export default function TodoPage() {
           </ul>
         )}
         </div>{/* end right column */}
+
+          {/* ── RIGHT: budget sidebar ── */}
+          {hasAnyBudget && (
+            <div className="hidden xl:block flex-shrink-0 w-[260px] sticky top-6">
+              <div className="glass-card rounded-2xl p-4">
+                <div className="flex items-center gap-1.5 mb-3">
+                  <DollarSign className="h-3.5 w-3.5 text-emerald-500/70" />
+                  <span className="text-[11px] font-medium text-foreground/55 uppercase tracking-wide">
+                    {isFiltered ? 'Filtered Budget' : 'Budget Overview'}
+                  </span>
+                </div>
+                {[
+                  { label: 'USD', symbol: '$', total: filteredBudgetUSD, spent: spentBudgetUSD, remaining: remainingBudgetUSD },
+                  { label: 'LKR', symbol: '₨', total: filteredBudgetLKR, spent: spentBudgetLKR, remaining: remainingBudgetLKR },
+                ].filter(c => c.total > 0).map(c => (
+                  <div key={c.label} className="mb-3 last:mb-0">
+                    <p className="text-[10px] font-medium text-foreground/40 uppercase tracking-wide mb-1.5">{c.label}</p>
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between bg-accent/[0.04] rounded-lg px-3 py-2">
+                        <span className="text-[11px] text-foreground/50">Total</span>
+                        <span className="text-sm font-semibold text-foreground/80">
+                          {c.symbol}{c.total.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between bg-red-500/[0.05] rounded-lg px-3 py-2">
+                        <span className="text-[11px] text-foreground/50">Spent</span>
+                        <span className="text-sm font-semibold text-red-600 dark:text-red-400">
+                          {c.symbol}{c.spent.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between bg-emerald-500/[0.05] rounded-lg px-3 py-2">
+                        <span className="text-[11px] text-foreground/50">Remaining</span>
+                        <span className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+                          {c.symbol}{c.remaining.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}
+                        </span>
+                      </div>
+                    </div>
+                    {c.total > 0 && (
+                      <div className="mt-2 h-1.5 rounded-full bg-accent/10 overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-red-500/50 transition-all"
+                          style={{ width: `${Math.min(100, (c.spent / c.total) * 100)}%` }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                ))}
+                {filteredBudgetUSD === 0 && filteredBudgetLKR === 0 && (
+                  <p className="text-xs text-foreground/35 italic">No budget in current view</p>
+                )}
+              </div>
+            </div>
+          )}
         </div>{/* end two-column flex */}
       </div>
     </div>
