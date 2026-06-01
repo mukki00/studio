@@ -422,20 +422,11 @@ export default function TodoPage() {
     router.replace('/login');
   }
 
-  if (loading || !user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-accent" />
-      </div>
-    );
-  }
-
-  const remaining = todos.filter((t) => !t.done).length;
+  /* ── derived values & memos (must all be before any early return) ── */
   const toLocalDateStr = (d: Date) =>
     `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   const selectedDateStr = selectedDate ? toLocalDateStr(selectedDate) : null;
 
-  /* helper: get the date strings covered by a task's period */
   const getTaskPeriodDates = (t: Todo): string[] => {
     if (!t.startDate) return [];
     const start = new Date(t.startDate + 'T00:00:00');
@@ -468,37 +459,32 @@ export default function TodoPage() {
       const pa = a.priority ? PRIORITY_ORDER[a.priority] : 999;
       const pb = b.priority ? PRIORITY_ORDER[b.priority] : 999;
       if (pa !== pb) return pa - pb;
-      // Secondary sort: pending before done
       if (a.done !== b.done) return a.done ? 1 : -1;
       return 0;
     });
-  /* unique assignees across all todos (excluding null) */
+
+  const filteredBudgetUSD = filteredTodos.reduce((s, t) => t.budget != null && t.budgetCurrency === 'USD' ? s + t.budget : s, 0);
+  const filteredBudgetLKR = filteredTodos.reduce((s, t) => t.budget != null && t.budgetCurrency === 'LKR' ? s + t.budget : s, 0);
+  const hasAnyBudget      = todos.some((t) => t.budget != null);
+  const isFiltered        = selectedDate !== undefined || selectedAssignees.size > 0 || selectedPriorities.size > 0 || filter === 'pending';
+  const remaining         = todos.filter((t) => !t.done).length;
+
   const allAssignees = useMemo(
     () => Array.from(new Set(todos.map((t) => t.assignee).filter(Boolean) as string[])).sort(),
     [todos],
   );
-  const toggleAssignee = (name: string) => {
-    setSelectedAssignees((prev) => {
-      const next = new Set(prev);
-      if (next.has(name)) next.delete(name); else next.add(name);
-      return next;
-    });
-  };
-  const togglePriority = (p: Priority) => {
-    setSelectedPriorities((prev) => {
-      const next = new Set(prev);
-      if (next.has(p)) next.delete(p); else next.add(p);
-      return next;
-    });
-  };
-  /* count tasks per date for dot indicators */
-  const taskDateCounts = new Map<string, number>();
-  for (const t of todos) {
-    for (const d of getTaskPeriodDates(t)) {
-      taskDateCounts.set(d, (taskDateCounts.get(d) ?? 0) + 1);
+
+  const taskDateCounts = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const t of todos) {
+      for (const d of getTaskPeriodDates(t)) {
+        map.set(d, (map.get(d) ?? 0) + 1);
+      }
     }
-  }
-  /* custom day renderer — dots for 1-3 tasks, numeric badge for 4+ */
+    return map;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [todos]);
+
   const CalDayContent = useMemo(() => {
     return function DayContent({ date }: { date: Date; displayMonth: Date }) {
       const count = taskDateCounts.get(toLocalDateStr(date)) ?? 0;
@@ -519,6 +505,29 @@ export default function TodoPage() {
       );
     };
   }, [taskDateCounts]);
+
+  const toggleAssignee = (name: string) => {
+    setSelectedAssignees((prev) => {
+      const next = new Set(prev);
+      if (next.has(name)) next.delete(name); else next.add(name);
+      return next;
+    });
+  };
+  const togglePriority = (p: Priority) => {
+    setSelectedPriorities((prev) => {
+      const next = new Set(prev);
+      if (next.has(p)) next.delete(p); else next.add(p);
+      return next;
+    });
+  };
+
+  if (loading || !user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-accent" />
+      </div>
+    );
+  }
 
   /* ── render ──────────────────────────────────── */
   return (
@@ -656,13 +665,40 @@ export default function TodoPage() {
 
         {/* ── progress pill ── */}
         {todos.length > 0 && (
-          <div className="glass-card rounded-full px-5 py-2.5 mb-6 flex items-center justify-between text-sm">
+          <div className="glass-card rounded-full px-5 py-2.5 mb-4 flex items-center justify-between text-sm">
             <span className="text-foreground/65">
               {remaining === 0 ? '🎉 All done!' : `${remaining} task${remaining !== 1 ? 's' : ''} remaining`}
             </span>
             <span className="text-accent font-semibold">
               {todos.filter((t) => t.done).length} / {todos.length} completed
             </span>
+          </div>
+        )}
+
+        {/* ── budget summary ── */}
+        {hasAnyBudget && (
+          <div className="glass-card rounded-xl px-5 py-3 mb-6 flex flex-wrap items-center gap-x-6 gap-y-1.5">
+            <span className="flex items-center gap-1.5 text-xs text-foreground/55">
+              <DollarSign className="h-3.5 w-3.5 text-emerald-500/70" />
+              <span className="font-medium text-foreground/70">
+                {isFiltered ? 'Filtered budget' : 'Total budget'}
+              </span>
+            </span>
+            <div className="flex flex-wrap gap-3 ml-auto">
+              {filteredBudgetUSD > 0 && (
+                <span className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+                  ${filteredBudgetUSD.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })} <span className="text-xs font-normal text-foreground/40">USD</span>
+                </span>
+              )}
+              {filteredBudgetLKR > 0 && (
+                <span className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+                  ₨{filteredBudgetLKR.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })} <span className="text-xs font-normal text-foreground/40">LKR</span>
+                </span>
+              )}
+              {filteredBudgetUSD === 0 && filteredBudgetLKR === 0 && (
+                <span className="text-xs text-foreground/35 italic">No budget in current view</span>
+              )}
+            </div>
           </div>
         )}
 
