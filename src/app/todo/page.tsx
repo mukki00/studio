@@ -9,13 +9,234 @@ import { Calendar } from '@/components/ui/calendar';
 import {
   Loader2, Plus, Trash2, LogOut, CheckCircle2, Circle,
   ChevronDown, ChevronUp, CalendarIcon, User, DollarSign,
-  Clock, X, ListTree, Pencil,
+  Clock, X, ListTree, Pencil, BookOpen, BrainCircuit,
 } from 'lucide-react';
 
 /* ── shared style tokens ─────────────────────────── */
 const field  = 'w-full h-9 rounded-md border border-accent/20 bg-background/50 px-3 text-sm text-foreground placeholder:text-foreground/40 focus:outline-none focus:ring-1 focus:ring-accent/50 focus:border-accent/50';
 const lbl    = 'block text-[11px] font-medium text-foreground/55 mb-1';
 const badge  = 'inline-flex items-center gap-1 text-[9px] px-1.5 py-0.5 rounded-full bg-accent/5 border border-accent/10 text-foreground/45';
+
+/* ── Quran Surahs ────────────────────────────────── */
+const SURAHS: { num: number; name: string; arabic: string; verses: number }[] = [
+  { num: 1,   name: 'Al-Fatiha',       arabic: 'الفاتحة',    verses: 7   },
+  { num: 2,   name: 'Al-Baqarah',      arabic: 'البقرة',     verses: 286 },
+  { num: 3,   name: "Ali 'Imran",      arabic: 'آل عمران',   verses: 200 },
+  { num: 4,   name: 'An-Nisa',         arabic: 'النساء',     verses: 176 },
+  { num: 5,   name: 'Al-Maidah',       arabic: 'المائدة',    verses: 120 },
+  { num: 6,   name: 'Al-Anam',         arabic: 'الأنعام',    verses: 165 },
+  { num: 7,   name: 'Al-Araf',         arabic: 'الأعراف',    verses: 206 },
+  { num: 8,   name: 'Al-Anfal',        arabic: 'الأنفال',    verses: 75  },
+  { num: 9,   name: 'At-Tawbah',       arabic: 'التوبة',     verses: 129 },
+  { num: 10,  name: 'Yunus',           arabic: 'يونس',       verses: 109 },
+  { num: 11,  name: 'Hud',             arabic: 'هود',        verses: 123 },
+  { num: 12,  name: 'Yusuf',           arabic: 'يوسف',       verses: 111 },
+  { num: 13,  name: 'Ar-Rad',          arabic: 'الرعد',      verses: 43  },
+  { num: 14,  name: 'Ibrahim',         arabic: 'إبراهيم',    verses: 52  },
+  { num: 15,  name: 'Al-Hijr',         arabic: 'الحجر',      verses: 99  },
+  { num: 16,  name: 'An-Nahl',         arabic: 'النحل',      verses: 128 },
+  { num: 17,  name: 'Al-Isra',         arabic: 'الإسراء',    verses: 111 },
+  { num: 18,  name: 'Al-Kahf',         arabic: 'الكهف',      verses: 110 },
+  { num: 19,  name: 'Maryam',          arabic: 'مريم',       verses: 98  },
+  { num: 20,  name: 'Ta-Ha',           arabic: 'طه',         verses: 135 },
+  { num: 21,  name: 'Al-Anbiya',       arabic: 'الأنبياء',   verses: 112 },
+  { num: 22,  name: 'Al-Hajj',         arabic: 'الحج',       verses: 78  },
+  { num: 23,  name: 'Al-Muminun',      arabic: 'المؤمنون',   verses: 118 },
+  { num: 24,  name: 'An-Nur',          arabic: 'النور',      verses: 64  },
+  { num: 25,  name: 'Al-Furqan',       arabic: 'الفرقان',    verses: 77  },
+  { num: 26,  name: 'Ash-Shuara',      arabic: 'الشعراء',    verses: 227 },
+  { num: 27,  name: 'An-Naml',         arabic: 'النمل',      verses: 93  },
+  { num: 28,  name: 'Al-Qasas',        arabic: 'القصص',      verses: 88  },
+  { num: 29,  name: 'Al-Ankabut',      arabic: 'العنكبوت',   verses: 69  },
+  { num: 30,  name: 'Ar-Rum',          arabic: 'الروم',      verses: 60  },
+  { num: 31,  name: 'Luqman',          arabic: 'لقمان',      verses: 34  },
+  { num: 32,  name: 'As-Sajdah',       arabic: 'السجدة',     verses: 30  },
+  { num: 33,  name: 'Al-Ahzab',        arabic: 'الأحزاب',    verses: 73  },
+  { num: 34,  name: 'Saba',            arabic: 'سبأ',        verses: 54  },
+  { num: 35,  name: 'Fatir',           arabic: 'فاطر',       verses: 45  },
+  { num: 36,  name: 'Ya-Sin',          arabic: 'يس',         verses: 83  },
+  { num: 37,  name: 'As-Saffat',       arabic: 'الصافات',    verses: 182 },
+  { num: 38,  name: 'Sad',             arabic: 'ص',          verses: 88  },
+  { num: 39,  name: 'Az-Zumar',        arabic: 'الزمر',      verses: 75  },
+  { num: 40,  name: 'Ghafir',          arabic: 'غافر',       verses: 85  },
+  { num: 41,  name: 'Fussilat',        arabic: 'فصلت',       verses: 54  },
+  { num: 42,  name: 'Ash-Shura',       arabic: 'الشورى',     verses: 53  },
+  { num: 43,  name: 'Az-Zukhruf',      arabic: 'الزخرف',     verses: 89  },
+  { num: 44,  name: 'Ad-Dukhan',       arabic: 'الدخان',     verses: 59  },
+  { num: 45,  name: 'Al-Jathiyah',     arabic: 'الجاثية',    verses: 37  },
+  { num: 46,  name: 'Al-Ahqaf',        arabic: 'الأحقاف',    verses: 35  },
+  { num: 47,  name: 'Muhammad',        arabic: 'محمد',       verses: 38  },
+  { num: 48,  name: 'Al-Fath',         arabic: 'الفتح',      verses: 29  },
+  { num: 49,  name: 'Al-Hujurat',      arabic: 'الحجرات',    verses: 18  },
+  { num: 50,  name: 'Qaf',             arabic: 'ق',          verses: 45  },
+  { num: 51,  name: 'Adh-Dhariyat',    arabic: 'الذاريات',   verses: 60  },
+  { num: 52,  name: 'At-Tur',          arabic: 'الطور',      verses: 49  },
+  { num: 53,  name: 'An-Najm',         arabic: 'النجم',      verses: 62  },
+  { num: 54,  name: 'Al-Qamar',        arabic: 'القمر',      verses: 55  },
+  { num: 55,  name: 'Ar-Rahman',       arabic: 'الرحمن',     verses: 78  },
+  { num: 56,  name: 'Al-Waqiah',       arabic: 'الواقعة',    verses: 96  },
+  { num: 57,  name: 'Al-Hadid',        arabic: 'الحديد',     verses: 29  },
+  { num: 58,  name: 'Al-Mujadila',     arabic: 'المجادلة',   verses: 22  },
+  { num: 59,  name: 'Al-Hashr',        arabic: 'الحشر',      verses: 24  },
+  { num: 60,  name: 'Al-Mumtahanah',   arabic: 'الممتحنة',   verses: 13  },
+  { num: 61,  name: 'As-Saf',          arabic: 'الصف',       verses: 14  },
+  { num: 62,  name: 'Al-Jumuah',       arabic: 'الجمعة',     verses: 11  },
+  { num: 63,  name: 'Al-Munafiqun',    arabic: 'المنافقون',  verses: 11  },
+  { num: 64,  name: 'At-Taghabun',     arabic: 'التغابن',    verses: 18  },
+  { num: 65,  name: 'At-Talaq',        arabic: 'الطلاق',     verses: 12  },
+  { num: 66,  name: 'At-Tahrim',       arabic: 'التحريم',    verses: 12  },
+  { num: 67,  name: 'Al-Mulk',         arabic: 'الملك',      verses: 30  },
+  { num: 68,  name: 'Al-Qalam',        arabic: 'القلم',      verses: 52  },
+  { num: 69,  name: 'Al-Haqqah',       arabic: 'الحاقة',     verses: 52  },
+  { num: 70,  name: "Al-Ma'arij",      arabic: 'المعارج',    verses: 44  },
+  { num: 71,  name: 'Nuh',             arabic: 'نوح',        verses: 28  },
+  { num: 72,  name: 'Al-Jinn',         arabic: 'الجن',       verses: 28  },
+  { num: 73,  name: 'Al-Muzzammil',    arabic: 'المزمل',     verses: 20  },
+  { num: 74,  name: 'Al-Muddaththir',  arabic: 'المدثر',     verses: 56  },
+  { num: 75,  name: 'Al-Qiyamah',      arabic: 'القيامة',    verses: 40  },
+  { num: 76,  name: 'Al-Insan',        arabic: 'الإنسان',    verses: 31  },
+  { num: 77,  name: 'Al-Mursalat',     arabic: 'المرسلات',   verses: 50  },
+  { num: 78,  name: "An-Naba'",        arabic: 'النبأ',      verses: 40  },
+  { num: 79,  name: "An-Nazi'at",      arabic: 'النازعات',   verses: 46  },
+  { num: 80,  name: 'Abasa',           arabic: 'عبس',        verses: 42  },
+  { num: 81,  name: 'At-Takwir',       arabic: 'التكوير',    verses: 29  },
+  { num: 82,  name: 'Al-Infitar',      arabic: 'الانفطار',   verses: 19  },
+  { num: 83,  name: 'Al-Mutaffifin',   arabic: 'المطففين',   verses: 36  },
+  { num: 84,  name: 'Al-Inshiqaq',     arabic: 'الانشقاق',   verses: 25  },
+  { num: 85,  name: 'Al-Buruj',        arabic: 'البروج',     verses: 22  },
+  { num: 86,  name: 'At-Tariq',        arabic: 'الطارق',     verses: 17  },
+  { num: 87,  name: 'Al-Ala',          arabic: 'الأعلى',     verses: 19  },
+  { num: 88,  name: 'Al-Ghashiyah',    arabic: 'الغاشية',    verses: 26  },
+  { num: 89,  name: 'Al-Fajr',         arabic: 'الفجر',      verses: 30  },
+  { num: 90,  name: 'Al-Balad',        arabic: 'البلد',      verses: 20  },
+  { num: 91,  name: 'Ash-Shams',       arabic: 'الشمس',      verses: 15  },
+  { num: 92,  name: 'Al-Layl',         arabic: 'الليل',      verses: 21  },
+  { num: 93,  name: 'Ad-Duha',         arabic: 'الضحى',      verses: 11  },
+  { num: 94,  name: 'Ash-Sharh',       arabic: 'الشرح',      verses: 8   },
+  { num: 95,  name: 'At-Tin',          arabic: 'التين',      verses: 8   },
+  { num: 96,  name: 'Al-Alaq',         arabic: 'العلق',      verses: 19  },
+  { num: 97,  name: 'Al-Qadr',         arabic: 'القدر',      verses: 5   },
+  { num: 98,  name: 'Al-Bayyinah',     arabic: 'البينة',     verses: 8   },
+  { num: 99,  name: 'Az-Zalzalah',     arabic: 'الزلزلة',    verses: 8   },
+  { num: 100, name: 'Al-Adiyat',       arabic: 'العاديات',   verses: 11  },
+  { num: 101, name: "Al-Qari'ah",      arabic: 'القارعة',    verses: 11  },
+  { num: 102, name: 'At-Takathur',     arabic: 'التكاثر',    verses: 8   },
+  { num: 103, name: 'Al-Asr',          arabic: 'العصر',      verses: 3   },
+  { num: 104, name: 'Al-Humazah',      arabic: 'الهمزة',     verses: 9   },
+  { num: 105, name: 'Al-Fil',          arabic: 'الفيل',      verses: 5   },
+  { num: 106, name: 'Quraysh',         arabic: 'قريش',       verses: 4   },
+  { num: 107, name: "Al-Ma'un",        arabic: 'الماعون',    verses: 7   },
+  { num: 108, name: 'Al-Kawthar',      arabic: 'الكوثر',     verses: 3   },
+  { num: 109, name: 'Al-Kafirun',      arabic: 'الكافرون',   verses: 6   },
+  { num: 110, name: 'An-Nasr',         arabic: 'النصر',      verses: 3   },
+  { num: 111, name: 'Al-Masad',        arabic: 'المسد',      verses: 5   },
+  { num: 112, name: 'Al-Ikhlas',       arabic: 'الإخلاص',    verses: 4   },
+  { num: 113, name: 'Al-Falaq',        arabic: 'الفلق',      verses: 5   },
+  { num: 114, name: 'An-Nas',          arabic: 'الناس',      verses: 6   },
+];
+
+/* ── Tech Architect challenge items ─────────────── */
+export interface TechItem { id: number; name: string; category: string; description: string; }
+export const TECH_CHALLENGES: TechItem[] = [
+  // Architecture Foundations
+  { id: 1,  category: 'Architecture Foundations', name: 'Microservices Architecture',          description: 'Design, decompose and communicate between independently deployable services' },
+  { id: 2,  category: 'Architecture Foundations', name: 'Event-Driven Architecture',           description: 'Producers, consumers, event brokers and async communication patterns' },
+  { id: 3,  category: 'Architecture Foundations', name: 'Domain-Driven Design (DDD)',          description: 'Bounded contexts, aggregates, entities, value objects and ubiquitous language' },
+  { id: 4,  category: 'Architecture Foundations', name: 'CQRS & Event Sourcing',               description: 'Separate read/write models and derive state from an immutable event log' },
+  { id: 5,  category: 'Architecture Foundations', name: 'Hexagonal / Clean Architecture',      description: 'Ports & adapters pattern — keep domain logic independent of infrastructure' },
+  { id: 6,  category: 'Architecture Foundations', name: 'API Design (REST, GraphQL, gRPC)',    description: 'Design robust, versioned and contract-first APIs for internal & external use' },
+  { id: 7,  category: 'Architecture Foundations', name: 'Saga Pattern',                        description: 'Manage distributed transactions with choreography or orchestration sagas' },
+  { id: 8,  category: 'Architecture Foundations', name: 'Service Mesh (Istio / Linkerd)',       description: 'Sidecar proxies for traffic management, mutual TLS and observability' },
+  // System Design
+  { id: 9,  category: 'System Design',            name: 'Scalability Patterns',                description: 'Horizontal scaling, sharding, partitioning and stateless service design' },
+  { id: 10, category: 'System Design',            name: 'Database Sharding & Replication',     description: 'Partition data for write scale; replicate for read scale and fault tolerance' },
+  { id: 11, category: 'System Design',            name: 'Caching Strategies',                  description: 'Cache-aside, write-through, TTL, CDN edge caching and cache invalidation' },
+  { id: 12, category: 'System Design',            name: 'Load Balancing & Traffic Management', description: 'Layer 4/7 LB, weighted routing, sticky sessions and global traffic management' },
+  { id: 13, category: 'System Design',            name: 'CAP Theorem & Consistency Models',    description: 'Consistency vs availability trade-offs; eventual, strong and causal consistency' },
+  { id: 14, category: 'System Design',            name: 'Message Queues (Kafka / RabbitMQ)',   description: 'Topics, partitions, consumer groups, ordering guarantees and dead-letter queues' },
+  { id: 15, category: 'System Design',            name: 'Rate Limiting & Throttling',          description: 'Token bucket, leaky bucket, fixed window and distributed rate limiter design' },
+  { id: 16, category: 'System Design',            name: 'Circuit Breaker Pattern',             description: 'Protect downstream services with half-open state and fallback strategies' },
+  // Cloud & Infrastructure
+  { id: 17, category: 'Cloud & Infrastructure',   name: 'Cloud Platform Core Services',        description: 'Compute, storage, networking and managed services across AWS / Azure / GCP' },
+  { id: 18, category: 'Cloud & Infrastructure',   name: 'Infrastructure as Code (Terraform)',  description: 'Provision and version infrastructure declaratively; state management and modules' },
+  { id: 19, category: 'Cloud & Infrastructure',   name: 'Kubernetes & Container Orchestration',description: 'Deployments, services, ingress, RBAC, HPA and cluster administration' },
+  { id: 20, category: 'Cloud & Infrastructure',   name: 'CI/CD Pipeline Design',               description: 'Build, test, security scan, artefact management and progressive delivery' },
+  { id: 21, category: 'Cloud & Infrastructure',   name: 'Serverless Architecture',             description: 'Functions, event triggers, cold starts, vendor lock-in trade-offs' },
+  { id: 22, category: 'Cloud & Infrastructure',   name: 'Multi-region Deployment',             description: 'Active-active vs active-passive, data sovereignty and latency optimisation' },
+  { id: 23, category: 'Cloud & Infrastructure',   name: 'Cloud Cost Optimisation',             description: 'Reserved/spot instances, right-sizing, tagging and FinOps practices' },
+  { id: 24, category: 'Cloud & Infrastructure',   name: 'Site Reliability Engineering (SRE)',  description: 'Error budgets, toil reduction, runbooks and on-call practices' },
+  // Security Architecture
+  { id: 25, category: 'Security Architecture',    name: 'Zero Trust Architecture',             description: 'Never trust, always verify — microsegmentation and least-privilege access' },
+  { id: 26, category: 'Security Architecture',    name: 'OAuth2 / OpenID Connect / JWT',       description: 'Auth flows, token lifecycle, refresh strategies and PKCE' },
+  { id: 27, category: 'Security Architecture',    name: 'Secrets Management',                  description: 'HashiCorp Vault, AWS Secrets Manager — rotation, leasing and dynamic secrets' },
+  { id: 28, category: 'Security Architecture',    name: 'Network Security & VPC Design',       description: 'Subnets, security groups, NACLs, private link and DMZ architecture' },
+  { id: 29, category: 'Security Architecture',    name: 'Identity & Access Management (IAM)',  description: 'Role hierarchies, policy evaluation, federation and privilege escalation prevention' },
+  { id: 30, category: 'Security Architecture',    name: 'Threat Modelling & Security by Design', description: 'STRIDE, PASTA, data flow diagrams and security review in design phase' },
+  // Observability & Reliability
+  { id: 31, category: 'Observability & Reliability', name: 'Distributed Tracing',             description: 'Trace context propagation, span sampling and Jaeger / Zipkin / OTEL' },
+  { id: 32, category: 'Observability & Reliability', name: 'Centralised Logging',             description: 'Structured logs, ELK / Splunk / Loki pipelines and log-based alerting' },
+  { id: 33, category: 'Observability & Reliability', name: 'Metrics & Alerting',              description: 'RED / USE method, Prometheus, Grafana dashboards and PagerDuty integration' },
+  { id: 34, category: 'Observability & Reliability', name: 'SLO / SLI / SLA Definition',     description: 'Define reliability targets, error budgets and customer-facing commitments' },
+  { id: 35, category: 'Observability & Reliability', name: 'Disaster Recovery Planning',      description: 'RTO / RPO targets, backup strategies, runbooks and DR drills' },
+  { id: 36, category: 'Observability & Reliability', name: 'Chaos Engineering',               description: 'Game days, failure injection, Chaos Monkey and blast-radius control' },
+  // Data Architecture
+  { id: 37, category: 'Data Architecture',        name: 'Data Modelling & Schema Design',      description: 'Normalisation, denormalisation, schema evolution and contract testing' },
+  { id: 38, category: 'Data Architecture',        name: 'Data Lake vs Data Warehouse',         description: 'Storage tiers, schema-on-read vs schema-on-write and lakehouse patterns' },
+  { id: 39, category: 'Data Architecture',        name: 'Stream vs Batch Processing',          description: 'Flink, Spark Streaming, Lambda architecture and exactly-once semantics' },
+  { id: 40, category: 'Data Architecture',        name: 'Database Selection Criteria',         description: 'SQL vs NoSQL trade-offs — document, columnar, graph and time-series stores' },
+  { id: 41, category: 'Data Architecture',        name: 'Data Privacy & GDPR Compliance',      description: 'Data classification, PII handling, right to erasure and data retention policies' },
+  { id: 42, category: 'Data Architecture',        name: 'Data Mesh Architecture',              description: 'Domain ownership, data as a product and federated computational governance' },
+  // Leadership & Communication
+  { id: 43, category: 'Leadership & Communication', name: 'Architecture Decision Records (ADRs)', description: 'Document context, decision and consequences — build a searchable architecture log' },
+  { id: 44, category: 'Leadership & Communication', name: 'Technical Roadmapping',             description: 'Prioritise initiatives, align with business goals and communicate milestones' },
+  { id: 45, category: 'Leadership & Communication', name: 'Stakeholder Communication',         description: 'Translate technical concepts for non-technical audiences and exec presentations' },
+  { id: 46, category: 'Leadership & Communication', name: 'Technology Evaluation & Vendor Selection', description: 'RFP / PoC frameworks, TCO analysis and build vs buy decisions' },
+  { id: 47, category: 'Leadership & Communication', name: 'Technical Risk Assessment',         description: 'Identify, score and mitigate architectural risks with risk registers' },
+  { id: 48, category: 'Leadership & Communication', name: 'Team Mentoring & Coaching',         description: 'Grow engineers, conduct architecture reviews and build a learning culture' },
+  // Containers & DevOps Tools
+  { id: 49, category: 'Containers & DevOps Tools', name: 'Docker & Containerisation',           description: 'Dockerfiles, multi-stage builds, image layering, networking and security best practices' },
+  { id: 50, category: 'Containers & DevOps Tools', name: 'Helm Charts & K8s Packaging',         description: 'Chart structure, templating, values overrides, hooks and chart repositories' },
+  { id: 51, category: 'Containers & DevOps Tools', name: 'GitOps (ArgoCD / Flux)',              description: 'Declarative deployments driven from Git — sync policies, drift detection and rollback' },
+  { id: 52, category: 'Containers & DevOps Tools', name: 'HashiCorp Stack (Vault / Consul)',     description: 'Service discovery, distributed config, secret injection and dynamic credentials' },
+  { id: 53, category: 'Containers & DevOps Tools', name: 'Ansible & Config Management',         description: 'Idempotent playbooks, roles, inventories and CM vs IaC trade-offs' },
+  { id: 54, category: 'Containers & DevOps Tools', name: 'Build Tools & Artefact Management',   description: 'Gradle/Maven, Nx/Turborepo monorepos, Nexus/Artifactory and dependency pinning' },
+  // Programming Languages
+  { id: 55, category: 'Programming Languages',     name: 'TypeScript / JavaScript (Node.js)',   description: 'Type-safe backends, async patterns, Node.js event loop and module ecosystem' },
+  { id: 56, category: 'Programming Languages',     name: 'Python (FastAPI / Scripting / ML)',    description: 'API development, automation scripting, data pipelines and ML integration' },
+  { id: 57, category: 'Programming Languages',     name: 'Go (Microservices & CLI Tools)',       description: 'Goroutines, channels, low-latency services, CLI tooling and binary distribution' },
+  { id: 58, category: 'Programming Languages',     name: 'Java / Kotlin (JVM & Spring Boot)',    description: 'JVM internals, Spring Boot ecosystem, reactive streams and enterprise patterns' },
+  { id: 59, category: 'Programming Languages',     name: 'SQL & Query Optimisation',             description: 'Execution plans, index strategies, window functions and OLAP vs OLTP query patterns' },
+  { id: 60, category: 'Programming Languages',     name: 'Rust / C++ (Systems Awareness)',       description: 'Memory model, ownership, WASM targets and when to choose systems languages' },
+  // AI & GenAI Architecture
+  { id: 61, category: 'AI & GenAI Architecture',   name: 'LLM Integration Patterns',             description: 'Prompt chaining, tool-calling, function calling, LLM-as-orchestrator and guardrails' },
+  { id: 62, category: 'AI & GenAI Architecture',   name: 'RAG (Retrieval-Augmented Generation)',  description: 'Chunking strategies, embedding models, vector similarity search and reranking' },
+  { id: 63, category: 'AI & GenAI Architecture',   name: 'Vector Databases',                      description: 'Pinecone, Weaviate, pgvector — indexing, ANN search and hybrid retrieval' },
+  { id: 64, category: 'AI & GenAI Architecture',   name: 'AI Pipeline & MLOps',                   description: 'Feature stores, model registry, A/B testing, drift detection and retraining loops' },
+  { id: 65, category: 'AI & GenAI Architecture',   name: 'AI Safety & Responsible AI',            description: 'Bias evaluation, explainability, content filtering, rate limits and cost control' },
+  { id: 66, category: 'AI & GenAI Architecture',   name: 'Agentic Systems Design',               description: 'Multi-agent orchestration, tool use, memory layers and evaluation frameworks' },
+  // Performance Engineering
+  { id: 67, category: 'Performance Engineering',   name: 'Load & Stress Testing',                description: 'k6, JMeter, Gatling — test design, ramp-up profiles and interpreting p95/p99 results' },
+  { id: 68, category: 'Performance Engineering',   name: 'Application Profiling',                description: 'CPU/heap profiling, flame graphs, GC tuning and hot-path identification' },
+  { id: 69, category: 'Performance Engineering',   name: 'Database Query Optimisation',          description: 'EXPLAIN plans, index design, N+1 elimination, connection pooling and query caching' },
+  { id: 70, category: 'Performance Engineering',   name: 'Performance Budgets & SLAs',           description: 'Define perf targets, automate regression gates in CI and tie to SLOs' },
+  { id: 71, category: 'Performance Engineering',   name: 'Network & Latency Optimisation',       description: 'Keep-alive, HTTP/2 multiplexing, payload compression, pre-fetching and CDN tuning' },
+  { id: 72, category: 'Performance Engineering',   name: 'Concurrency & Async Patterns',         description: 'Thread pools, async/await, reactive streams and back-pressure handling' },
+  // Networking Fundamentals
+  { id: 73, category: 'Networking Fundamentals',   name: 'TCP/IP & OSI Model',                   description: 'Packet flow, handshakes, congestion control and how layers affect service design' },
+  { id: 74, category: 'Networking Fundamentals',   name: 'DNS, TLS & Certificate Management',    description: 'Resolution chain, mTLS, cert rotation, ACME/Let\'s Encrypt and HSTS' },
+  { id: 75, category: 'Networking Fundamentals',   name: 'HTTP/2, HTTP/3 & WebSockets',          description: 'Multiplexing, QUIC, server-push, long-lived connections and protocol selection' },
+  { id: 76, category: 'Networking Fundamentals',   name: 'CDN Strategy & Edge Computing',        description: 'Cache-control headers, origin shield, edge functions and global PoP routing' },
+  { id: 77, category: 'Networking Fundamentals',   name: 'API Gateway & Reverse Proxy',          description: 'NGINX, Kong, AWS API GW — routing, auth offload, request transformation and quotas' },
+  { id: 78, category: 'Networking Fundamentals',   name: 'Network Observability',               description: 'Flow logs, packet capture, latency tracing and diagnosing intermittent network faults' },
+  // Legacy Modernisation
+  { id: 79, category: 'Legacy Modernisation',      name: 'Strangler Fig Pattern',               description: 'Incrementally replace legacy systems by routing traffic to new services alongside old' },
+  { id: 80, category: 'Legacy Modernisation',      name: 'Technical Debt Management',           description: 'Classify, score and schedule debt paydown alongside feature delivery' },
+  { id: 81, category: 'Legacy Modernisation',      name: 'Monolith-to-Microservices Migration', description: 'Identify seams, extract bounded contexts and manage data ownership during transition' },
+  { id: 82, category: 'Legacy Modernisation',      name: 'Database Migration Strategies',       description: 'Dual-write, expand-contract, online schema change and zero-downtime migrations' },
+  { id: 83, category: 'Legacy Modernisation',      name: 'API Versioning & Backward Compatibility', description: 'Semver, sunset policies, consumer-driven contracts and breaking-change detection' },
+  { id: 84, category: 'Legacy Modernisation',      name: 'Replatforming vs Rewriting',          description: 'Lift-and-shift, re-architect and full rewrite trade-offs — risk, cost and timeline analysis' },
+];
+const TECH_TOTAL = TECH_CHALLENGES.length; // 84
 
 /* ── module-level helpers ────────────────────────── */
 const emptyDraft = { text: '', startDate: '', assignee: '', assigneeOther: '', budget: '', estHours: '' };
@@ -170,6 +391,17 @@ export default function TodoPage() {
   const [selectedAssignees, setSelectedAssignees] = useState<Set<string>>(new Set());
   const [selectedPriorities, setSelectedPriorities] = useState<Set<Priority>>(new Set());
 
+  /* ── Quran challenge state ────────────────────── */
+  const [completedSurahs,    setCompletedSurahs]    = useState<Set<number>>(new Set());
+  const [confirmSurahNum,    setConfirmSurahNum]    = useState<number | null>(null);
+  const [surahJustDone,      setSurahJustDone]      = useState<number | null>(null);
+
+  /* ── Tech Architect challenge state ──────────── */
+  const [challengeTab,       setChallengeTab]       = useState<'quran' | 'tech'>('quran');
+  const [completedTechItems, setCompletedTechItems] = useState<Set<number>>(new Set());
+  const [confirmTechId,      setConfirmTechId]      = useState<number | null>(null);
+  const [techJustDone,       setTechJustDone]       = useState<number | null>(null);
+
   // Auth guard
   useEffect(() => {
     if (!loading && !user) router.replace('/login');
@@ -191,6 +423,134 @@ export default function TodoPage() {
   useEffect(() => {
     if (user) fetchTodos();
   }, [user, fetchTodos]);
+
+  // Load Quran challenge progress from MongoDB
+  useEffect(() => {
+    if (!user) return;
+    (async () => {
+      try {
+        const res  = await fetch(`/api/quran-challenge?uid=${encodeURIComponent(user.uid)}`);
+        const data = await res.json() as {
+          surahs?: Record<string, { done: boolean; completedAt: string | null }>;
+        };
+        if (data.surahs) {
+          const done = new Set<number>();
+          for (const [key, val] of Object.entries(data.surahs)) {
+            if (val.done) done.add(Number(key));
+          }
+          setCompletedSurahs(done);
+        } else {
+          // Doc doesn't exist yet — initialise it
+          await fetch('/api/quran-challenge', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ uid: user.uid }),
+          });
+        }
+      } catch (err) {
+        console.error('load quranChallenge', err);
+      }
+    })();
+  }, [user]);
+
+  async function handleMarkSurahDone(num: number) {
+    if (!user) return;
+    // Optimistically update UI and close dialog immediately
+    const next = new Set(completedSurahs);
+    next.add(num);
+    setCompletedSurahs(next);
+    setConfirmSurahNum(null);
+    setSurahJustDone(num);
+    setTimeout(() => setSurahJustDone(null), 3000);
+    // Persist to MongoDB
+    try {
+      await fetch('/api/quran-challenge', {
+        method:  'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ uid: user.uid, surahNum: num, done: true }),
+      });
+    } catch (err) {
+      console.warn('markSurahDone error:', err);
+    }
+  }
+
+  async function handleUnmarkSurah(num: number) {
+    if (!user) return;
+    const next = new Set(completedSurahs);
+    next.delete(num);
+    setCompletedSurahs(next);
+    try {
+      await fetch('/api/quran-challenge', {
+        method:  'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ uid: user.uid, surahNum: num, done: false }),
+      });
+    } catch (err) {
+      console.warn('unmarkSurah error:', err);
+    }
+  }
+
+  /* ── Tech Architect challenge handlers ─────────── */
+  // Load progress from MongoDB
+  useEffect(() => {
+    if (!user) return;
+    (async () => {
+      try {
+        const res  = await fetch(`/api/tech-challenge?uid=${encodeURIComponent(user.uid)}`);
+        const data = await res.json() as { items?: Record<string, { done: boolean }> };
+        if (data.items && Object.keys(data.items).length > 0) {
+          const done = new Set<number>();
+          for (const [key, val] of Object.entries(data.items)) {
+            if (val.done) done.add(Number(key));
+          }
+          setCompletedTechItems(done);
+        } else {
+          await fetch('/api/tech-challenge', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ uid: user.uid, totalItems: TECH_TOTAL }),
+          });
+        }
+      } catch (err) {
+        console.error('load techChallenge', err);
+      }
+    })();
+  }, [user]);
+
+  async function handleMarkTechDone(id: number) {
+    if (!user) return;
+    const next = new Set(completedTechItems);
+    next.add(id);
+    setCompletedTechItems(next);
+    setConfirmTechId(null);
+    setTechJustDone(id);
+    setTimeout(() => setTechJustDone(null), 3000);
+    try {
+      await fetch('/api/tech-challenge', {
+        method:  'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ uid: user.uid, itemId: id, done: true }),
+      });
+    } catch (err) {
+      console.warn('markTechDone error:', err);
+    }
+  }
+
+  async function handleUnmarkTechItem(id: number) {
+    if (!user) return;
+    const next = new Set(completedTechItems);
+    next.delete(id);
+    setCompletedTechItems(next);
+    try {
+      await fetch('/api/tech-challenge', {
+        method:  'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ uid: user.uid, itemId: id, done: false }),
+      });
+    } catch (err) {
+      console.warn('unmarkTechItem error:', err);
+    }
+  }
 
   /* ── form helpers ────────────────────────────── */
   function commitSubtask() {
@@ -664,7 +1024,7 @@ export default function TodoPage() {
       <span aria-hidden="true" className="pointer-events-none select-none absolute left-[4%]  bottom-[14%] text-2xl" style={{ animation: 'float-up-down 5s ease-in-out infinite' }}>🍉</span>
       <span aria-hidden="true" className="pointer-events-none select-none absolute right-[5%] bottom-[22%] text-xl" style={{ animation: 'float-up-down 6s ease-in-out infinite', animationDelay: '1.5s' }}>🍉</span>
 
-      <div className="relative z-10 max-w-5xl mx-auto px-3 sm:px-4 py-8 sm:py-12">
+      <div className="relative z-10 max-w-[1400px] mx-auto px-3 sm:px-4 py-8 sm:py-12">
 
         {/* ── page header ── */}
         <div className="flex items-center justify-between mb-8">
@@ -2076,11 +2436,233 @@ export default function TodoPage() {
               </div>
             </div>
           )}
+          {/* ── RIGHT: Challenge board (tabbed) ── */}
+          <div className="hidden xl:block flex-shrink-0 w-[270px] sticky top-6">
+            <div className="glass-card rounded-2xl overflow-hidden">
+
+              {/* ── Tab switcher ── */}
+              <div className="flex border-b border-accent/10">
+                <button
+                  type="button"
+                  onClick={() => setChallengeTab('quran')}
+                  className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[11px] font-semibold transition-colors ${
+                    challengeTab === 'quran'
+                      ? 'text-emerald-600 dark:text-emerald-400 border-b-2 border-emerald-500 bg-emerald-500/5'
+                      : 'text-foreground/45 hover:text-foreground/70'
+                  }`}
+                >
+                  <BookOpen className="h-3.5 w-3.5 flex-shrink-0" /> Quran
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setChallengeTab('tech')}
+                  className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[11px] font-semibold transition-colors ${
+                    challengeTab === 'tech'
+                      ? 'text-blue-600 dark:text-blue-400 border-b-2 border-blue-500 bg-blue-500/5'
+                      : 'text-foreground/45 hover:text-foreground/70'
+                  }`}
+                >
+                  <BrainCircuit className="h-3.5 w-3.5 flex-shrink-0" /> Tech Architect
+                </button>
+              </div>
+
+              {/* ════ QURAN TAB ════ */}
+              {challengeTab === 'quran' && (
+                <>
+                  {/* Sub-header */}
+                  <div className="px-4 py-2 border-b border-accent/10">
+                    <p className="text-[10px] text-foreground/45">
+                      {completedSurahs.size} / 114 Surahs completed
+                    </p>
+                    <div className="mt-1.5 h-1.5 rounded-full bg-accent/10 overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-emerald-500/70 transition-all duration-500"
+                        style={{ width: `${(completedSurahs.size / 114) * 100}%` }}
+                      />
+                    </div>
+                    {completedSurahs.size === 114 && (
+                      <p className="text-[10px] text-emerald-500 font-medium mt-1 text-center">🎉 Alhamdulillah! All 114 Surahs done!</p>
+                    )}
+                  </div>
+                  {/* List */}
+                  <div className="overflow-y-auto max-h-[calc(100vh-240px)] px-2 py-2 space-y-0.5">
+                    {SURAHS.map((s) => {
+                      const done    = completedSurahs.has(s.num);
+                      const justDone = surahJustDone === s.num;
+                      return (
+                        <div
+                          key={s.num}
+                          className={`relative flex items-center gap-2 px-2 py-1.5 rounded-lg transition-colors group ${
+                            done ? 'bg-emerald-500/8' : 'hover:bg-accent/5'
+                          }`}
+                        >
+                          <span className={`text-[9px] w-5 text-center flex-shrink-0 font-mono ${done ? 'text-emerald-500/70' : 'text-foreground/30'}`}>{s.num}</span>
+                          <div className="flex-1 min-w-0">
+                            <p className={`text-[11px] font-medium leading-tight truncate ${done ? 'text-foreground/40 line-through' : 'text-foreground/80'}`}>{s.name}</p>
+                            <p className={`text-[10px] leading-tight font-arabic ${done ? 'text-foreground/25' : 'text-foreground/45'}`} dir="rtl">{s.arabic}</p>
+                          </div>
+                          {done ? (
+                            <button type="button" title="Unmark" onClick={() => handleUnmarkSurah(s.num)}
+                              className="flex-shrink-0 text-emerald-500 hover:text-red-400 transition-colors opacity-80 hover:opacity-100">
+                              <CheckCircle2 className="h-4 w-4" />
+                            </button>
+                          ) : (
+                            <button type="button" title="Mark as done" onClick={() => setConfirmSurahNum(s.num)}
+                              className="flex-shrink-0 text-foreground/20 hover:text-emerald-500 transition-colors opacity-0 group-hover:opacity-100">
+                              <Circle className="h-4 w-4" />
+                            </button>
+                          )}
+                          {justDone && <span className="absolute right-8 text-[9px] text-emerald-500 font-medium animate-pulse">✓</span>}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+
+              {/* ════ TECH ARCHITECT TAB ════ */}
+              {challengeTab === 'tech' && (() => {
+                const categories = Array.from(new Set(TECH_CHALLENGES.map(i => i.category)));
+                return (
+                  <>
+                    {/* Sub-header */}
+                    <div className="px-4 py-2 border-b border-accent/10">
+                      <p className="text-[10px] text-foreground/45">
+                        {completedTechItems.size} / {TECH_TOTAL} topics mastered
+                      </p>
+                      <div className="mt-1.5 h-1.5 rounded-full bg-accent/10 overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-blue-500/70 transition-all duration-500"
+                          style={{ width: `${(completedTechItems.size / TECH_TOTAL) * 100}%` }}
+                        />
+                      </div>
+                      {completedTechItems.size === TECH_TOTAL && (
+                        <p className="text-[10px] text-blue-500 font-medium mt-1 text-center">🏗️ You&apos;re a Tech Architect!</p>
+                      )}
+                    </div>
+                    {/* List grouped by category */}
+                    <div className="overflow-y-auto max-h-[calc(100vh-240px)] px-2 py-2">
+                      {categories.map((cat) => {
+                        const items   = TECH_CHALLENGES.filter(i => i.category === cat);
+                        const catDone = items.filter(i => completedTechItems.has(i.id)).length;
+                        return (
+                          <div key={cat} className="mb-3">
+                            <div className="flex items-center gap-2 px-1 mb-1">
+                              <span className="text-[9px] font-bold uppercase tracking-wider text-foreground/35 truncate">{cat}</span>
+                              <span className="text-[9px] text-foreground/25 flex-shrink-0">{catDone}/{items.length}</span>
+                            </div>
+                            <div className="space-y-0.5">
+                              {items.map((item) => {
+                                const done     = completedTechItems.has(item.id);
+                                const justDone = techJustDone === item.id;
+                                return (
+                                  <div
+                                    key={item.id}
+                                    className={`relative flex items-center gap-2 px-2 py-1.5 rounded-lg transition-colors group ${
+                                      done ? 'bg-blue-500/8' : 'hover:bg-accent/5'
+                                    }`}
+                                  >
+                                    <div className="flex-1 min-w-0">
+                                      <p className={`text-[11px] font-medium leading-tight truncate ${done ? 'text-foreground/40 line-through' : 'text-foreground/80'}`}>
+                                        {item.name}
+                                      </p>
+                                    </div>
+                                    {done ? (
+                                      <button type="button" title="Unmark" onClick={() => handleUnmarkTechItem(item.id)}
+                                        className="flex-shrink-0 text-blue-500 hover:text-red-400 transition-colors opacity-80 hover:opacity-100">
+                                        <CheckCircle2 className="h-4 w-4" />
+                                      </button>
+                                    ) : (
+                                      <button type="button" title="Mark as mastered" onClick={() => setConfirmTechId(item.id)}
+                                        className="flex-shrink-0 text-foreground/20 hover:text-blue-500 transition-colors opacity-0 group-hover:opacity-100">
+                                        <Circle className="h-4 w-4" />
+                                      </button>
+                                    )}
+                                    {justDone && <span className="absolute right-8 text-[9px] text-blue-500 font-medium animate-pulse">✓</span>}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </>
+                );
+              })()}
+
+            </div>
+          </div>
+
         </div>{/* end two-column flex */}
+
+        {/* ── Surah done confirmation dialog ── */}
+        {confirmSurahNum !== null && (() => {
+          const surah = SURAHS.find(s => s.num === confirmSurahNum);
+          return surah ? (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+              <div className="glass-card rounded-2xl p-6 max-w-sm w-full shadow-2xl">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-full bg-emerald-500/15 flex items-center justify-center flex-shrink-0">
+                    <BookOpen className="h-5 w-5 text-emerald-500" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground text-base leading-tight">Mark Surah as Done?</h3>
+                    <p className="text-xs text-foreground/50 mt-0.5">This records your recitation</p>
+                  </div>
+                </div>
+                <div className="bg-accent/5 border border-accent/10 rounded-xl px-4 py-3 mb-5 text-center">
+                  <p className="text-lg font-arabic text-foreground/80" dir="rtl">{surah.arabic}</p>
+                  <p className="text-sm font-semibold text-foreground/75 mt-1">{surah.num}. {surah.name}</p>
+                  <p className="text-[11px] text-foreground/40">{surah.verses} verses</p>
+                </div>
+                <div className="flex gap-3">
+                  <Button variant="outline" size="sm" className="flex-1 border-accent/20 text-foreground/60 hover:text-foreground" onClick={() => setConfirmSurahNum(null)}>
+                    Cancel
+                  </Button>
+                  <Button size="sm" className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => handleMarkSurahDone(surah.num)}>
+                    ✓ Alhamdulillah!
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ) : null;
+        })()}
+
+        {/* ── Tech item mastered confirmation dialog ── */}
+        {confirmTechId !== null && (() => {
+          const item = TECH_CHALLENGES.find(i => i.id === confirmTechId);
+          return item ? (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+              <div className="glass-card rounded-2xl p-6 max-w-sm w-full shadow-2xl">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-full bg-blue-500/15 flex items-center justify-center flex-shrink-0">
+                    <BrainCircuit className="h-5 w-5 text-blue-500" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground text-base leading-tight">Mark as Mastered?</h3>
+                    <p className="text-xs text-foreground/50 mt-0.5">Tech Architect Challenge</p>
+                  </div>
+                </div>
+                <div className="bg-blue-500/5 border border-blue-500/15 rounded-xl px-4 py-3 mb-5">
+                  <p className="text-xs font-bold uppercase tracking-wider text-blue-500/60 mb-1">{item.category}</p>
+                  <p className="text-sm font-semibold text-foreground/80 leading-snug">{item.name}</p>
+                  <p className="text-[11px] text-foreground/45 mt-1.5 leading-relaxed">{item.description}</p>
+                </div>
+                <div className="flex gap-3">
+                  <Button variant="outline" size="sm" className="flex-1 border-accent/20 text-foreground/60 hover:text-foreground" onClick={() => setConfirmTechId(null)}>
+                    Cancel
+                  </Button>
+                  <Button size="sm" className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={() => handleMarkTechDone(item.id)}>
+                    ✓ Mastered!
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ) : null;
+        })()}
+
       </div>
     </div>
   );
 }
-
-
-
