@@ -13,24 +13,22 @@ export default function Footer() {
           preserveAspectRatio="none"
           className="absolute inset-0 w-full h-full"
         >
-          {/* Wave layer 1 — Palestinian green tint */}
           <path
             d="M0,35 C360,70 720,0 1080,35 C1260,52 1380,18 1440,35 L1440,70 L0,70 Z"
-            fill="rgba(0,150,57,0.09)"
+            fill="hsl(230 85% 56% / 0.07)"
           />
-          {/* Wave layer 2 — Palestinian red tint */}
           <path
             d="M0,50 C240,20 480,65 720,42 C960,18 1200,62 1440,50 L1440,70 L0,70 Z"
-            fill="rgba(206,17,38,0.06)"
+            fill="hsl(262 72% 56% / 0.05)"
           />
         </svg>
       </div>
 
       {/* Footer body */}
       <div
-        className="relative pb-8 pt-4 border-t border-accent/10"
+        className="relative pb-8 pt-4 border-t border-primary/10"
         style={{
-          background: 'linear-gradient(180deg, rgba(0,150,57,0.06) 0%, rgba(206,17,38,0.08) 100%)',
+          background: 'linear-gradient(180deg, hsl(230 85% 56% / 0.04) 0%, hsl(262 72% 56% / 0.06) 100%)',
           backdropFilter: 'blur(12px)',
         }}
       >
@@ -41,7 +39,7 @@ export default function Footer() {
             style={{
               width: '40%', height: '120%',
               top: '-20%', right: '-5%',
-              background: 'radial-gradient(circle, rgba(0,150,57,0.07) 0%, transparent 70%)',
+              background: 'radial-gradient(circle, hsl(230 85% 56% / 0.06) 0%, transparent 70%)',
               animation: 'drift-orb-1 28s ease-in-out infinite',
             }}
           />
@@ -50,7 +48,7 @@ export default function Footer() {
             style={{
               width: '30%', height: '120%',
               top: '-10%', left: '-5%',
-              background: 'radial-gradient(circle, rgba(206,17,38,0.05) 0%, transparent 70%)',
+              background: 'radial-gradient(circle, hsl(262 72% 56% / 0.04) 0%, transparent 70%)',
               animation: 'drift-orb-2 34s ease-in-out infinite',
             }}
           />
@@ -60,10 +58,6 @@ export default function Footer() {
           <p className="text-sm font-medium" style={{ color: 'hsl(var(--foreground) / 0.65)' }}>
             &copy; {currentYear} Mohammedh Muksith. All rights reserved.
           </p>
-          {/* Free Palestine — single subtle mention */}
-          <div className="mt-3 flex items-center justify-center gap-1.5">
-            <p className="text-xs italic" style={{ color: 'hsl(var(--foreground) / 0.40)' }}>Free Palestine 🇵🇸</p>
-          </div>
         </div>
       </div>
     </footer>
