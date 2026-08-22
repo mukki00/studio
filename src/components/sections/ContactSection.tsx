@@ -1,4 +1,4 @@
-
+﻿
 'use client';
 
 import { useEffect } from 'react';
@@ -72,7 +72,6 @@ export default function ContactSection() {
                       toast({ title: 'Error', description: json.message || 'Submission failed', variant: 'destructive' });
                     }
                   } catch (err) {
-                    console.error('Contact submit error', err);
                     toast({ title: 'Error', description: 'Something went wrong. Please try again later.', variant: 'destructive' });
                   }
                 })}

@@ -1,28 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { MongoClient } from 'mongodb';
+import { getCollection } from '@/lib/mongodb';
 
 export const dynamic = 'force-dynamic';
 
-const MONGODB_URI     = process.env.MONGODB_URI!;
-const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME!;
-const COLLECTION      = 'techChallenge';
-
-if (!MONGODB_URI)     throw new Error('Missing MONGODB_URI');
-if (!MONGODB_DB_NAME) throw new Error('Missing MONGODB_DB_NAME');
-
-declare global {
-  // eslint-disable-next-line no-var
-  var _mongoClientPromise: Promise<MongoClient> | undefined;
-}
-
-async function getCol() {
-  if (!global._mongoClientPromise) {
-    const client = new MongoClient(MONGODB_URI);
-    global._mongoClientPromise = client.connect();
-  }
-  const client = await global._mongoClientPromise;
-  return client.db(MONGODB_DB_NAME).collection(COLLECTION);
-}
+const COLLECTION = 'techChallenge';
 
 // GET — /api/tech-challenge?uid=<uid>
 export async function GET(req: NextRequest) {
@@ -30,7 +11,7 @@ export async function GET(req: NextRequest) {
   if (!uid) return NextResponse.json({ error: 'uid is required' }, { status: 400 });
 
   try {
-    const col = await getCol();
+    const col = await getCollection(COLLECTION);
     const doc = await col.findOne({ uid });
 
     if (!doc) return NextResponse.json({ uid, items: {} });
@@ -41,8 +22,7 @@ export async function GET(req: NextRequest) {
       updatedAt: doc.updatedAt ?? null,
       items:     doc.items    ?? {},
     });
-  } catch (err) {
-    console.error('GET /api/tech-challenge', err);
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch' }, { status: 500 });
   }
 }
@@ -54,7 +34,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json() as { uid?: string; totalItems?: number };
     if (!body.uid) return NextResponse.json({ error: 'uid is required' }, { status: 400 });
 
-    const col   = await getCol();
+    const col   = await getCollection(COLLECTION);
     const total = body.totalItems ?? 48;
     const items: Record<string, { done: boolean; completedAt: null }> = {};
     for (let i = 1; i <= total; i++) {
@@ -69,8 +49,7 @@ export async function POST(req: NextRequest) {
     );
 
     return NextResponse.json({ ok: true });
-  } catch (err) {
-    console.error('POST /api/tech-challenge', err);
+  } catch {
     return NextResponse.json({ error: 'Failed to initialise' }, { status: 500 });
   }
 }
@@ -84,7 +63,7 @@ export async function PATCH(req: NextRequest) {
     if (body.itemId == null)            return NextResponse.json({ error: 'itemId is required' }, { status: 400 });
     if (typeof body.done !== 'boolean') return NextResponse.json({ error: 'done is required' },   { status: 400 });
 
-    const col         = await getCol();
+    const col         = await getCollection(COLLECTION);
     const completedAt = body.done ? new Date() : null;
 
     await col.updateOne(
@@ -100,8 +79,8 @@ export async function PATCH(req: NextRequest) {
     );
 
     return NextResponse.json({ ok: true, itemId: body.itemId, done: body.done, completedAt });
-  } catch (err) {
-    console.error('PATCH /api/tech-challenge', err);
+  } catch {
     return NextResponse.json({ error: 'Failed to update' }, { status: 500 });
   }
 }
+

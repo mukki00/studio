@@ -1,35 +1,12 @@
 
 'use server';
 
-import { MongoClient } from 'mongodb';
+import { getDb } from '@/lib/mongodb';
 import { contactFormSchema } from '@/lib/schemas';
 import type { ContactFormState } from '@/lib/schemas';
 
-const MONGODB_URI = process.env.MONGODB_URI;
-const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME;
 const MONGODB_COUNTERS_COLLECTION = process.env.MONGODB_COUNTERS_COLLECTION || 'counters';
 const MONGODB_CONTACT_COLLECTION = process.env.MONGODB_CONTACT_COLLECTION || 'contacts';
-
-
-if (!MONGODB_URI) {
-  throw new Error('Please define the MONGODB_URI environment variable');
-}
-if (!MONGODB_DB_NAME) {
-  throw new Error('Please define the MONGODB_DB_NAME environment variable');
-}
-
-let cachedClient: MongoClient | null = null;
-
-async function getDb() {
-  if (cachedClient) {
-    return cachedClient.db(MONGODB_DB_NAME);
-  }
-  
-  const client = new MongoClient(MONGODB_URI!);
-  await client.connect();
-  cachedClient = client;
-  return client.db(MONGODB_DB_NAME);
-}
 
 const COUNTER_ID = 'cv';
 
@@ -37,34 +14,30 @@ export async function getDownloadCount(): Promise<number> {
   try {
     const db = await getDb();
     const counters = db.collection<{ _id: string; count: number }>(MONGODB_COUNTERS_COLLECTION);
-
     const counter = await counters.findOne({ _id: COUNTER_ID });
-    
     return counter ? counter.count : 0;
-  } catch (error) {
-    console.error('Error fetching download count:', error);
+  } catch {
     return 0;
   }
 }
 
 export async function incrementDownloadCount(): Promise<void> {
-   try {
+  try {
     const db = await getDb();
     const counters = db.collection<{ _id: string; count: number }>(MONGODB_COUNTERS_COLLECTION);
-    
     await counters.updateOne(
-        { _id: COUNTER_ID },
-        { $inc: { count: 1 } },
-        { upsert: true }
+      { _id: COUNTER_ID },
+      { $inc: { count: 1 } },
+      { upsert: true },
     );
-  } catch (error) {
-    console.error('Error incrementing download count:', error);
+  } catch {
+    // silent — non-critical
   }
 }
 
 export async function submitContactForm(
   prevState: ContactFormState,
-  formData: FormData
+  formData: FormData,
 ): Promise<ContactFormState> {
   const validatedFields = contactFormSchema.safeParse({
     name: formData.get('name'),
@@ -84,16 +57,9 @@ export async function submitContactForm(
   try {
     const db = await getDb();
     const contacts = db.collection(MONGODB_CONTACT_COLLECTION);
-    await contacts.insertOne({
-      name,
-      email,
-      message,
-      submittedAt: new Date(),
-    });
-
+    await contacts.insertOne({ name, email, message, submittedAt: new Date() });
     return { success: true, message: 'Thank you for your message! I will get back to you soon.' };
-  } catch (error) {
-    console.error('Error submitting contact form:', error);
+  } catch {
     return { success: false, message: 'Something went wrong. Please try again later.' };
   }
 }

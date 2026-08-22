@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Section from '@/components/common/Section';
 import ProjectCard from '@/components/cards/ProjectCard';
@@ -104,13 +104,10 @@ export default function ProjectsSection() {
         const response = await fetch('/api/project-clicks');
         if (response.ok) {
           const data = await response.json();
-          console.log('Loaded click counts:', data.clickCounts);
           setClickCounts(data.clickCounts || {});
         } else {
-          console.error('Failed to fetch click counts:', response.status, response.statusText);
         }
       } catch (error) {
-        console.error('Error loading click counts:', error);
       }
     };
 
@@ -118,7 +115,6 @@ export default function ProjectsSection() {
   }, []);
 
   const handleLiveLinkClick = async (projectTitle: string) => {
-    console.log('Handling live link click for:', projectTitle);
     try {
       const response = await fetch('/api/project-clicks', {
         method: 'POST',
@@ -130,17 +126,14 @@ export default function ProjectsSection() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Click count updated:', data);
         // Update local state with the new count from server
         setClickCounts(prev => ({
           ...prev,
           [projectTitle]: data.clickCount
         }));
       } else {
-        console.error('Failed to update click count:', response.status, response.statusText);
       }
     } catch (error) {
-      console.error('Error updating click count:', error);
       // Fallback: still increment locally if API fails
       setClickCounts(prev => ({
         ...prev,

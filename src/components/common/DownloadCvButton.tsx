@@ -1,4 +1,4 @@
-
+﻿
 'use client';
 
 import Link from 'next/link';
@@ -20,7 +20,6 @@ export default function DownloadCvButton() {
           setDownloadCount(0);
         }
       } catch (err) {
-        console.error('Error fetching download count', err);
         setDownloadCount(0);
       }
     }
@@ -34,7 +33,6 @@ export default function DownloadCvButton() {
     try {
       await fetch('/api/cv', { method: 'POST' });
     } catch (err) {
-      console.error('Error incrementing download count', err);
     }
   };
 
