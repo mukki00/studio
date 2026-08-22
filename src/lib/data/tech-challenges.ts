@@ -1,0 +1,103 @@
+export interface TechItem { id: number; name: string; category: string; description: string; }
+export const TECH_CHALLENGES: TechItem[] = [
+  // Architecture Foundations
+  { id: 1,  category: 'Architecture Foundations', name: 'Microservices Architecture',          description: 'Design, decompose and communicate between independently deployable services' },
+  { id: 2,  category: 'Architecture Foundations', name: 'Event-Driven Architecture',           description: 'Producers, consumers, event brokers and async communication patterns' },
+  { id: 3,  category: 'Architecture Foundations', name: 'Domain-Driven Design (DDD)',          description: 'Bounded contexts, aggregates, entities, value objects and ubiquitous language' },
+  { id: 4,  category: 'Architecture Foundations', name: 'CQRS & Event Sourcing',               description: 'Separate read/write models and derive state from an immutable event log' },
+  { id: 5,  category: 'Architecture Foundations', name: 'Hexagonal / Clean Architecture',      description: 'Ports & adapters pattern — keep domain logic independent of infrastructure' },
+  { id: 6,  category: 'Architecture Foundations', name: 'API Design (REST, GraphQL, gRPC)',    description: 'Design robust, versioned and contract-first APIs for internal & external use' },
+  { id: 7,  category: 'Architecture Foundations', name: 'Saga Pattern',                        description: 'Manage distributed transactions with choreography or orchestration sagas' },
+  { id: 8,  category: 'Architecture Foundations', name: 'Service Mesh (Istio / Linkerd)',       description: 'Sidecar proxies for traffic management, mutual TLS and observability' },
+  // System Design
+  { id: 9,  category: 'System Design',            name: 'Scalability Patterns',                description: 'Horizontal scaling, sharding, partitioning and stateless service design' },
+  { id: 10, category: 'System Design',            name: 'Database Sharding & Replication',     description: 'Partition data for write scale; replicate for read scale and fault tolerance' },
+  { id: 11, category: 'System Design',            name: 'Caching Strategies',                  description: 'Cache-aside, write-through, TTL, CDN edge caching and cache invalidation' },
+  { id: 12, category: 'System Design',            name: 'Load Balancing & Traffic Management', description: 'Layer 4/7 LB, weighted routing, sticky sessions and global traffic management' },
+  { id: 13, category: 'System Design',            name: 'CAP Theorem & Consistency Models',    description: 'Consistency vs availability trade-offs; eventual, strong and causal consistency' },
+  { id: 14, category: 'System Design',            name: 'Message Queues (Kafka / RabbitMQ)',   description: 'Topics, partitions, consumer groups, ordering guarantees and dead-letter queues' },
+  { id: 15, category: 'System Design',            name: 'Rate Limiting & Throttling',          description: 'Token bucket, leaky bucket, fixed window and distributed rate limiter design' },
+  { id: 16, category: 'System Design',            name: 'Circuit Breaker Pattern',             description: 'Protect downstream services with half-open state and fallback strategies' },
+  // Cloud & Infrastructure
+  { id: 17, category: 'Cloud & Infrastructure',   name: 'Cloud Platform Core Services',        description: 'Compute, storage, networking and managed services across AWS / Azure / GCP' },
+  { id: 18, category: 'Cloud & Infrastructure',   name: 'Infrastructure as Code (Terraform)',  description: 'Provision and version infrastructure declaratively; state management and modules' },
+  { id: 19, category: 'Cloud & Infrastructure',   name: 'Kubernetes & Container Orchestration',description: 'Deployments, services, ingress, RBAC, HPA and cluster administration' },
+  { id: 20, category: 'Cloud & Infrastructure',   name: 'CI/CD Pipeline Design',               description: 'Build, test, security scan, artefact management and progressive delivery' },
+  { id: 21, category: 'Cloud & Infrastructure',   name: 'Serverless Architecture',             description: 'Functions, event triggers, cold starts, vendor lock-in trade-offs' },
+  { id: 22, category: 'Cloud & Infrastructure',   name: 'Multi-region Deployment',             description: 'Active-active vs active-passive, data sovereignty and latency optimisation' },
+  { id: 23, category: 'Cloud & Infrastructure',   name: 'Cloud Cost Optimisation',             description: 'Reserved/spot instances, right-sizing, tagging and FinOps practices' },
+  { id: 24, category: 'Cloud & Infrastructure',   name: 'Site Reliability Engineering (SRE)',  description: 'Error budgets, toil reduction, runbooks and on-call practices' },
+  // Security Architecture
+  { id: 25, category: 'Security Architecture',    name: 'Zero Trust Architecture',             description: 'Never trust, always verify — microsegmentation and least-privilege access' },
+  { id: 26, category: 'Security Architecture',    name: 'OAuth2 / OpenID Connect / JWT',       description: 'Auth flows, token lifecycle, refresh strategies and PKCE' },
+  { id: 27, category: 'Security Architecture',    name: 'Secrets Management',                  description: 'HashiCorp Vault, AWS Secrets Manager — rotation, leasing and dynamic secrets' },
+  { id: 28, category: 'Security Architecture',    name: 'Network Security & VPC Design',       description: 'Subnets, security groups, NACLs, private link and DMZ architecture' },
+  { id: 29, category: 'Security Architecture',    name: 'Identity & Access Management (IAM)',  description: 'Role hierarchies, policy evaluation, federation and privilege escalation prevention' },
+  { id: 30, category: 'Security Architecture',    name: 'Threat Modelling & Security by Design', description: 'STRIDE, PASTA, data flow diagrams and security review in design phase' },
+  // Observability & Reliability
+  { id: 31, category: 'Observability & Reliability', name: 'Distributed Tracing',             description: 'Trace context propagation, span sampling and Jaeger / Zipkin / OTEL' },
+  { id: 32, category: 'Observability & Reliability', name: 'Centralised Logging',             description: 'Structured logs, ELK / Splunk / Loki pipelines and log-based alerting' },
+  { id: 33, category: 'Observability & Reliability', name: 'Metrics & Alerting',              description: 'RED / USE method, Prometheus, Grafana dashboards and PagerDuty integration' },
+  { id: 34, category: 'Observability & Reliability', name: 'SLO / SLI / SLA Definition',     description: 'Define reliability targets, error budgets and customer-facing commitments' },
+  { id: 35, category: 'Observability & Reliability', name: 'Disaster Recovery Planning',      description: 'RTO / RPO targets, backup strategies, runbooks and DR drills' },
+  { id: 36, category: 'Observability & Reliability', name: 'Chaos Engineering',               description: 'Game days, failure injection, Chaos Monkey and blast-radius control' },
+  // Data Architecture
+  { id: 37, category: 'Data Architecture',        name: 'Data Modelling & Schema Design',      description: 'Normalisation, denormalisation, schema evolution and contract testing' },
+  { id: 38, category: 'Data Architecture',        name: 'Data Lake vs Data Warehouse',         description: 'Storage tiers, schema-on-read vs schema-on-write and lakehouse patterns' },
+  { id: 39, category: 'Data Architecture',        name: 'Stream vs Batch Processing',          description: 'Flink, Spark Streaming, Lambda architecture and exactly-once semantics' },
+  { id: 40, category: 'Data Architecture',        name: 'Database Selection Criteria',         description: 'SQL vs NoSQL trade-offs — document, columnar, graph and time-series stores' },
+  { id: 41, category: 'Data Architecture',        name: 'Data Privacy & GDPR Compliance',      description: 'Data classification, PII handling, right to erasure and data retention policies' },
+  { id: 42, category: 'Data Architecture',        name: 'Data Mesh Architecture',              description: 'Domain ownership, data as a product and federated computational governance' },
+  // Leadership & Communication
+  { id: 43, category: 'Leadership & Communication', name: 'Architecture Decision Records (ADRs)', description: 'Document context, decision and consequences — build a searchable architecture log' },
+  { id: 44, category: 'Leadership & Communication', name: 'Technical Roadmapping',             description: 'Prioritise initiatives, align with business goals and communicate milestones' },
+  { id: 45, category: 'Leadership & Communication', name: 'Stakeholder Communication',         description: 'Translate technical concepts for non-technical audiences and exec presentations' },
+  { id: 46, category: 'Leadership & Communication', name: 'Technology Evaluation & Vendor Selection', description: 'RFP / PoC frameworks, TCO analysis and build vs buy decisions' },
+  { id: 47, category: 'Leadership & Communication', name: 'Technical Risk Assessment',         description: 'Identify, score and mitigate architectural risks with risk registers' },
+  { id: 48, category: 'Leadership & Communication', name: 'Team Mentoring & Coaching',         description: 'Grow engineers, conduct architecture reviews and build a learning culture' },
+  // Containers & DevOps Tools
+  { id: 49, category: 'Containers & DevOps Tools', name: 'Docker & Containerisation',           description: 'Dockerfiles, multi-stage builds, image layering, networking and security best practices' },
+  { id: 50, category: 'Containers & DevOps Tools', name: 'Helm Charts & K8s Packaging',         description: 'Chart structure, templating, values overrides, hooks and chart repositories' },
+  { id: 51, category: 'Containers & DevOps Tools', name: 'GitOps (ArgoCD / Flux)',              description: 'Declarative deployments driven from Git — sync policies, drift detection and rollback' },
+  { id: 52, category: 'Containers & DevOps Tools', name: 'HashiCorp Stack (Vault / Consul)',     description: 'Service discovery, distributed config, secret injection and dynamic credentials' },
+  { id: 53, category: 'Containers & DevOps Tools', name: 'Ansible & Config Management',         description: 'Idempotent playbooks, roles, inventories and CM vs IaC trade-offs' },
+  { id: 54, category: 'Containers & DevOps Tools', name: 'Build Tools & Artefact Management',   description: 'Gradle/Maven, Nx/Turborepo monorepos, Nexus/Artifactory and dependency pinning' },
+  // Programming Languages
+  { id: 55, category: 'Programming Languages',     name: 'TypeScript / JavaScript (Node.js)',   description: 'Type-safe backends, async patterns, Node.js event loop and module ecosystem' },
+  { id: 56, category: 'Programming Languages',     name: 'Python (FastAPI / Scripting / ML)',    description: 'API development, automation scripting, data pipelines and ML integration' },
+  { id: 57, category: 'Programming Languages',     name: 'Go (Microservices & CLI Tools)',       description: 'Goroutines, channels, low-latency services, CLI tooling and binary distribution' },
+  { id: 58, category: 'Programming Languages',     name: 'Java / Kotlin (JVM & Spring Boot)',    description: 'JVM internals, Spring Boot ecosystem, reactive streams and enterprise patterns' },
+  { id: 59, category: 'Programming Languages',     name: 'SQL & Query Optimisation',             description: 'Execution plans, index strategies, window functions and OLAP vs OLTP query patterns' },
+  { id: 60, category: 'Programming Languages',     name: 'Rust / C++ (Systems Awareness)',       description: 'Memory model, ownership, WASM targets and when to choose systems languages' },
+  // AI & GenAI Architecture
+  { id: 61, category: 'AI & GenAI Architecture',   name: 'LLM Integration Patterns',             description: 'Prompt chaining, tool-calling, function calling, LLM-as-orchestrator and guardrails' },
+  { id: 62, category: 'AI & GenAI Architecture',   name: 'RAG (Retrieval-Augmented Generation)',  description: 'Chunking strategies, embedding models, vector similarity search and reranking' },
+  { id: 63, category: 'AI & GenAI Architecture',   name: 'Vector Databases',                      description: 'Pinecone, Weaviate, pgvector — indexing, ANN search and hybrid retrieval' },
+  { id: 64, category: 'AI & GenAI Architecture',   name: 'AI Pipeline & MLOps',                   description: 'Feature stores, model registry, A/B testing, drift detection and retraining loops' },
+  { id: 65, category: 'AI & GenAI Architecture',   name: 'AI Safety & Responsible AI',            description: 'Bias evaluation, explainability, content filtering, rate limits and cost control' },
+  { id: 66, category: 'AI & GenAI Architecture',   name: 'Agentic Systems Design',               description: 'Multi-agent orchestration, tool use, memory layers and evaluation frameworks' },
+  // Performance Engineering
+  { id: 67, category: 'Performance Engineering',   name: 'Load & Stress Testing',                description: 'k6, JMeter, Gatling — test design, ramp-up profiles and interpreting p95/p99 results' },
+  { id: 68, category: 'Performance Engineering',   name: 'Application Profiling',                description: 'CPU/heap profiling, flame graphs, GC tuning and hot-path identification' },
+  { id: 69, category: 'Performance Engineering',   name: 'Database Query Optimisation',          description: 'EXPLAIN plans, index design, N+1 elimination, connection pooling and query caching' },
+  { id: 70, category: 'Performance Engineering',   name: 'Performance Budgets & SLAs',           description: 'Define perf targets, automate regression gates in CI and tie to SLOs' },
+  { id: 71, category: 'Performance Engineering',   name: 'Network & Latency Optimisation',       description: 'Keep-alive, HTTP/2 multiplexing, payload compression, pre-fetching and CDN tuning' },
+  { id: 72, category: 'Performance Engineering',   name: 'Concurrency & Async Patterns',         description: 'Thread pools, async/await, reactive streams and back-pressure handling' },
+  // Networking Fundamentals
+  { id: 73, category: 'Networking Fundamentals',   name: 'TCP/IP & OSI Model',                   description: 'Packet flow, handshakes, congestion control and how layers affect service design' },
+  { id: 74, category: 'Networking Fundamentals',   name: 'DNS, TLS & Certificate Management',    description: 'Resolution chain, mTLS, cert rotation, ACME/Let\'s Encrypt and HSTS' },
+  { id: 75, category: 'Networking Fundamentals',   name: 'HTTP/2, HTTP/3 & WebSockets',          description: 'Multiplexing, QUIC, server-push, long-lived connections and protocol selection' },
+  { id: 76, category: 'Networking Fundamentals',   name: 'CDN Strategy & Edge Computing',        description: 'Cache-control headers, origin shield, edge functions and global PoP routing' },
+  { id: 77, category: 'Networking Fundamentals',   name: 'API Gateway & Reverse Proxy',          description: 'NGINX, Kong, AWS API GW — routing, auth offload, request transformation and quotas' },
+  { id: 78, category: 'Networking Fundamentals',   name: 'Network Observability',               description: 'Flow logs, packet capture, latency tracing and diagnosing intermittent network faults' },
+  // Legacy Modernisation
+  { id: 79, category: 'Legacy Modernisation',      name: 'Strangler Fig Pattern',               description: 'Incrementally replace legacy systems by routing traffic to new services alongside old' },
+  { id: 80, category: 'Legacy Modernisation',      name: 'Technical Debt Management',           description: 'Classify, score and schedule debt paydown alongside feature delivery' },
+  { id: 81, category: 'Legacy Modernisation',      name: 'Monolith-to-Microservices Migration', description: 'Identify seams, extract bounded contexts and manage data ownership during transition' },
+  { id: 82, category: 'Legacy Modernisation',      name: 'Database Migration Strategies',       description: 'Dual-write, expand-contract, online schema change and zero-downtime migrations' },
+  { id: 83, category: 'Legacy Modernisation',      name: 'API Versioning & Backward Compatibility', description: 'Semver, sunset policies, consumer-driven contracts and breaking-change detection' },
+  { id: 84, category: 'Legacy Modernisation',      name: 'Replatforming vs Rewriting',          description: 'Lift-and-shift, re-architect and full rewrite trade-offs — risk, cost and timeline analysis' },
+];
+// const TECH_TOTAL = TECH_CHALLENGES.length; // 84
+
+export const TECH_TOTAL = TECH_CHALLENGES.length;

@@ -1,4 +1,4 @@
-
+﻿
 'use client';
 
 import Link from 'next/link';
@@ -64,7 +64,6 @@ export default function Header() {
     } else {
       // For Next.js router links or external links, let default behavior happen or use router.push
       // This example focuses on hash links.
-      console.warn(`handleScrollTo called with non-hash href: ${href}`);
     }
   };
 
