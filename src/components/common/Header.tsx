@@ -103,7 +103,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40
       backdrop-blur-xl bg-background/60 supports-[backdrop-filter]:bg-background/40
-      shadow-[0_4px_30px_rgba(0,100,40,0.08)]">
+      shadow-[0_4px_30px_hsl(230_85%_56%_/_0.08)]">
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
@@ -112,27 +112,8 @@ export default function Header() {
             onClick={(e) => handleScrollTo(e, '#about')}
             className="relative inline-block hover:opacity-80 transition-opacity group"
           >
-            {/* Corner Ribbon */}
-            <div
-              className="absolute top-2.5 left-0 origin-top-left z-10 flex items-center justify-center gap-6 transform -rotate-45 translate-x-[-8px] translate-y-[8px] bg-primary text-primary-foreground px-2 py-0.5 text-[9px] font-semibold shadow-md whitespace-nowrap"
-            >
-              <span>Free Palestine</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 200 100"
-                className="w-2.5 h-auto"
-                aria-hidden="true"
-                focusable="false"
-              >
-                <rect width="200" height="33.33" fill="#000000" />
-                <rect y="33.33" width="200" height="33.34" fill="#FFFFFF" />
-                <rect y="66.67" width="200" height="33.33" fill="#009639" />
-                <polygon points="0,0 100,50 0,100" fill="#CE1126" />
-              </svg>
-            </div>
-
             {/* Name — gradient text matching hero */}
-            <span className="block pl-4 pt-2 text-2xl font-extrabold font-headline tracking-tight
+            <span className="block text-2xl font-extrabold font-headline tracking-tight
               bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent
               group-hover:opacity-90 transition-opacity">
               Mohammedh Muksith

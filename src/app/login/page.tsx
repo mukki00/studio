@@ -55,69 +55,25 @@ export default function LoginPage() {
   return (
     <div className="relative min-h-screen hero-wave-bg flex items-center justify-center px-4 overflow-hidden">
 
-      {/* Dome of the Rock silhouette */}
-      <div aria-hidden="true" className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2" style={{ width: 'min(420px, 80vw)', opacity: 0.07 }}>
-        <svg viewBox="0 0 480 220" xmlns="http://www.w3.org/2000/svg" className="w-full" fill="currentColor">
-          <rect x="10" y="205" width="460" height="15" rx="3"/>
-          <rect x="40" y="186" width="400" height="19" rx="2"/>
-          <polygon points="55,186 425,186 405,138 75,138"/>
-          <rect x="168" y="86" width="144" height="52" rx="5"/>
-          <path d="M153,86 Q240,-35 327,86 Z"/>
-          <rect x="237" y="-35" width="6" height="32" rx="2"/>
-          <path d="M232,-35 A13,13 0 0,1 250,-35 A9,9 0 0,0 232,-35 Z"/>
-          <rect x="57" y="103" width="22" height="83" rx="3"/>
-          <rect x="51" y="122" width="34" height="7" rx="1"/>
-          <polygon points="57,103 79,103 68,74"/>
-          <rect x="401" y="103" width="22" height="83" rx="3"/>
-          <rect x="395" y="122" width="34" height="7" rx="1"/>
-          <polygon points="401,103 423,103 412,74"/>
-        </svg>
-      </div>
-
-      {/* Left olive branch */}
-      <div aria-hidden="true" className="pointer-events-none absolute left-2 bottom-20 hidden sm:block" style={{ width: '70px', animation: 'olive-sway 7s ease-in-out infinite', transformOrigin: 'bottom center' }}>
-        <svg viewBox="0 0 80 170" xmlns="http://www.w3.org/2000/svg" className="w-full opacity-[0.18] text-primary" fill="currentColor">
-          <path d="M42,170 Q39,140 34,118 Q28,95 20,70 Q14,50 10,25" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
-          <ellipse cx="30" cy="130" rx="15" ry="6" transform="rotate(-35 30 130)"/>
-          <ellipse cx="24" cy="107" rx="13" ry="5.5" transform="rotate(-25 24 107)"/>
-          <ellipse cx="19" cy="84" rx="12" ry="5" transform="rotate(-15 19 84)"/>
-          <ellipse cx="39" cy="148" rx="11" ry="5" transform="rotate(20 39 148)"/>
-        </svg>
-      </div>
-
-      {/* Right olive branch (mirrored) */}
-      <div aria-hidden="true" className="pointer-events-none absolute right-2 bottom-20 hidden sm:block" style={{ width: '70px', transform: 'scaleX(-1)', animation: 'olive-sway 8s ease-in-out infinite reverse', transformOrigin: 'bottom center' }}>
-        <svg viewBox="0 0 80 170" xmlns="http://www.w3.org/2000/svg" className="w-full opacity-[0.18] text-primary" fill="currentColor">
-          <path d="M42,170 Q39,140 34,118 Q28,95 20,70 Q14,50 10,25" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
-          <ellipse cx="30" cy="130" rx="15" ry="6" transform="rotate(-35 30 130)"/>
-          <ellipse cx="24" cy="107" rx="13" ry="5.5" transform="rotate(-25 24 107)"/>
-          <ellipse cx="19" cy="84" rx="12" ry="5" transform="rotate(-15 19 84)"/>
-          <ellipse cx="39" cy="148" rx="11" ry="5" transform="rotate(20 39 148)"/>
-        </svg>
-      </div>
-
-      {/* Floating watermelons */}
-      <span aria-hidden="true" className="pointer-events-none select-none absolute left-[6%]  bottom-[22%] text-2xl" style={{ animation: 'float-up-down 5s ease-in-out infinite' }}>🍉</span>
-      <span aria-hidden="true" className="pointer-events-none select-none absolute right-[7%] bottom-[30%] text-xl" style={{ animation: 'float-up-down 6s ease-in-out infinite', animationDelay: '1.5s' }}>🍉</span>
-      <span aria-hidden="true" className="pointer-events-none select-none absolute left-[15%] top-[12%] text-lg opacity-50" style={{ animation: 'float-up-down 7s ease-in-out infinite', animationDelay: '0.8s' }}>🍉</span>
-      <span aria-hidden="true" className="pointer-events-none select-none absolute right-[18%] top-[16%] text-lg opacity-40" style={{ animation: 'float-up-down 5.5s ease-in-out infinite', animationDelay: '2.2s' }}>🍉</span>
+      {/* Ambient gradient orbs */}
+      <div aria-hidden="true" className="pointer-events-none absolute top-[-10%] left-[-5%] w-[45%] h-[60%] rounded-full"
+        style={{ background: 'radial-gradient(circle, hsl(230 85% 56% / 0.10) 0%, transparent 70%)', animation: 'drift-orb-1 25s ease-in-out infinite' }} />
+      <div aria-hidden="true" className="pointer-events-none absolute bottom-[-10%] right-[-5%] w-[40%] h-[55%] rounded-full"
+        style={{ background: 'radial-gradient(circle, hsl(262 72% 56% / 0.08) 0%, transparent 70%)', animation: 'drift-orb-2 30s ease-in-out infinite' }} />
 
       {/* Card */}
       <div className="glass-card rounded-2xl w-full max-w-md p-8 sm:p-10 relative z-10">
 
         {/* Logo mark */}
         <div className="flex flex-col items-center mb-8">
-          {/* Palestinian flag mini */}
-          <div className="w-14 h-14 rounded-full border border-accent/20 overflow-hidden mb-4 flex items-center justify-center bg-background/30">
-            <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-              <rect width="200" height="33.33" fill="#000000"/>
-              <rect y="33.33" width="200" height="33.34" fill="#FFFFFF"/>
-              <rect y="66.67" width="200" height="33.33" fill="#009639"/>
-              <polygon points="0,0 90,50 0,100" fill="#CE1126"/>
+          {/* App icon */}
+          <div className="w-14 h-14 rounded-2xl border border-primary/20 mb-4 flex items-center justify-center bg-primary/10">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7 text-primary">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
             </svg>
           </div>
           <h1 className="font-headline text-2xl font-extrabold" style={{
-            background: 'linear-gradient(135deg, #009639 0%, hsl(var(--foreground)) 45%, #CE1126 90%)',
+            background: 'linear-gradient(135deg, hsl(230 85% 56%) 0%, hsl(262 72% 62%) 90%)',
             WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
           }}>
             Welcome Back
